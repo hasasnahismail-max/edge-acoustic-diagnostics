@@ -1,38 +1,45 @@
-# import numpy as np
-import librosa
+import numpy as np
 
-class AcousticFeatureExtractor:
-    """
-    Real-time Acoustic Feature Extractor for Mechanical Diagnostics.
-    Converts raw sound signals into normalized Log-Mel Spectrograms.
-    """
-    def __init__(self, sample_rate: int = 22050, n_mels: int = 64, n_fft: int = 1024, hop_length: int = 512):
+
+class AudioProcessor:
+
+    def __init__(
+        self, sample_rate=22050, n_fft=512, hop_length=256, n_features=20
+    ):
         self.sample_rate = sample_rate
-        self.n_mels = n_mels
         self.n_fft = n_fft
         self.hop_length = hop_length
+        self.n_features = n_features
 
-    def load_audio_buffer(self, file_path: str) -> np.ndarray:
-        """Loads audio file and converts it to a single mono channel."""
-        y, _ = librosa.load(file_path, sr=self.sample_rate, mono=True)
-        return y
+    def extract_features(self, audio_signal):
+        """Pure NumPy Spectral Feature Extractor.
 
-    def extract_mel_spectrogram(self, audio_buffer: np.ndarray) -> np.ndarray:
-        """Transforms raw audio buffer into a normalized Mel Spectrogram tensor."""
-        mel_spec = librosa.feature.melspectrogram(
-            y=audio_buffer,
-            sr=self.sample_rate,
-            n_fft=self.n_fft,
-            hop_length=self.hop_length,
-            n_mels=self.n_mels
-        )
-        # Convert power spectrogram to decibel scale
-        mel_db = librosa.power_to_db(mel_spec, ref=np.max)
-        
-        # Min-Max Normalization (0 to 1 scale) for Edge Deep Learning models
-        normalized_spec = (mel_db - mel_db.min()) / (mel_db.max() - mel_db.min() + 1e-6)
-        return normalized_spec
+        Designed for lightweight Edge computing without external audio dependencies.
+        """
+        signal = np.asarray(audio_signal, dtype=np.float32)
 
-if __name__ == "__main__":
-    extractor = AcousticFeatureExtractor()
-    print("[EADE] Acoustic Feature Extractor initialized successfully.")
+        # 1. Framing signal for Short-Time Fourier Analysis
+        num_frames = max(1, (len(signal) - self.n_fft) // self.hop_length + 1)
+        window = np.hanning(self.n_fft)
+
+        spectrogram = []
+        for i in range(num_frames):
+            start = i * self.hop_length
+            frame = signal[start : start + self.n_fft]
+            if len(frame) < self.n_fft:
+                frame = np.pad(frame, (0, self.n_fft - len(frame)))
+
+            # Compute Fast Fourier Transform (FFT) Magnitude Spectrum
+            fft_mag = np.abs(np.fft.rfft(frame * window))
+            spectrogram.append(fft_mag)
+
+        spectrogram = np.array(spectrogram)
+
+        # 2. Extract Spectral Energy & Zero-Crossing Rates
+        spec_mean = np.mean(spectrogram, axis=0)[: self.n_features - 2]
+        energy = np.mean(signal**2)
+        zcr = np.mean(np.diff(np.signbit(signal)) != 0)
+
+        # 3. Form compact Edge Feature Vector
+        feature_vector = np.concatenate([spec_mean, [energy, zcr]])
+        return feature_vector
