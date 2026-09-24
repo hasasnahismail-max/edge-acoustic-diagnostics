@@ -16,17 +16,17 @@ LANG_DICT = {
     "العربية": {
         "title": "ZINO EADE",
         "designer": "محرك الذكاء الاصطناعي للتشخيص الصوتي | تطوير: إسماعيل حساسنة",
-        "step1": "📋 الخطوة 1: تحديد بيانات المركبة أو الجهاز",
+        "step1": "📋 الخطوة 1: تحديد بيانات الجهاز أو المحرك",
         "category": "اختر فئة المحرك/الجهاز:",
-        "brand": "الشركة المصنعة (Make):",
-        "model": "موديل السيارة (Model):",
-        "year": "سنة الصنع:",
-        "engine": "مواصفات المحرك:",
-        "step2": "🎧 الخطوة 2: إدخال البصمة الصوتية للمحرك",
+        "brand": "الشركة المصنعة / الماركة:",
+        "model": "الموديل / نوع الجهاز:",
+        "year": "سنة الصنع / القدرة:",
+        "engine": "مواصفات المحرك / الموتور:",
+        "step2": "🎧 الخطوة 2: إدخال البصمة الصوتية",
         "source": "اختر طريقة تزويد الصوت:",
         "mic": "🎙️ تسجيل مباشر عبر المايك",
         "upload": "📁 إرفاق ملف صوتي (.wav, .mp3, .m4a)",
-        "rec_prompt": "اضغط لبدء تسجيل صوت المحرك مباشرة",
+        "rec_prompt": "اضغط لبدء تسجيل صوت المحرك/الموتور مباشرة",
         "up_prompt": "اختر ملف الصوت من جهازك:",
         "analyzing": "⚡ جاري تطبيق خوارزمية إزالة التشويش وتحليل الترددات بالذكاء الاصطناعي...",
         "score_label": "📊 مؤشر الشذوذ والخلل (AI Anomaly Score)",
@@ -35,18 +35,15 @@ LANG_DICT = {
         "defect_cap": "تم كشف اضطراب في البصمة الصوتية لـ",
         "normal_cap": "يعمل ضمن المعايير الميكانيكية المعتمدة لـ",
         "report_title": "📝 التقرير والتحليل الميكانيكي التفصيلي",
-        "summary_header": "🔧 ملخص فحص المركبة:",
-        "target_machinery": "المركبة المستهدفة:",
-        "engine_type": "نوع المحرك:",
+        "summary_header": "🔧 ملخص الفحص الميكانيكي:",
+        "target_machinery": "الجهاز / المعدة المستهدفة:",
+        "engine_type": "نوع المحرك / الموتور:",
         "status_label": "الحالة الميكانيكية العامة:",
         "high_sev": "حرجة (تتطلب فحصاً فورياً)",
         "mod_sev": "متوسطة",
         "low_sev": "سليمة / طبيعية",
         "anomaly_zone": "منطقة الخلل المحتملة:",
         "rec_header": "💡 توصية الذكاء الاصطناعي الهندسية:",
-        "rec_defect": "يرجى فحص عمود التيربو (Turbocharger) وخلوص بخاخات الديزل ذات الضغط العالي. الارتفاع الترددي يدل على احتكاك معدني.",
-        "rec_normal": "لم يتم كشف أي طقطقة أو احتكاك معدني غير طبيعي. البصمة الصوتية مطابقة للمواصفات القياسية للمحرك.",
-        "visual_title": "🚘 الفحص المسحي الضوئي الحي للمركبة (Live Vehicle Acoustic Scan)",
         "waveform_title": "📈 الموجة الصوتية المفلترة (Filtered Waveform)"
     },
     "English": {
@@ -54,10 +51,10 @@ LANG_DICT = {
         "designer": "AI ACOUSTIC DIAGNOSTIC ENGINE | ENGINEERED BY ISMAIL HASASNAH",
         "step1": "📋 Step 1: Target Machinery Profile",
         "category": "Select Target Equipment Category:",
-        "brand": "Select Vehicle Brand (Make):",
-        "model": "Vehicle Model:",
-        "year": "Production Year:",
-        "engine": "Engine Specification:",
+        "brand": "Manufacturer / Brand:",
+        "model": "Model / Equipment Type:",
+        "year": "Production Year / Power:",
+        "engine": "Engine / Motor Specification:",
         "step2": "🎧 Step 2: Acoustic Data Ingestion",
         "source": "Select Audio Source:",
         "mic": "🎙️ Live Microphone Input",
@@ -71,18 +68,15 @@ LANG_DICT = {
         "defect_cap": "Acoustic anomaly detected for",
         "normal_cap": "Operating normally within standard parameters for",
         "report_title": "📝 Detailed Diagnostic Report & Analysis",
-        "summary_header": "🔧 Vehicle Diagnostic Summary:",
-        "target_machinery": "Target Machinery:",
-        "engine_type": "Engine Type:",
+        "summary_header": "🔧 Equipment Diagnostic Summary:",
+        "target_machinery": "Target Equipment:",
+        "engine_type": "Motor / Engine Type:",
         "status_label": "Overall Mechanical Status:",
         "high_sev": "High (Attention Required)",
         "mod_sev": "Moderate",
         "low_sev": "Low / Healthy",
         "anomaly_zone": "Primary Anomaly Zone:",
         "rec_header": "💡 AI Engineering Recommendation:",
-        "rec_defect": "Inspect turbocharger shaft play and high-pressure fuel injector nozzle clearance. High-frequency acoustic peaks indicate metallic friction.",
-        "rec_normal": "No mechanical fault or abnormal metallic knocking detected. Engine acoustic signature aligns with standard OEM parameters.",
-        "visual_title": "🚘 Live Vehicle Acoustic & Laser Scan",
         "waveform_title": "📈 Filtered Acoustic Waveform"
     },
     "Русский": {
@@ -90,10 +84,10 @@ LANG_DICT = {
         "designer": "ИИ АКУСТИЧЕСКИЙ ДИАГНОСТИЧЕСКИЙ ДВИГАТЕЛЬ | РАЗРАБОТАНО: ИСМАИЛ ХАСАСНА",
         "step1": "📋 Шаг 1: Профиль целевого оборудования",
         "category": "Выберите категорию оборудования:",
-        "brand": "Марка автомобиля (Make):",
-        "model": "Модель автомобиля (Model):",
-        "year": "Год выпуска:",
-        "engine": "Спецификация двигателя:",
+        "brand": "Производитель / Марка:",
+        "model": "Модель / Тип оборудования:",
+        "year": "Год выпуска / Мощность:",
+        "engine": "Спецификация двигателя / мотора:",
         "step2": "🎧 Шаг 2: Ввод акустических данных",
         "source": "Выберите источник звука:",
         "mic": "🎙️ Запись с микрофона",
@@ -107,18 +101,15 @@ LANG_DICT = {
         "defect_cap": "Обнаружено акустическое отклонение для",
         "normal_cap": "Работает в пределах нормы для",
         "report_title": "📝 Подробный диагностический отчет и анализ",
-        "summary_header": "🔧 Сводка диагностики автомобиля:",
-        "target_machinery": "Целевой автомобиль:",
-        "engine_type": "Тип двигателя:",
+        "summary_header": "🔧 Сводка диагностики оборудования:",
+        "target_machinery": "Целевое оборудование:",
+        "engine_type": "Тип мотора / двигателя:",
         "status_label": "Общее механическое состояние:",
         "high_sev": "Критическое (Требуется осмотр)",
         "mod_sev": "Умеренное",
         "low_sev": "Исправное / Норма",
         "anomaly_zone": "Зона возможного дефекта:",
         "rec_header": "💡 Инженерная рекомендация ИИ:",
-        "rec_defect": "Проверьте люфт вала турбокомпрессора и зазор форсунок высокого давления. Высокочастотные пики указывают на трение металлов.",
-        "rec_normal": "Механических дефектов и аномального стука не обнаружено. Акустический профиль соответствует норме.",
-        "visual_title": "🚘 Сканирование автомобиля в реальном времени",
         "waveform_title": "📈 Отфильтрованная акустическая волна"
     }
 }
@@ -127,10 +118,9 @@ LANG_DICT = {
 lang_choice = st.selectbox("🌐 Choose Language / اختر اللغة / Выберите язык:", ["العربية", "English", "Русский"])
 T = LANG_DICT[lang_choice]
 
-# Custom Industrial Styling
+# Custom Industrial Styling & Complete Tooltip Eraser
 st.markdown("""
     <style>
-    /* Complete Elimination of Mobile Tooltip Boxes */
     #vg-tooltip-element, .vg-tooltip, .vega-bind, .vega-actions, div[class*="tooltip"] {
         display: none !important;
         visibility: hidden !important;
@@ -196,8 +186,8 @@ machine_type = st.selectbox(
     T['category'],
     [
         "🚗 Automobile / Vehicle Engine",
-        "🧺 Washing Machine Motor",
         "🧊 Refrigerator / HVAC Compressor",
+        "🧺 Washing Machine Motor",
         "⚙️ Industrial Engine / Generator"
     ]
 )
@@ -226,12 +216,30 @@ if "Automobile" in machine_type:
                 "Other Engine Specification"
             ]
         )
-else:
+elif "Refrigerator" in machine_type:
     col1, col2 = st.columns(2)
     with col1:
-        make = st.text_input("Manufacturer / Brand:", "LG / Samsung / Bosch / Caterpillar")
+        make = st.text_input(T['brand'], "Commercial Ice Cream Freezer")
+        model = st.text_input(T['model'], "Deep Freezing Compressor")
     with col2:
-        model = st.text_input("Model / Power Rating:", "Inverter Drive / Direct Drive")
+        year = st.text_input(T['year'], "Commercial Grade")
+        engine_spec = st.text_input(T['engine'], "Hermetic Sealed Compressor Motor")
+elif "Washing Machine" in machine_type:
+    col1, col2 = st.columns(2)
+    with col1:
+        make = st.text_input(T['brand'], "LG / Samsung / Bosch")
+        model = st.text_input(T['model'], "Front Load Washing Machine")
+    with col2:
+        year = st.text_input(T['year'], "2022")
+        engine_spec = st.text_input(T['engine'], "Inverter Direct Drive Motor")
+else: # Industrial Engine
+    col1, col2 = st.columns(2)
+    with col1:
+        make = st.text_input(T['brand'], "Caterpillar / Cummins / Perkins")
+        model = st.text_input(T['model'], "Diesel Generator Unit")
+    with col2:
+        year = st.text_input(T['year'], "50 KVA")
+        engine_spec = st.text_input(T['engine'], "Heavy Duty Industrial Engine")
 
 st.divider()
 
@@ -280,15 +288,51 @@ def apply_noise_filter(signal, sample_rate):
     b, a = butter(2, [low, high], btype='band')
     return filtfilt(b, a, signal)
 
-# --- Real Car Images Mapping Dictionary ---
-CAR_IMAGES = {
-    "Hyundai": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1000&q=80",  # Hyundai Santa Fe SUV
-    "Volkswagen": "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1000&q=80",  # VW Caddy/Golf
-    "Skoda": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=80",  # Skoda Octavia
-    "Honda": "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&w=1000&q=80",  # Honda Civic
-    "Mitsubishi": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1000&q=80",  # Mitsubishi Pajero 4x4
-    "Other Brand": "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1000&q=80"
-}
+# --- Category-Specific Diagnostic & Recommendation Engine ---
+def get_category_diagnostic(machine_type, anomaly_score, lang):
+    is_defect = anomaly_score > 60.0
+    
+    if "Automobile" in machine_type:
+        img_url = "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1000&q=80"
+        title = "🚘 Live Vehicle Acoustic Scan"
+        if is_defect:
+            zones = {"العربية": "عمود التيربو / بخاخات الديزل / سبيكة الكرانك", "English": "Turbocharger Shaft / Fuel Injectors / Crankshaft", "Русский": "Вал турбины / Форсунки / Коленвал"}
+            recs = {"العربية": "يرجى فحص عمود التيربو وخلوص بخاخات الديزل. الارتفاع الترددي يدل على احتكاك معدني في محرك السيارة.", "English": "Inspect turbocharger shaft play and high-pressure fuel injector nozzle clearance. High-frequency acoustic peaks indicate metallic friction.", "Русский": "Проверьте люфт вала турбокомпрессора и зазор форсунок высокого давления. Высокочастотные пики указывают на трение металлов."}
+        else:
+            zones = {"العربية": "سليمة (طبيعية)", "English": "None (Normal Operation)", "Русский": "Норма"}
+            recs = {"العربية": "لم يتم كشف أي طقطقة أو احتكاك معدني غير طبيعي. البصمة الصوتية مطابقة لمواصفات المحرك.", "English": "No mechanical fault or abnormal metallic knocking detected. Engine acoustic signature aligns with standard parameters.", "Русский": "Механических дефектов и аномального стука не обнаружено."}
+
+    elif "Refrigerator" in machine_type:
+        img_url = "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=1000&q=80"
+        title = "🧊 Live Refrigerator Compressor Scan"
+        if is_defect:
+            zones = {"العربية": "صمامات ضاغط التبريد (Compressor Valves) / مروحة المكثف / القواعد المطاطية", "English": "Refrigeration Compressor Valves / Condenser Fan Motor / Rubber Dampeners", "Русский": "Клапаны компрессора / Вентилятор конденсатора / Виброопоры"}
+            recs = {"العربية": "يرجى فحص ضاغط التبريد (Compressor) ومروحة المكثف وقواعد التثبيت المطاطية. الترددات تدل على طقطقة داخلية بالموتور أو اهتزاز بالمروحة.", "English": "Inspect refrigeration compressor internal valves, condenser fan motor bearings, and rubber anti-vibration mounts. Acoustic spikes indicate internal compressor knocking or fan imbalance.", "Русский": "Проверьте внутренние клапаны компрессора холодильника, подшипники вентилятора конденсатора и резиновые виброгасящие опоры."}
+        else:
+            zones = {"العربية": "سليمة (طبيعية)", "English": "None (Normal Operation)", "Русский": "Норма"}
+            recs = {"العربية": "موتور الثلاجة يعمل بشكل هادئ وسليم. لا توجد أي اهتزازات أو طقطقة غير طبيعية في ضاغط التبريد.", "English": "Refrigerator compressor operating smoothly. No abnormal internal knocking or fan bearing friction detected.", "Русский": "Компрессор холодильника работает плавно и без аномальных шумов."}
+
+    elif "Washing" in machine_type:
+        img_url = "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=1000&q=80"
+        title = "🧺 Live Washing Machine Scan"
+        if is_defect:
+            zones = {"العربية": "رمان بلي الحوض الرئيسي (Drum Bearing) / قشاط المحرك / مضخة التصريف", "English": "Drum Main Bearing / Drive Belt Tensioner / Drain Pump Impeller", "Русский": "Подшипник барабана / Приводной ремень / Сливной насос"}
+            recs = {"العربية": "يرجى فحص رومان بلي حوض الغسالة والقشاط ومضخة التصريف. الصوت غير الطبيعي يرجع لاحتكاك أو جفاف في بلي الحوض.", "English": "Inspect drum main bearings, drive belt alignment, and drain pump impeller for physical obstruction or bearing wear.", "Русский": "Проверьте подшипники барабана стиральной машины, натяжение ремня и крыльчатку сливного насоса."}
+        else:
+            zones = {"العربية": "سليمة (طبيعية)", "English": "None (Normal Operation)", "Русский": "Норма"}
+            recs = {"العربية": "موتور وحوض الغسالة يعملان بنسق طبيعي وبدون أي احتكاك في رومان بلي الحوض.", "English": "Washing machine motor and drum assembly operating normally without bearing noise.", "Русский": "Двигатель и барабан стиральной машины работают в нормальном режиме."}
+
+    else: # Industrial Engine
+        img_url = "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80"
+        title = "⚙️ Live Industrial Engine Scan"
+        if is_defect:
+            zones = {"العربية": "رولمان بلي المولد (Alternator Bearing) / مضخة الحقن / قواعد التثبيت", "English": "Alternator Bearing / Injection Pump / Engine Mounting Couplings", "Русский": "Подшипники генератора / Топливный насос / Опоры"}
+            recs = {"العربية": "يرجى فحص رولمان بلي الدينامو ومضخة حقن الوقود وقواعد تثبيت المحرك الصناعي. الاهتزاز الصوتي ينم عن احتكاك دوراني.", "English": "Inspect alternator bearings, fuel injection pump timing, and engine mounting dampeners for mechanical misalignment.", "Русский": "Проверьте подшипники генератора, топливный насос высокого давления и виброопоры."}
+        else:
+            zones = {"العربية": "سليمة (طبيعية)", "English": "None (Normal Operation)", "Русский": "Норма"}
+            recs = {"العربية": "المحرك الصناعي يعمل بنسق استقرار ممتاز وتوازن ترددي طبيعي.", "English": "Industrial engine operating within healthy acoustic and vibration stability parameters.", "Русский": "Промышленный двигатель работает в пределах нормы."}
+
+    return zones[lang], recs[lang], img_url, title
 
 # --- 7. Diagnostic Execution & Output ---
 if audio_bytes is not None:
@@ -307,6 +351,9 @@ if audio_bytes is not None:
         raw_score = float((energy * 800) + (zcr * 40) + (spectral_centroid / 120))
         anomaly_score = round(float(np.clip(raw_score * 7.821, 14.120, 96.850)), 3)
         
+        # Fetch Category-Specific Diagnostic Info
+        fault_zone, rec_text, visual_img_url, scan_title = get_category_diagnostic(machine_type, anomaly_score, lang_choice)
+        
         st.divider()
         
         col_res1, col_res2 = st.columns(2)
@@ -317,15 +364,14 @@ if audio_bytes is not None:
         with col_res2:
             if anomaly_score > 60.0:
                 st.error(T['defect_title'])
-                st.caption(f"{T['defect_cap']} {make} {model} ({engine_spec}).")
+                st.caption(f"{T['defect_cap']} {make} {model}.")
             else:
                 st.success(T['normal_title'])
-                st.caption(f"{T['normal_cap']} {make} {model} ({engine_spec}).")
+                st.caption(f"{T['normal_cap']} {make} {model}.")
 
-        # --- Detailed Diagnostic Report ---
+        # --- Detailed Category Diagnostic Report ---
         st.markdown(f"### {T['report_title']}")
         
-        fault_location = "Turbocharger Bearing / Fuel Injector Rail" if anomaly_score > 60 else "None (Normal Operation)"
         severity_str = T['high_sev'] if anomaly_score > 70 else (T['mod_sev'] if anomaly_score > 50 else T['low_sev'])
         
         st.markdown(f"""
@@ -335,56 +381,29 @@ if audio_bytes is not None:
                     <li><strong>{T['target_machinery']}</strong> {make} {model} ({year})</li>
                     <li><strong>{T['engine_type']}</strong> {engine_spec}</li>
                     <li><strong>{T['status_label']}</strong> <span style="color:{'#EF4444' if anomaly_score > 60 else '#10B981'}; font-weight:bold;">{severity_str}</span></li>
-                    <li><strong>{T['anomaly_zone']}</strong> {fault_location}</li>
+                    <li><strong>{T['anomaly_zone']}</strong> {fault_zone}</li>
                     <li><strong>Spectral Centroid Frequency:</strong> {spectral_centroid:.2f} Hz</li>
                     <li><strong>Signal Energy Density:</strong> {energy:.6f} RMS</li>
                 </ul>
                 <h4 style="color: #10B981; margin-top:15px;">{T['rec_header']}</h4>
                 <p style="color:#CBD5E1; font-size:14px;">
-                    {T['rec_defect'] if anomaly_score > 60 else T['rec_normal']}
+                    {rec_text}
                 </p>
             </div>
         """, unsafe_allow_html=True)
 
-        # --- Realistic Car Visual & Laser Inspection Scanner ---
-        st.markdown(f"### {T['visual_title']}")
+        # --- Category-Specific Visual Inspection Scanner ---
+        st.markdown(f"### {scan_title}")
         
-        car_img_url = CAR_IMAGES.get(make, CAR_IMAGES["Other Brand"])
         laser_color = "#EF4444" if anomaly_score > 60 else "#10B981"
         
         html_scanner = f"""
         <div style="position: relative; width: 100%; height: 280px; border-radius: 14px; overflow: hidden; border: 2px solid #FF6B00; box-shadow: 0 0 20px rgba(255,107,0,0.3);">
-            <!-- Real High-Res Car Image -->
-            <img src="{car_img_url}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.75) contract(1.1);" />
+            <!-- High-Res Category Machine Image -->
+            <img src="{visual_img_url}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.75) contrast(1.1);" />
             
-            <!-- Real-time Animated AI Laser Beam Overlay -->
+            <!-- Animated AI Laser Beam Overlay -->
             <div class="laser-beam"></div>
             
             <!-- Scanning Watermark Badge -->
-            <div style="position: absolute; top: 12px; left: 12px; background: rgba(20,27,24,0.85); border: 1px solid {laser_color}; padding: 6px 14px; border-radius: 8px; color: {laser_color}; font-size: 12px; font-weight: bold; letter-spacing: 1px;">
-                ● AI ACOUSTIC SCANNER ACTIVE | {make.upper()} {model.upper()}
-            </div>
-        </div>
-
-        <style>
-        @keyframes laserScan {{
-            0% {{ top: 0%; opacity: 0.8; }}
-            50% {{ top: 92%; opacity: 1; }}
-            100% {{ top: 0%; opacity: 0.8; }}
-        }}
-        .laser-beam {{
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: {laser_color};
-            box-shadow: 0 0 15px 5px {laser_color};
-            animation: laserScan 2.5s infinite ease-in-out;
-        }}
-        </style>
-        """
-        components.html(html_scanner, height=300)
-
-        # Waveform Display
-        st.markdown(f"### {T['waveform_title']}")
-        st.line_chart(clean_signal[::150])
+            <div style="position: absolute; top:
