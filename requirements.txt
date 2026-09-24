@@ -2,5 +2,3 @@ streamlit
 numpy
 scipy
 scikit-learn
-librosa
-soundfile
