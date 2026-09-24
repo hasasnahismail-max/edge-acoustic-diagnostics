@@ -4,14 +4,14 @@ from scipy.signal import butter, filtfilt
 import streamlit as st
 import streamlit.components.v1 as components
 
-# --- 1. System & Page Setup ---
+# --- 1. Page Config ---
 st.set_page_config(
     page_title="ZINO EADE - AI Acoustic Diagnostic Engine",
     page_icon="⚙️",
     layout="centered"
 )
 
-# --- 2. Multi-Language Dictionary (AR / EN / RU) ---
+# --- 2. Multi-Language Dictionary ---
 LANG_DICT = {
     "العربية": {
         "title": "ZINO EADE",
@@ -114,72 +114,67 @@ LANG_DICT = {
     }
 }
 
-# --- 3. Language Selector Bar ---
 lang_choice = st.selectbox("🌐 Choose Language / اختر اللغة / Выберите язык:", ["العربية", "English", "Русский"])
 T = LANG_DICT[lang_choice]
 
-# Custom Industrial Styling & Complete Tooltip Eraser
+# --- 3. Custom CSS ---
 st.markdown("""
-    <style>
-    #vg-tooltip-element, .vg-tooltip, .vega-bind, .vega-actions, div[class*="tooltip"] {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-    }
-    
-    .stApp {
-        background-color: #141B18;
-        color: #E2E8F0;
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    }
-    .brand-card {
-        background: linear-gradient(135deg, #1A2420 0%, #222E29 100%);
-        border: 2px solid #FF6B00;
-        border-radius: 16px;
-        padding: 22px;
-        text-align: center;
-        box-shadow: 0px 8px 30px rgba(255, 107, 0, 0.25);
-        margin-bottom: 25px;
-    }
-    .brand-title {
-        color: #FF6B00;
-        font-size: 34px;
-        font-weight: 900;
-        letter-spacing: 3px;
-        margin: 0;
-        text-transform: uppercase;
-    }
-    .designer-tag {
-        color: #94A3B8;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 1px;
-    }
-    .report-card {
-        background-color: #1C2622;
-        border: 1px solid #2A3B34;
-        border-radius: 12px;
-        padding: 20px;
-        margin-top: 15px;
-        margin-bottom: 20px;
-    }
-    [data-testid="stMetricValue"] {
-        color: #10B981 !important;
-        font-size: 36px !important;
-        font-weight: 800 !important;
-    }
-    </style>
+<style>
+#vg-tooltip-element, .vg-tooltip, .vega-bind, .vega-actions, div[class*="tooltip"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+.stApp {
+    background-color: #141B18;
+    color: #E2E8F0;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+.brand-card {
+    background: linear-gradient(135deg, #1A2420 0%, #222E29 100%);
+    border: 2px solid #FF6B00;
+    border-radius: 16px;
+    padding: 22px;
+    text-align: center;
+    box-shadow: 0px 8px 30px rgba(255, 107, 0, 0.25);
+    margin-bottom: 25px;
+}
+.brand-title {
+    color: #FF6B00;
+    font-size: 34px;
+    font-weight: 900;
+    margin: 0;
+}
+.designer-tag {
+    color: #94A3B8;
+    font-size: 12px;
+    font-weight: 700;
+}
+.report-card {
+    background-color: #1C2622;
+    border: 1px solid #2A3B34;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+[data-testid="stMetricValue"] {
+    color: #10B981 !important;
+    font-size: 36px !important;
+    font-weight: 800 !important;
+}
+</style>
 """, unsafe_allow_html=True)
 
 # --- 4. Branding Header ---
 st.markdown(f"""
-    <div class="brand-card">
-        <h1 class="brand-title">⚙️ {T['title']}</h1>
-        <div class="designer-tag">{T['designer']}</div>
-    </div>
+<div class="brand-card">
+    <h1 class="brand-title">⚙️ {T['title']}</h1>
+    <div class="designer-tag">{T['designer']}</div>
+</div>
 """, unsafe_allow_html=True)
 
-# --- 5. Step 1: Target Machinery Profile ---
+# --- 5. Step 1: Equipment Selection ---
 st.markdown(f"### {T['step1']}")
 
 machine_type = st.selectbox(
@@ -197,24 +192,13 @@ make, model, year, engine_spec = "", "", "", ""
 if "Automobile" in machine_type:
     col1, col2 = st.columns(2)
     with col1:
-        make = st.selectbox(
-            T['brand'],
-            ["Hyundai", "Volkswagen", "Skoda", "Honda", "Mitsubishi", "Other Brand"]
-        )
+        make = st.selectbox(T['brand'], ["Hyundai", "Volkswagen", "Skoda", "Honda", "Mitsubishi", "Other"])
         model = st.text_input(T['model'], "Santa Fe")
     with col2:
         year = st.text_input(T['year'], "2017")
         engine_spec = st.selectbox(
             T['engine'],
-            [
-                "2.0L CRDi Turbo Diesel",
-                "1.6L CRDi / TDI Diesel",
-                "2.0L TSI / TFSI Turbo",
-                "1.6L GDI / MPI Gasoline",
-                "V6 3.5L Engine",
-                "4-Cylinder Inline",
-                "Other Engine Specification"
-            ]
+            ["2.0L CRDi Turbo Diesel", "1.6L CRDi Diesel", "2.0L TSI Turbo", "1.6L Gasoline", "V6 Engine", "Inline 4"]
         )
 elif "Refrigerator" in machine_type:
     col1, col2 = st.columns(2)
@@ -224,7 +208,7 @@ elif "Refrigerator" in machine_type:
     with col2:
         year = st.text_input(T['year'], "Commercial Grade")
         engine_spec = st.text_input(T['engine'], "Hermetic Sealed Compressor Motor")
-elif "Washing Machine" in machine_type:
+elif "Washing" in machine_type:
     col1, col2 = st.columns(2)
     with col1:
         make = st.text_input(T['brand'], "LG / Samsung / Bosch")
@@ -232,7 +216,7 @@ elif "Washing Machine" in machine_type:
     with col2:
         year = st.text_input(T['year'], "2022")
         engine_spec = st.text_input(T['engine'], "Inverter Direct Drive Motor")
-else: # Industrial Engine
+else:
     col1, col2 = st.columns(2)
     with col1:
         make = st.text_input(T['brand'], "Caterpillar / Cummins / Perkins")
@@ -243,17 +227,12 @@ else: # Industrial Engine
 
 st.divider()
 
-# --- 6. Step 2: Audio Data Ingestion ---
+# --- 6. Step 2: Audio Ingestion ---
 st.markdown(f"### {T['step2']}")
 
-input_method = st.radio(
-    T['source'],
-    [T['mic'], T['upload']],
-    horizontal=True
-)
+input_method = st.radio(T['source'], [T['mic'], T['upload']], horizontal=True)
 
 audio_bytes = None
-
 if T['mic'] in input_method:
     recorded_audio = st.audio_input(T['rec_prompt'])
     if recorded_audio:
@@ -263,23 +242,17 @@ else:
     if uploaded_file:
         audio_bytes = uploaded_file.read()
 
-# --- Audio Loaders & Signal Filtering ---
-def load_audio_signal(audio_bytes):
+def load_audio_signal(raw_bytes):
     try:
-        import librosa
-        signal, sr = librosa.load(io.BytesIO(audio_bytes), sr=22050)
-        return signal, sr
-    except Exception:
         from scipy.io import wavfile
-        try:
-            sr, signal = wavfile.read(io.BytesIO(audio_bytes))
-            if len(signal.shape) > 1:
-                signal = np.mean(signal, axis=1)
-            return signal.astype(np.float32), sr
-        except Exception:
-            t = np.linspace(0, 3, 22050 * 3)
-            signal = np.sin(2 * np.pi * 120 * t) + np.random.normal(0, 0.15, len(t))
-            return signal.astype(np.float32), 22050
+        sr, signal = wavfile.read(io.BytesIO(raw_bytes))
+        if len(signal.shape) > 1:
+            signal = np.mean(signal, axis=1)
+        return signal.astype(np.float32), sr
+    except Exception:
+        t = np.linspace(0, 3, 22050 * 3)
+        signal = np.sin(2 * np.pi * 120 * t) + np.random.normal(0, 0.15, len(t))
+        return signal.astype(np.float32), 22050
 
 def apply_noise_filter(signal, sample_rate):
     nyquist = 0.5 * sample_rate
@@ -288,79 +261,71 @@ def apply_noise_filter(signal, sample_rate):
     b, a = butter(2, [low, high], btype='band')
     return filtfilt(b, a, signal)
 
-# --- Category-Specific Diagnostic & Recommendation Engine ---
-def get_category_diagnostic(machine_type, anomaly_score, lang):
-    is_defect = anomaly_score > 60.0
-    
-    if "Automobile" in machine_type:
+def get_category_diagnostic(m_type, score, lang):
+    is_defect = score > 60.0
+    if "Automobile" in m_type:
         img_url = "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1000&q=80"
         title = "🚘 Live Vehicle Acoustic Scan"
         if is_defect:
-            zones = {"العربية": "عمود التيربو / بخاخات الديزل / سبيكة الكرانك", "English": "Turbocharger Shaft / Fuel Injectors / Crankshaft", "Русский": "Вал турбины / Форсунки / Коленвал"}
-            recs = {"العربية": "يرجى فحص عمود التيربو وخلوص بخاخات الديزل. الارتفاع الترددي يدل على احتكاك معدني في محرك السيارة.", "English": "Inspect turbocharger shaft play and high-pressure fuel injector nozzle clearance. High-frequency acoustic peaks indicate metallic friction.", "Русский": "Проверьте люфт вала турбокомпрессора и зазор форсунок высокого давления. Высокочастотные пики указывают на трение металлов."}
+            zones = {"العربية": "عمود التيربو / بخاخات الديزل", "English": "Turbocharger Shaft / Fuel Injectors", "Русский": "Вал турбины / Форсунки"}
+            recs = {"العربية": "يرجى فحص عمود التيربو وخلوص بخاخات الديزل.", "English": "Inspect turbocharger shaft play.", "Русский": "Проверьте люфт вала турбокомпрессора."}
         else:
             zones = {"العربية": "سليمة (طبيعية)", "English": "None (Normal Operation)", "Русский": "Норма"}
-            recs = {"العربية": "لم يتم كشف أي طقطقة أو احتكاك معدني غير طبيعي. البصمة الصوتية مطابقة لمواصفات المحرك.", "English": "No mechanical fault or abnormal metallic knocking detected. Engine acoustic signature aligns with standard parameters.", "Русский": "Механических дефектов и аномального стука не обнаружено."}
-
-    elif "Refrigerator" in machine_type:
+            recs = {"العربية": "لم يتم كشف أي طقطقة أو احتكاك معدني.", "English": "No mechanical fault detected.", "Русский": "Дефектов не обнаружено."}
+    elif "Refrigerator" in m_type:
         img_url = "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=1000&q=80"
         title = "🧊 Live Refrigerator Compressor Scan"
         if is_defect:
-            zones = {"العربية": "صمامات ضاغط التبريد (Compressor Valves) / مروحة المكثف / القواعد المطاطية", "English": "Refrigeration Compressor Valves / Condenser Fan Motor / Rubber Dampeners", "Русский": "Клапаны компрессора / Вентилятор конденсатора / Виброопоры"}
-            recs = {"العربية": "يرجى فحص ضاغط التبريد (Compressor) ومروحة المكثف وقواعد التثبيت المطاطية. الترددات تدل على طقطقة داخلية بالموتور أو اهتزاز بالمروحة.", "English": "Inspect refrigeration compressor internal valves, condenser fan motor bearings, and rubber anti-vibration mounts. Acoustic spikes indicate internal compressor knocking or fan imbalance.", "Русский": "Проверьте внутренние клапаны компрессора холодильника, подшипники вентилятора конденсатора и резиновые виброгасящие опоры."}
+            zones = {"العربية": "صمامات ضاغط التبريد / مروحة المكثف / القواعد", "English": "Compressor Valves / Condenser Fan / Rubber Mounts", "Русский": "Клапаны компрессора / Вентилятор / Опоры"}
+            recs = {"العربية": "يرجى فحص ضاغط التبريد (Compressor) ومروحة المكثف وقواعد التثبيت المطاطية.", "English": "Inspect refrigeration compressor internal valves and condenser fan.", "Русский": "Проверьте клапаны компрессора холодильника и вентилятор."}
         else:
             zones = {"العربية": "سليمة (طبيعية)", "English": "None (Normal Operation)", "Русский": "Норма"}
-            recs = {"العربية": "موتور الثلاجة يعمل بشكل هادئ وسليم. لا توجد أي اهتزازات أو طقطقة غير طبيعية في ضاغط التبريد.", "English": "Refrigerator compressor operating smoothly. No abnormal internal knocking or fan bearing friction detected.", "Русский": "Компрессор холодильника работает плавно и без аномальных шумов."}
-
-    elif "Washing" in machine_type:
+            recs = {"العربية": "موتور الثلاجة يعمل بشكل هادئ وسليم.", "English": "Refrigerator compressor operating smoothly.", "Русский": "Компрессор работает нормально."}
+    elif "Washing" in m_type:
         img_url = "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=1000&q=80"
         title = "🧺 Live Washing Machine Scan"
         if is_defect:
-            zones = {"العربية": "رمان بلي الحوض الرئيسي (Drum Bearing) / قشاط المحرك / مضخة التصريف", "English": "Drum Main Bearing / Drive Belt Tensioner / Drain Pump Impeller", "Русский": "Подшипник барабана / Приводной ремень / Сливной насос"}
-            recs = {"العربية": "يرجى فحص رومان بلي حوض الغسالة والقشاط ومضخة التصريف. الصوت غير الطبيعي يرجع لاحتكاك أو جفاف في بلي الحوض.", "English": "Inspect drum main bearings, drive belt alignment, and drain pump impeller for physical obstruction or bearing wear.", "Русский": "Проверьте подшипники барабана стиральной машины, натяжение ремня и крыльчатку сливного насоса."}
+            zones = {"العربية": "رمان بلي الحوض الرئيسي / القشاط / مضخة التصريف", "English": "Drum Bearing / Belt / Drain Pump", "Русский": "Подшипник барабана / Ремень / Насос"}
+            recs = {"العربية": "يرجى فحص رومان بلي حوض الغسالة والقشاط ومضخة التصريف.", "English": "Inspect drum main bearings and drive belt.", "Русский": "Проверьте подшипники барабана стиральной машины."}
         else:
             zones = {"العربية": "سليمة (طبيعية)", "English": "None (Normal Operation)", "Русский": "Норма"}
-            recs = {"العربية": "موتور وحوض الغسالة يعملان بنسق طبيعي وبدون أي احتكاك في رومان بلي الحوض.", "English": "Washing machine motor and drum assembly operating normally without bearing noise.", "Русский": "Двигатель и барабан стиральной машины работают в нормальном режиме."}
-
-    else: # Industrial Engine
-        img_url = "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80"
-        title = "⚙️ Live Industrial Engine Scan"
-        if is_defect:
-            zones = {"العربية": "رولمان بلي المولد (Alternator Bearing) / مضخة الحقن / قواعد التثبيت", "English": "Alternator Bearing / Injection Pump / Engine Mounting Couplings", "Русский": "Подшипники генератора / Топливный насос / Опоры"}
-            recs = {"العربية": "يرجى فحص رولمان بلي الدينامو ومضخة حقن الوقود وقواعد تثبيت المحرك الصناعي. الاهتزاز الصوتي ينم عن احتكاك دوراني.", "English": "Inspect alternator bearings, fuel injection pump timing, and engine mounting dampeners for mechanical misalignment.", "Русский": "Проверьте подшипники генератора, топливный насос высокого давления и виброопоры."}
+            recs = {"العربية": "موتور وحوض الغسالة يعملان بنسق طبيعي.", "English": "Washing machine operating normally.", "Русский": "Стиральная машина работает нормально."}
         else:
-            zones = {"العربية": "سليمة (طبيعية)", "English": "None (Normal Operation)", "Русский": "Норма"}
-            recs = {"العربية": "المحرك الصناعي يعمل بنسق استقرار ممتاز وتوازن ترددي طبيعي.", "English": "Industrial engine operating within healthy acoustic and vibration stability parameters.", "Русский": "Промышленный двигатель работает в пределах нормы."}
-
+            img_url = "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80"
+            title = "⚙️ Live Industrial Engine Scan"
+            if is_defect:
+                zones = {"العربية": "رولمان بلي المولد / مضخة الحقن / القواعد", "English": "Alternator Bearing / Fuel Pump / Mountings", "Русский": "Подшипники генератора / Топливный насос"}
+                recs = {"العربية": "يرجى فحص رولمان بلي الدينامو ومضخة حقن الوقود وقواعد تثبيت المحرك.", "English": "Inspect alternator bearings and fuel injection pump.", "Русский": "Проверьте подшипники генератора и топливный насос."}
+            else:
+                zones = {"العربية": "سليمة (طبيعية)", "English": "None (Normal Operation)", "Русский": "Норма"}
+                recs = {"العربية": "المحرك الصناعي يعمل بنسق استقرار ممتاز.", "English": "Industrial engine operating normally.", "Русский": "Двигатель работает нормально."}
     return zones[lang], recs[lang], img_url, title
 
-# --- 7. Diagnostic Execution & Output ---
+# --- 7. Processing ---
 if audio_bytes is not None:
     st.audio(audio_bytes)
-    
     with st.spinner(T['analyzing']):
         clean_signal, sr = load_audio_signal(audio_bytes)
         clean_signal = apply_noise_filter(clean_signal, sr)
-        clean_signal = clean_signal / (np.max(np.abs(clean_signal)) + 1e-6)
+        max_val = np.max(np.abs(clean_signal))
+        if max_val > 0:
+            clean_signal = clean_signal / max_val
         
-        energy = np.mean(clean_signal**2)
-        zcr = np.mean(np.diff(np.signbit(clean_signal)) != 0)
+        energy = float(np.mean(clean_signal**2))
+        zcr = float(np.mean(np.diff(np.signbit(clean_signal)) != 0))
         fft_spectrum = np.abs(np.fft.rfft(clean_signal[:2048]))
-        spectral_centroid = np.sum(fft_spectrum * np.arange(len(fft_spectrum))) / (np.sum(fft_spectrum) + 1e-6)
+        spectral_centroid = float(np.sum(fft_spectrum * np.arange(len(fft_spectrum))) / (np.sum(fft_spectrum) + 1e-6))
         
         raw_score = float((energy * 800) + (zcr * 40) + (spectral_centroid / 120))
         anomaly_score = round(float(np.clip(raw_score * 7.821, 14.120, 96.850)), 3)
         
-        # Fetch Category-Specific Diagnostic Info
         fault_zone, rec_text, visual_img_url, scan_title = get_category_diagnostic(machine_type, anomaly_score, lang_choice)
         
         st.divider()
         
         col_res1, col_res2 = st.columns(2)
-        
         with col_res1:
             st.metric(label=T['score_label'], value=f"{anomaly_score:.3f}%")
-            
         with col_res2:
             if anomaly_score > 60.0:
                 st.error(T['defect_title'])
@@ -369,41 +334,47 @@ if audio_bytes is not None:
                 st.success(T['normal_title'])
                 st.caption(f"{T['normal_cap']} {make} {model}.")
 
-        # --- Detailed Category Diagnostic Report ---
         st.markdown(f"### {T['report_title']}")
-        
         severity_str = T['high_sev'] if anomaly_score > 70 else (T['mod_sev'] if anomaly_score > 50 else T['low_sev'])
+        status_color = '#EF4444' if anomaly_score > 60 else '#10B981'
         
         st.markdown(f"""
-            <div class="report-card">
-                <h4 style="color: #FF6B00; margin-top:0;">{T['summary_header']}</h4>
-                <ul>
-                    <li><strong>{T['target_machinery']}</strong> {make} {model} ({year})</li>
-                    <li><strong>{T['engine_type']}</strong> {engine_spec}</li>
-                    <li><strong>{T['status_label']}</strong> <span style="color:{'#EF4444' if anomaly_score > 60 else '#10B981'}; font-weight:bold;">{severity_str}</span></li>
-                    <li><strong>{T['anomaly_zone']}</strong> {fault_zone}</li>
-                    <li><strong>Spectral Centroid Frequency:</strong> {spectral_centroid:.2f} Hz</li>
-                    <li><strong>Signal Energy Density:</strong> {energy:.6f} RMS</li>
-                </ul>
-                <h4 style="color: #10B981; margin-top:15px;">{T['rec_header']}</h4>
-                <p style="color:#CBD5E1; font-size:14px;">
-                    {rec_text}
-                </p>
-            </div>
+        <div class="report-card">
+            <h4 style="color: #FF6B00; margin-top:0;">{T['summary_header']}</h4>
+            <ul>
+                <li><strong>{T['target_machinery']}</strong> {make} {model} ({year})</li>
+                <li><strong>{T['engine_type']}</strong> {engine_spec}</li>
+                <li><strong>{T['status_label']}</strong> <span style="color:{status_color}; font-weight:bold;">{severity_str}</span></li>
+                <li><strong>{T['anomaly_zone']}</strong> {fault_zone}</li>
+                <li><strong>Spectral Centroid Frequency:</strong> {spectral_centroid:.2f} Hz</li>
+                <li><strong>Signal Energy Density:</strong> {energy:.6f} RMS</li>
+            </ul>
+            <h4 style="color: #10B981; margin-top:15px;">{T['rec_header']}</h4>
+            <p style="color:#CBD5E1; font-size:14px;">{rec_text}</p>
+        </div>
         """, unsafe_allow_html=True)
 
-        # --- Category-Specific Visual Inspection Scanner ---
         st.markdown(f"### {scan_title}")
-        
         laser_color = "#EF4444" if anomaly_score > 60 else "#10B981"
         
-        html_scanner = f"""
-        <div style="position: relative; width: 100%; height: 280px; border-radius: 14px; overflow: hidden; border: 2px solid #FF6B00; box-shadow: 0 0 20px rgba(255,107,0,0.3);">
-            <!-- High-Res Category Machine Image -->
-            <img src="{visual_img_url}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.75) contrast(1.1);" />
-            
-            <!-- Animated AI Laser Beam Overlay -->
-            <div class="laser-beam"></div>
-            
-            <!-- Scanning Watermark Badge -->
-            <div style="position: absolute; top:
+        html_scanner = """
+        <div style="position: relative; width: 100%; height: 280px; border-radius: 14px; overflow: hidden; border: 2px solid #FF6B00;">
+            <img src="{IMG_URL}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.75);" />
+            <div style="position: absolute; left: 0; width: 100%; height: 4px; background: {LASER_COLOR}; box-shadow: 0 0 15px 5px {LASER_COLOR}; animation: laserScan 2.5s infinite ease-in-out;"></div>
+            <div style="position: absolute; top: 12px; left: 12px; background: rgba(20,27,24,0.85); border: 1px solid {LASER_COLOR}; padding: 6px 14px; border-radius: 8px; color: {LASER_COLOR}; font-size: 12px; font-weight: bold;">
+                ● AI ACOUSTIC SCANNER ACTIVE | {MAKE}
+            </div>
+        </div>
+        <style>
+        @keyframes laserScan {{
+            0% {{ top: 0%; opacity: 0.8; }}
+            50% {{ top: 92%; opacity: 1; }}
+            100% {{ top: 0%; opacity: 0.8; }}
+        }}
+        </style>
+        """.replace("{IMG_URL}", visual_img_url).replace("{LASER_COLOR}", laser_color).replace("{MAKE}", make.upper())
+        
+        components.html(html_scanner, height=300)
+
+        st.markdown(f"### {T['waveform_title']}")
+        st.line_chart(clean_signal[::150])
