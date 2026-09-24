@@ -2,7 +2,6 @@ import io
 import numpy as np
 from scipy.io import wavfile
 from scipy.signal import butter, filtfilt
-from sklearn.ensemble import IsolationForest
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -13,7 +12,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# Custom Sage-Carbon Metallic Styling
+# Custom Sage-Carbon Metallic Industrial Styling
 st.markdown("""
     <style>
     /* Dark Sage Metallic Background */
@@ -60,7 +59,7 @@ st.markdown("""
         text-transform: uppercase;
     }
     
-    /* Metrics customization */
+    /* Metrics Customization */
     [data-testid="stMetricValue"] {
         color: #10B981 !important;
         font-size: 38px !important;
@@ -78,7 +77,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- 2. Branding Header & Visual Emblem ---
+# --- 2. Branding Header & Visual Pajero 98 Emblem ---
 st.markdown("""
     <div class="brand-card">
         <div class="emblem-container">
@@ -122,12 +121,20 @@ if "Automobile" in machine_type:
                 "Other Brand"
             ]
         )
-        model = st.text_input("Vehicle Model:", "Pajero / Golf / Octavia / Civic / Elantra")
+        model = st.text_input("Vehicle Model:", "Santa Fe")
     with col2:
-        year = st.text_input("Production Year:", "2020")
+        year = st.text_input("Production Year:", "2017")
         engine_spec = st.selectbox(
             "Engine Specification:",
-            ["4-Cylinder Inline", "1.6L MPI / GDI", "2.0L TSI / TFSI", "TDI Diesel", "V6 3.5L Engine", "Other"]
+            [
+                "2.0L CRDi Turbo Diesel",
+                "1.6L CRDi / TDI Diesel",
+                "2.0L TSI / TFSI Turbo",
+                "1.6L GDI / MPI Gasoline",
+                "V6 3.5L Engine",
+                "4-Cylinder Inline",
+                "Other Engine Specification"
+            ]
         )
 else:
     col1, col2 = st.columns(2)
@@ -204,10 +211,10 @@ if audio_bytes is not None:
             with col_res2:
                 if anomaly_score > 60.0:
                     st.error("⚠️ MECHANICAL DEFECT DETECTED")
-                    st.caption(f"Acoustic deviation identified for {make} {model}. Friction / Knocking detected.")
+                    st.caption(f"Acoustic deviation identified for {make} {model} ({engine_spec}). Friction / Knocking detected.")
                 else:
                     st.success("✅ OPTIMAL SYSTEM OPERATION")
-                    st.caption(f"{make} {model} operating within healthy acoustic parameters.")
+                    st.caption(f"{make} {model} ({engine_spec}) operating within healthy acoustic parameters.")
 
             # --- 7. Interactive 3D Mesh & Waveform Visualizer ---
             st.markdown("### 🧊 Interactive 3D Engine Diagnostics View")
