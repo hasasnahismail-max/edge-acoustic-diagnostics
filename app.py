@@ -11,8 +11,17 @@ st.set_page_config(
     layout="centered"
 )
 
+# Custom Sage-Carbon Metallic Styling & Complete Tooltip Eraser
 st.markdown("""
     <style>
+    /* Absolute Elimination of Mobile Tooltip Boxes */
+    #vg-tooltip-element, .vg-tooltip, .vega-bind, .vega-actions, div[class*="tooltip"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    
     .stApp {
         background-color: #141B18;
         color: #E2E8F0;
@@ -147,14 +156,13 @@ else:
     if uploaded_file:
         audio_bytes = uploaded_file.read()
 
-# --- Robust Multi-Format Audio Loader (MP3, WAV, M4A) ---
+# --- Audio Processor ---
 def load_audio_signal(audio_bytes):
     try:
         import librosa
         signal, sr = librosa.load(io.BytesIO(audio_bytes), sr=22050)
         return signal, sr
     except Exception:
-        # Fallback NumPy Signal Synthesizer
         from scipy.io import wavfile
         try:
             sr, signal = wavfile.read(io.BytesIO(audio_bytes))
@@ -232,57 +240,104 @@ if audio_bytes is not None:
             </div>
         """, unsafe_allow_html=True)
 
-        # --- Interactive 3D Vehicle Engine Mesh View ---
-        st.markdown("### 🧊 Interactive 3D Vehicle Model View")
+        # --- Interactive 3D Full SUV Vehicle Inspection Mesh ---
+        st.markdown("### 🧊 Interactive 3D Vehicle Inspection & Laser Scan")
         
-        mesh_color = "0xEF4444" if anomaly_score > 60 else "0x10B981"
+        color_hex = "0xEF4444" if anomaly_score > 60 else "0x10B981"
+        laser_hex = "0xFF6B00" if anomaly_score > 60 else "0x10B981"
         
         html_3d = f"""
-        <div id="canvas-container" style="width:100%; height:280px; background:#0E1412; border-radius:12px; border:2px solid #FF6B00; display:flex; justify-content:center; align-items:center;">
+        <div id="canvas-container" style="width:100%; height:320px; background:#0E1412; border-radius:14px; border:2px solid #FF6B00; display:flex; justify-content:center; align-items:center;">
             <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
             <script>
                 const container = document.getElementById('canvas-container');
                 const scene = new THREE.Scene();
-                const camera = new THREE.PerspectiveCamera(75, container.clientWidth / 280, 0.1, 1000);
+                const camera = new THREE.PerspectiveCamera(60, container.clientWidth / 320, 0.1, 1000);
                 const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
-                renderer.setSize(container.clientWidth, 280);
+                renderer.setSize(container.clientWidth, 320);
                 container.appendChild(renderer.domElement);
 
-                // Car Body Geometry
-                const bodyGroup = new THREE.Group();
+                const carGroup = new THREE.Group();
+
+                // Material Setup
+                const wireMat = new THREE.MeshPhongMaterial({{ color: {color_hex}, wireframe: true, transparent: true, opacity: 0.85 }});
+                const wheelMat = new THREE.MeshPhongMaterial({{ color: 0xFF6B00, wireframe: true }});
+                const engineMat = new THREE.MeshPhongMaterial({{ color: 0xEF4444, wireframe: false }});
+
+                // 1. Lower Body Chassis (SUV Style)
+                const bodyGeo = new THREE.BoxGeometry(3.2, 0.7, 1.5);
+                const bodyMesh = new THREE.Mesh(bodyGeo, wireMat);
+                bodyMesh.position.set(0, 0.2, 0);
+                carGroup.add(bodyMesh);
+
+                // 2. SUV Upper Cabin
+                const cabinGeo = new THREE.BoxGeometry(1.8, 0.7, 1.35);
+                const cabinMesh = new THREE.Mesh(cabinGeo, wireMat);
+                cabinMesh.position.set(-0.3, 0.85, 0);
+                carGroup.add(cabinMesh);
+
+                // 3. Engine Block (Under Hood)
+                const engineGeo = new THREE.BoxGeometry(0.7, 0.4, 0.8);
+                const engineMesh = new THREE.Mesh(engineGeo, engineMat);
+                engineMesh.position.set(0.9, 0.35, 0);
+                carGroup.add(engineMesh);
+
+                // 4. Wheels (4x4 SUV Wheels)
+                const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 12);
+                const wheelPositions = [
+                    [1.0, -0.25, 0.8], [1.0, -0.25, -0.8],
+                    [-1.0, -0.25, 0.8], [-1.0, -0.25, -0.8]
+                ];
                 
-                const bodyGeo = new THREE.BoxGeometry(2.4, 0.7, 1.2);
-                const bodyMat = new THREE.MeshPhongMaterial({{ color: {mesh_color}, wireframe: true }});
-                const bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
-                bodyGroup.add(bodyMesh);
+                wheelPositions.forEach(pos => {{
+                    const wheel = new THREE.Mesh(wheelGeo, wheelMat);
+                    wheel.rotation.x = Math.PI / 2;
+                    wheel.position.set(pos[0], pos[1], pos[2]);
+                    carGroup.add(wheel);
+                }});
 
-                const cabinGeo = new THREE.BoxGeometry(1.2, 0.5, 1.0);
-                const cabinMesh = new THREE.Mesh(cabinGeo, bodyMat);
-                cabinMesh.position.set(-0.2, 0.5, 0);
-                bodyGroup.add(cabinMesh);
+                // 5. Diagnostic Laser Scan Plane
+                const laserGeo = new THREE.PlaneGeometry(0.1, 2.2);
+                const laserMat = new THREE.MeshBasicMaterial({{ color: {laser_hex}, side: THREE.DoubleSide, transparent: true, opacity: 0.7 }});
+                const laserPlane = new THREE.Mesh(laserGeo, laserMat);
+                laserPlane.rotation.x = Math.PI / 2;
+                laserPlane.position.set(0, 0.3, 0);
+                carGroup.add(laserPlane);
 
-                scene.add(bodyGroup);
+                scene.add(carGroup);
 
-                const light = new THREE.PointLight(0xFF6B00, 2, 100);
-                light.position.set(10, 10, 10);
-                scene.add(light);
-                
-                const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-                scene.add(ambientLight);
+                // Lighting
+                const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+                dirLight.position.set(5, 10, 7);
+                scene.add(dirLight);
 
-                camera.position.set(0, 1.5, 3);
-                camera.lookAt(0, 0, 0);
+                const pointLight = new THREE.PointLight({laser_hex}, 2, 50);
+                pointLight.position.set(0, 2, 2);
+                scene.add(pointLight);
 
+                camera.position.set(3.2, 2.2, 3.5);
+                camera.lookAt(0, 0.3, 0);
+
+                let scanDirection = 0.03;
                 function animate() {{
                     requestAnimationFrame(animate);
-                    bodyGroup.rotation.y += 0.015;
+                    
+                    // Rotate SUV Model
+                    carGroup.rotation.y += 0.012;
+
+                    // Move Laser Scan Back and Forth Over Engine & Chassis
+                    laserPlane.position.x += scanDirection;
+                    if (laserPlane.position.x > 1.6 || laserPlane.position.x < -1.6) {{
+                        scanDirection *= -1;
+                    }}
+
                     renderer.render(scene, camera);
                 }}
                 animate();
             </script>
         </div>
         """
-        components.html(html_3d, height=300)
+        components.html(html_3d, height=340)
 
         # Waveform Visualization
         st.markdown("### 📈 Filtered Acoustic Waveform")
