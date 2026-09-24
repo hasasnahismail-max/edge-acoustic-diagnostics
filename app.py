@@ -4,19 +4,17 @@ from scipy.signal import butter, filtfilt
 import streamlit as st
 import streamlit.components.v1 as components
 
-# --- 1. Page Config ---
 st.set_page_config(
     page_title="ZINO EADE - AI Acoustic Diagnostic Engine",
     page_icon="⚙️",
     layout="centered"
 )
 
-# --- 2. Multi-Language & Multi-Domain Dictionary ---
 LANG_DICT = {
     "العربية": {
         "title": "ZINO EADE",
         "designer": "محرك الذكاء الاصطناعي للتشخيص الصوتي المتقدم | تطوير: إسماعيل حساسنة",
-        "select_domain": "🎛️ اختر قطاع التشخيص المتخصص (Specialized Diagnostic Domain):",
+        "select_domain": "🎛️ اختر قطاع التشخيص المتخصص:",
         "step2": "🎧 الخطوة 2: إدخال البصمة الصوتية للمعدة",
         "source": "اختر طريقة تزويد الصوت:",
         "mic": "🎙️ تسجيل مباشر عبر المايك",
@@ -78,11 +76,9 @@ LANG_DICT = {
     }
 }
 
-# Top Control Bar: Language Selection
 lang_choice = st.selectbox("🌐 Choose Language / اختر اللغة / Выберите язык:", ["العربية", "English", "Русский"])
 T = LANG_DICT[lang_choice]
 
-# Domain Selector
 domain_choice = st.selectbox(
     T['select_domain'],
     [
@@ -93,91 +89,46 @@ domain_choice = st.selectbox(
     ]
 )
 
-# Dynamic Theme & Branding Configuration based on Domain
 if "Automotive" in domain_choice:
     primary_color = "#FF6B00"
-    bg_gradient = "linear-gradient(135deg, #1A1816 0%, #261D18 100%)"
     domain_badge = "AUTOMOTIVE DIESEL & GASOLINE ENGINE LAB"
     domain_icon = "🚘"
 elif "Refrigeration" in domain_choice:
     primary_color = "#06B6D4"
-    bg_gradient = "linear-gradient(135deg, #142226 0%, #182C33 100%)"
     domain_badge = "COMMERCIAL REFRIGERATION & FREEZER LAB"
     domain_icon = "🧊"
 elif "Appliances" in domain_choice:
     primary_color = "#8B5CF6"
-    bg_gradient = "linear-gradient(135deg, #1F192E 0%, #28203D 100%)"
     domain_badge = "HOME APPLIANCES & MOTOR LAB"
     domain_icon = "🧺"
 else:
     primary_color = "#F59E0B"
-    bg_gradient = "linear-gradient(135deg, #241E14 0%, #302718 100%)"
     domain_badge = "HEAVY INDUSTRIAL MACHINERY LAB"
     domain_icon = "⚙️"
 
-# Apply Custom Dynamic CSS Template
-st.markdown(f'''
-    <style>
-    #vg-tooltip-element, .vg-tooltip, .vega-bind, .vega-actions, div[class*="tooltip"] {{
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-    }}
-    .stApp {{
-        background-color: #0E1210;
-        color: #E2E8F0;
-        font-family: 'Inter', system-ui, sans-serif;
-    }}
-    .brand-card {{
-        background: {bg_gradient};
-        border: 2px solid {primary_color};
-        border-radius: 16px;
-        padding: 24px;
-        text-align: center;
-        box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.4);
-        margin-bottom: 25px;
-    }}
-    .brand-title {{
-        color: {primary_color};
-        font-size: 34px;
-        font-weight: 900;
-        margin: 0;
-        text-transform: uppercase;
-    }}
-    .designer-tag {{
-        color: #94A3B8;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        margin-top: 5px;
-    }}
-    .report-card {{
-        background-color: #141C18;
-        border: 1px solid #22332B;
-        border-radius: 12px;
-        padding: 20px;
-        margin-top: 15px;
-        margin-bottom: 20px;
-    }}
-    [data-testid="stMetricValue"] {{
-        color: {primary_color} !important;
-        font-size: 36px !important;
-        font-weight: 800 !important;
-    }}
-    </style>
-''', unsafe_allow_html=True)
+st.markdown(
+    "<style>"
+    "#vg-tooltip-element, .vg-tooltip, .vega-bind, .vega-actions, div[class*='tooltip'] { display: none !important; }"
+    ".stApp { background-color: #0E1210; color: #E2E8F0; font-family: 'Inter', sans-serif; }"
+    ".brand-card { background: #141C18; border: 2px solid " + primary_color + "; border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 25px; }"
+    ".brand-title { color: " + primary_color + "; font-size: 32px; font-weight: 950; margin: 0; text-transform: uppercase; }"
+    ".designer-tag { color: #94A3B8; font-size: 12px; font-weight: 700; margin-top: 5px; }"
+    ".report-card { background-color: #141C18; border: 1px solid #22332B; border-radius: 12px; padding: 20px; margin-top: 15px; margin-bottom: 20px; }"
+    "[data-testid='stMetricValue'] { color: " + primary_color + " !important; font-size: 36px !important; font-weight: 800 !important; }"
+    "</style>",
+    unsafe_allow_html=True
+)
 
-# Domain Header Rendering
-st.markdown(f'''
-    <div class="brand-card">
-        <h1 class="brand-title">{domain_icon} {T['title']}</h1>
-        <div style="color: {primary_color}; font-weight: 800; font-size: 14px; margin-top: 6px;">{domain_badge}</div>
-        <div class="designer-tag">{T['designer']}</div>
-    </div>
-''', unsafe_allow_html=True)
+st.markdown(
+    '<div class="brand-card">'
+    '<h1 class="brand-title">' + domain_icon + " " + T['title'] + '</h1>'
+    '<div style="color: ' + primary_color + '; font-weight: 800; font-size: 14px; margin-top: 6px;">' + domain_badge + '</div>'
+    '<div class="designer-tag">' + T['designer'] + '</div>'
+    '</div>',
+    unsafe_allow_html=True
+)
 
-# Specialized Domain Input Schemas (Isolated Templates)
-st.markdown(f"### 📋 Step 1: Specialized Technical Parameters")
+st.markdown("### 📋 Step 1: Specialized Technical Parameters")
 
 make, model, year, engine_spec = "", "", "", ""
 
@@ -219,8 +170,7 @@ else:
 
 st.divider()
 
-# Step 2: Audio Ingestion
-st.markdown(f"### {T['step2']}")
+st.markdown("### " + T['step2'])
 
 input_method = st.radio(T['source'], [T['mic'], T['upload']], horizontal=True)
 
@@ -321,7 +271,7 @@ def get_domain_expert_diagnosis(domain, score, lang):
             rec = {"العربية": "تم رصد احتكاك دقيق في بلي الحوض أو عدم توازن في دوران المحرك.", "English": "Micro-friction detected in drum bearings or slight motor rotational imbalance.", "Русский": "Обнаружено микротрение в подшипниках барабана."}
         else:
             zone = {"العربية": "لا توجد أي أعطال (الغسالة سليم 100%)", "English": "None (Appliance 100% Healthy)", "Русский": "Нет (Устройство исправно на 100%)"}
-            rec = {"العربية": "الموتور والحوض يعملان بكفاءة تامة ودون أي أصوات احتكاك في رومان البلي.", "English": "Motor and drum assembly operating in pristine condition without bearing friction.", "Русский": "Двигатель و барабан работают в идеальном состоянии."}
+            rec = {"العربية": "الموتور والحوض يعملان بكفاءة تامة ودون أي أصوات احتكاك في رومان البلي.", "English": "Motor and drum assembly operating in pristine condition without bearing friction.", "Русский": "Двигатель и барабан работают в идеальном состоянии."}
 
     else:
         img_url = "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80"
@@ -351,45 +301,51 @@ if audio_bytes is not None:
         
         col_res1, col_res2 = st.columns(2)
         with col_res1:
-            st.metric(label=T['score_label'], value=f"{anomaly_score:.3f}%")
+            st.metric(label=T['score_label'], value=str(anomaly_score) + "%")
         with col_res2:
             if is_fault:
                 st.error(T['defect_title'])
-                st.caption(f"Deviation detected for {make} {model}.")
+                st.caption("Deviation detected for " + make + " " + model + ".")
             else:
                 st.success(T['normal_title'])
-                st.caption(f"System operating perfectly for {make} {model}.")
+                st.caption("System operating perfectly for " + make + " " + model + ".")
 
-        st.markdown(f"### {T['report_title']}")
+        st.markdown("### " + T['report_title'])
         status_color = '#EF4444' if is_fault else '#10B981'
         status_text = "Critical / Deviation Requires Inspection" if is_fault else "Optimal / 100% Healthy"
         
-        st.markdown(f'''
-        <div class="report-card">
-            <h4 style="color: {primary_color}; margin-top:0;">{T["summary_header"]}</h4>
-            <ul>
-                <li><strong>Target Unit:</strong> {make} {model} ({year})</li>
-                <li><strong>Specification:</strong> {engine_spec}</li>
-                <li><strong>{T["status_label"]}</strong> <span style="color:{status_color}; font-weight:bold;">{status_text}</span></li>
-                <li><strong>{T["anomaly_zone"]}</strong> {fault_zone}</li>
-                <li><strong>Spectral Centroid Frequency:</strong> {spectral_centroid:.2f} Hz</li>
-                <li><strong>Signal Energy Density:</strong> {energy:.6f} RMS</li>
-            </ul>
-            <h4 style="color: #10B981; margin-top:15px;">{T["rec_header"]}</h4>
-            <p style="color:#CBD5E1; font-size:14px;">{rec_text}</p>
-        </div>
-        ''', unsafe_allow_html=True)
+        report_html = (
+            '<div class="report-card">'
+            '<h4 style="color: ' + primary_color + '; margin-top:0;">' + T["summary_header"] + '</h4>'
+            '<ul>'
+            '<li><strong>Target Unit:</strong> ' + make + ' ' + model + ' (' + year + ')</li>'
+            '<li><strong>Specification:</strong> ' + engine_spec + '</li>'
+            '<li><strong>' + T["status_label"] + '</strong> <span style="color:' + status_color + '; font-weight:bold;">' + status_text + '</span></li>'
+            '<li><strong>' + T["anomaly_zone"] + '</strong> ' + fault_zone + '</li>'
+            '<li><strong>Spectral Centroid Frequency:</strong> ' + str(round(spectral_centroid, 2)) + ' Hz</li>'
+            '<li><strong>Signal Energy Density:</strong> ' + str(round(energy, 6)) + ' RMS</li>'
+            '</ul>'
+            '<h4 style="color: #10B981; margin-top:15px;">' + T["rec_header"] + '</h4>'
+            '<p style="color:#CBD5E1; font-size:14px;">' + rec_text + '</p>'
+            '</div>'
+        )
+        st.markdown(report_html, unsafe_allow_html=True)
 
-        st.markdown(f"### {scan_title}")
+        st.markdown("### " + scan_title)
         laser_color = '#EF4444' if is_fault else '#10B981'
         
         scanner_html = (
-            f'<div style="position: relative; width: 100%; height: 280px; border-radius: 14px; overflow: hidden; border: 2px solid {primary_color};">'
-            f'<img src="{visual_img_url}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.75);" />'
-            f'<div style="position: absolute; left: 0; width: 100%; height: 4px; background: {laser_color}; box-shadow: 0 0 15px 5px {laser_color}; animation: laserScan 2.5s infinite ease-in-out;"></div>'
-            f'<div style="position: absolute; top: 12px; left: 12px; background: rgba(20,27,24,0.85); border: 1px solid {laser_color}; padding: 6px 14px; border-radius: 8px; color: {laser_color}; font-size: 12px; font-weight: bold;">'
-            f'● MICRO-SCANNER ACTIVE | {make.upper()}'
-            f'</div></div>'
-            f'<style>'
-            f'@keyframes laserScan {{ 0% {{ top: 0%; opacity: 0.8; }} 50% {{ top: 92%; opacity: 1; }} 100% {{ top: 0%; opacity: 0.8; }} }}'
-            f'</st
+            '<div style="position: relative; width: 100%; height: 280px; border-radius: 14px; overflow: hidden; border: 2px solid ' + primary_color + ';">'
+            '<img src="' + visual_img_url + '" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.75);" />'
+            '<div style="position: absolute; left: 0; width: 100%; height: 4px; background: ' + laser_color + '; box-shadow: 0 0 15px 5px ' + laser_color + '; animation: laserScan 2.5s infinite ease-in-out;"></div>'
+            '<div style="position: absolute; top: 12px; left: 12px; background: rgba(20,27,24,0.85); border: 1px solid ' + laser_color + '; padding: 6px 14px; border-radius: 8px; color: ' + laser_color + '; font-size: 12px; font-weight: bold;">'
+            '● MICRO-SCANNER ACTIVE | ' + make.upper() +
+            '</div></div>'
+            '<style>'
+            '@keyframes laserScan { 0% { top: 0%; opacity: 0.8; } 50% { top: 92%; opacity: 1; } 100% { top: 0%; opacity: 0.8; } }'
+            '</style>'
+        )
+        components.html(scanner_html, height=300)
+
+        st.markdown("### " + T['waveform_title'])
+        st.line_chart(clean_signal[::150])
