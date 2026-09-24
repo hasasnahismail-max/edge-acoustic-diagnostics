@@ -118,7 +118,7 @@ lang_choice = st.selectbox("🌐 Choose Language / اختر اللغة / Выб�
 T = LANG_DICT[lang_choice]
 
 # --- 3. Custom CSS ---
-st.markdown("""
+st.markdown('''
 <style>
 #vg-tooltip-element, .vg-tooltip, .vega-bind, .vega-actions, div[class*="tooltip"] {
     display: none !important;
@@ -164,15 +164,15 @@ st.markdown("""
     font-weight: 800 !important;
 }
 </style>
-""", unsafe_allow_html=True)
+''', unsafe_allow_html=True)
 
 # --- 4. Branding Header ---
-st.markdown(f"""
+st.markdown(f'''
 <div class="brand-card">
-    <h1 class="brand-title">⚙️ {T['title']}</h1>
-    <div class="designer-tag">{T['designer']}</div>
+    <h1 class="brand-title">⚙️ {T["title"]}</h1>
+    <div class="designer-tag">{T["designer"]}</div>
 </div>
-""", unsafe_allow_html=True)
+''', unsafe_allow_html=True)
 
 # --- 5. Step 1: Equipment Selection ---
 st.markdown(f"### {T['step1']}")
@@ -290,15 +290,15 @@ def get_category_diagnostic(m_type, score, lang):
         else:
             zones = {"العربية": "سليمة (طبيعية)", "English": "None (Normal Operation)", "Русский": "Норма"}
             recs = {"العربية": "موتور وحوض الغسالة يعملان بنسق طبيعي.", "English": "Washing machine operating normally.", "Русский": "Стиральная машина работает нормально."}
+    else:
+        img_url = "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80"
+        title = "⚙️ Live Industrial Engine Scan"
+        if is_defect:
+            zones = {"العربية": "رولمان بلي المولد / مضخة الحقن / القواعد", "English": "Alternator Bearing / Fuel Pump / Mountings", "Русский": "Подшипники генератора / Топливный насос"}
+            recs = {"العربية": "يرجى فحص رولمان بلي الدينامو ومضخة حقن الوقود وقواعد تثبيت المحرك.", "English": "Inspect alternator bearings and fuel injection pump.", "Русский": "Проверьте подшипники генератора и топливный насос."}
         else:
-            img_url = "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80"
-            title = "⚙️ Live Industrial Engine Scan"
-            if is_defect:
-                zones = {"العربية": "رولمان بلي المولد / مضخة الحقن / القواعد", "English": "Alternator Bearing / Fuel Pump / Mountings", "Русский": "Подшипники генератора / Топливный насос"}
-                recs = {"العربية": "يرجى فحص رولمان بلي الدينامو ومضخة حقن الوقود وقواعد تثبيت المحرك.", "English": "Inspect alternator bearings and fuel injection pump.", "Русский": "Проверьте подшипники генератора и топливный насос."}
-            else:
-                zones = {"العربية": "سليمة (طبيعية)", "English": "None (Normal Operation)", "Русский": "Норма"}
-                recs = {"العربية": "المحرك الصناعي يعمل بنسق استقرار ممتاز.", "English": "Industrial engine operating normally.", "Русский": "Двигатель работает нормально."}
+            zones = {"العربية": "سليمة (طبيعية)", "English": "None (Normal Operation)", "Русский": "Норма"}
+            recs = {"العربية": "المحرك الصناعي يعمل بنسق استقرار ممتاز.", "English": "Industrial engine operating normally.", "Русский": "Двигатель работает нормально."}
     return zones[lang], recs[lang], img_url, title
 
 # --- 7. Processing ---
@@ -338,31 +338,31 @@ if audio_bytes is not None:
         severity_str = T['high_sev'] if anomaly_score > 70 else (T['mod_sev'] if anomaly_score > 50 else T['low_sev'])
         status_color = '#EF4444' if anomaly_score > 60 else '#10B981'
         
-        st.markdown(f"""
+        st.markdown(f'''
         <div class="report-card">
-            <h4 style="color: #FF6B00; margin-top:0;">{T['summary_header']}</h4>
+            <h4 style="color: #FF6B00; margin-top:0;">{T["summary_header"]}</h4>
             <ul>
-                <li><strong>{T['target_machinery']}</strong> {make} {model} ({year})</li>
-                <li><strong>{T['engine_type']}</strong> {engine_spec}</li>
-                <li><strong>{T['status_label']}</strong> <span style="color:{status_color}; font-weight:bold;">{severity_str}</span></li>
-                <li><strong>{T['anomaly_zone']}</strong> {fault_zone}</li>
+                <li><strong>{T["target_machinery"]}</strong> {make} {model} ({year})</li>
+                <li><strong>{T["engine_type"]}</strong> {engine_spec}</li>
+                <li><strong>{T["status_label"]}</strong> <span style="color:{status_color}; font-weight:bold;">{severity_str}</span></li>
+                <li><strong>{T["anomaly_zone"]}</strong> {fault_zone}</li>
                 <li><strong>Spectral Centroid Frequency:</strong> {spectral_centroid:.2f} Hz</li>
                 <li><strong>Signal Energy Density:</strong> {energy:.6f} RMS</li>
             </ul>
-            <h4 style="color: #10B981; margin-top:15px;">{T['rec_header']}</h4>
+            <h4 style="color: #10B981; margin-top:15px;">{T["rec_header"]}</h4>
             <p style="color:#CBD5E1; font-size:14px;">{rec_text}</p>
         </div>
-        """, unsafe_allow_html=True)
+        ''', unsafe_allow_html=True)
 
         st.markdown(f"### {scan_title}")
         laser_color = "#EF4444" if anomaly_score > 60 else "#10B981"
         
-        html_scanner = """
+        scanner_html = f'''
         <div style="position: relative; width: 100%; height: 280px; border-radius: 14px; overflow: hidden; border: 2px solid #FF6B00;">
-            <img src="{IMG_URL}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.75);" />
-            <div style="position: absolute; left: 0; width: 100%; height: 4px; background: {LASER_COLOR}; box-shadow: 0 0 15px 5px {LASER_COLOR}; animation: laserScan 2.5s infinite ease-in-out;"></div>
-            <div style="position: absolute; top: 12px; left: 12px; background: rgba(20,27,24,0.85); border: 1px solid {LASER_COLOR}; padding: 6px 14px; border-radius: 8px; color: {LASER_COLOR}; font-size: 12px; font-weight: bold;">
-                ● AI ACOUSTIC SCANNER ACTIVE | {MAKE}
+            <img src="{visual_img_url}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.75);" />
+            <div style="position: absolute; left: 0; width: 100%; height: 4px; background: {laser_color}; box-shadow: 0 0 15px 5px {laser_color}; animation: laserScan 2.5s infinite ease-in-out;"></div>
+            <div style="position: absolute; top: 12px; left: 12px; background: rgba(20,27,24,0.85); border: 1px solid {laser_color}; padding: 6px 14px; border-radius: 8px; color: {laser_color}; font-size: 12px; font-weight: bold;">
+                ● AI ACOUSTIC SCANNER ACTIVE | {make.upper()}
             </div>
         </div>
         <style>
@@ -372,9 +372,8 @@ if audio_bytes is not None:
             100% {{ top: 0%; opacity: 0.8; }}
         }}
         </style>
-        """.replace("{IMG_URL}", visual_img_url).replace("{LASER_COLOR}", laser_color).replace("{MAKE}", make.upper())
-        
-        components.html(html_scanner, height=300)
+        '''
+        components.html(scanner_html, height=300)
 
         st.markdown(f"### {T['waveform_title']}")
         st.line_chart(clean_signal[::150])
