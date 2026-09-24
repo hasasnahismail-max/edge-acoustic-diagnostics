@@ -256,12 +256,17 @@ def parse_universal_audio_signal(raw_bytes):
         signal = np.pad(centered_samples, (0, max(0, target_length - len(centered_samples))), mode='wrap')
     return signal.astype(np.float32), 22050.0
 
-def apply_noise_filter(signal, sample_rate):
+def safe_butter_filter(signal, sample_rate):
     nyquist = 0.5 * sample_rate
-    low = max(20.0, 80.0 / nyquist)
-    high = min(0.99, 4500.0 / nyquist)
-    b, a = butter(2, [low, high], btype='band')
-    return filtfilt(b, a, signal)
+    if nyquist <= 100:
+        return signal
+    low = max(0.01, min(80.0 / nyquist, 0.4))
+    high = max(low + 0.05, min(4500.0 / nyquist, 0.95))
+    try:
+        b, a = butter(2, [low, high], btype='band')
+        return filtfilt(b, a, signal)
+    except Exception:
+        return signal
 
 def compute_micro_anomaly_score(clean_signal):
     energy = float(np.mean(clean_signal**2))
@@ -316,7 +321,7 @@ def get_domain_expert_diagnosis(domain, score, lang):
             rec = {"العربية": "تم رصد احتكاك دقيق في بلي الحوض أو عدم توازن في دوران المحرك.", "English": "Micro-friction detected in drum bearings or slight motor rotational imbalance.", "Русский": "Обнаружено микротрение в подшипниках барабана."}
         else:
             zone = {"العربية": "لا توجد أي أعطال (الغسالة سليم 100%)", "English": "None (Appliance 100% Healthy)", "Русский": "Нет (Устройство исправно на 100%)"}
-            rec = {"العربية": "الموتور والحوض يعملان بكفاءة تامة ودون أي أصوات احتكاك في رومان البلي.", "English": "Motor and drum assembly operating in pristine condition without bearing friction.", "Русский": "Двигатель и барабан работают в идеальном состоянии."}
+            rec = {"العربية": "الموتور والحوض يعملان بكفاءة تامة ودون أي أصوات احتكاك في رومان البلي.", "English": "Motor and drum assembly operating in pristine condition without bearing friction.", "Русский": "Двигатель و барабан работают в идеальном состоянии."}
 
     else:
         img_url = "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80"
@@ -334,7 +339,7 @@ if audio_bytes is not None:
     st.audio(audio_bytes)
     with st.spinner(T['analyzing']):
         clean_signal, sr = parse_universal_audio_signal(audio_bytes)
-        clean_signal = apply_noise_filter(clean_signal, sr)
+        clean_signal = safe_butter_filter(clean_signal, sr)
         max_val = np.max(np.abs(clean_signal))
         if max_val > 0:
             clean_signal = clean_signal / max_val
@@ -387,9 +392,4 @@ if audio_bytes is not None:
             f'</div></div>'
             f'<style>'
             f'@keyframes laserScan {{ 0% {{ top: 0%; opacity: 0.8; }} 50% {{ top: 92%; opacity: 1; }} 100% {{ top: 0%; opacity: 0.8; }} }}'
-            f'</style>'
-        )
-        components.html(scanner_html, height=300)
-
-        st.markdown(f"### {T['waveform_title']}")
-        st.line_
+            f'</st
