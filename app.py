@@ -93,30 +93,30 @@ domain_choice = st.selectbox(
     ]
 )
 
-# --- Dynamic Theme & Branding Configuration based on Domain ---
+# Dynamic Theme & Branding Configuration based on Domain
 if "Automotive" in domain_choice:
-    primary_color = "#FF6B00"  # Carbon Orange
+    primary_color = "#FF6B00"
     bg_gradient = "linear-gradient(135deg, #1A1816 0%, #261D18 100%)"
     domain_badge = "AUTOMOTIVE DIESEL & GASOLINE ENGINE LAB"
     domain_icon = "🚘"
 elif "Refrigeration" in domain_choice:
-    primary_color = "#06B6D4"  # Ice Blue
+    primary_color = "#06B6D4"
     bg_gradient = "linear-gradient(135deg, #142226 0%, #182C33 100%)"
     domain_badge = "COMMERCIAL REFRIGERATION & FREEZER LAB"
     domain_icon = "🧊"
 elif "Appliances" in domain_choice:
-    primary_color = "#8B5CF6"  # Electric Purple
+    primary_color = "#8B5CF6"
     bg_gradient = "linear-gradient(135deg, #1F192E 0%, #28203D 100%)"
     domain_badge = "HOME APPLIANCES & MOTOR LAB"
     domain_icon = "🧺"
 else:
-    primary_color = "#F59E0B"  # Industrial Amber
+    primary_color = "#F59E0B"
     bg_gradient = "linear-gradient(135deg, #241E14 0%, #302718 100%)"
     domain_badge = "HEAVY INDUSTRIAL MACHINERY LAB"
     domain_icon = "⚙️"
 
 # Apply Custom Dynamic CSS Template
-st.markdown(f"""
+st.markdown(f'''
     <style>
     #vg-tooltip-element, .vg-tooltip, .vega-bind, .vega-actions, div[class*="tooltip"] {{
         display: none !important;
@@ -165,19 +165,19 @@ st.markdown(f"""
         font-weight: 800 !important;
     }}
     </style>
-""", unsafe_allow_html=True)
+''', unsafe_allow_html=True)
 
-# --- 3. Domain Header Rendering ---
-st.markdown(f"""
+# Domain Header Rendering
+st.markdown(f'''
     <div class="brand-card">
         <h1 class="brand-title">{domain_icon} {T['title']}</h1>
         <div style="color: {primary_color}; font-weight: 800; font-size: 14px; margin-top: 6px;">{domain_badge}</div>
         <div class="designer-tag">{T['designer']}</div>
     </div>
-""", unsafe_allow_html=True)
+''', unsafe_allow_html=True)
 
-# --- 4. Specialized Domain Input Schemas (Isolated Templates) ---
-st.markdown("### 📋 Step 1: Specialized Technical Parameters")
+# Specialized Domain Input Schemas (Isolated Templates)
+st.markdown(f"### 📋 Step 1: Specialized Technical Parameters")
 
 make, model, year, engine_spec = "", "", "", ""
 
@@ -208,7 +208,7 @@ elif "Appliances" in domain_choice:
         year = st.text_input("Capacity / Spin RPM:", "8 KG / 1400 RPM")
         engine_spec = st.selectbox("Motor Architecture:", ["Inverter Direct Drive Motor", "Universal Brush Motor", "AC Induction Drum Motor"])
 
-else: # Industrial
+else:
     col1, col2 = st.columns(2)
     with col1:
         make = st.selectbox("Industrial Brand:", ["Caterpillar", "Cummins", "Perkins", "Deutz", "Other"])
@@ -219,7 +219,7 @@ else: # Industrial
 
 st.divider()
 
-# --- 5. Step 2: Audio Data Ingestion ---
+# Step 2: Audio Ingestion
 st.markdown(f"### {T['step2']}")
 
 input_method = st.radio(T['source'], [T['mic'], T['upload']], horizontal=True)
@@ -234,7 +234,6 @@ else:
     if uploaded_file:
         audio_bytes = uploaded_file.read()
 
-# --- Universal Audio Stream Parser ---
 def parse_universal_audio_signal(raw_bytes):
     try:
         from scipy.io import wavfile
@@ -264,7 +263,6 @@ def apply_noise_filter(signal, sample_rate):
     b, a = butter(2, [low, high], btype='band')
     return filtfilt(b, a, signal)
 
-# --- 0.001% Precision Micro-Anomaly Engine ---
 def compute_micro_anomaly_score(clean_signal):
     energy = float(np.mean(clean_signal**2))
     zcr = float(np.mean(np.diff(np.signbit(clean_signal)) != 0))
@@ -277,7 +275,6 @@ def compute_micro_anomaly_score(clean_signal):
     rms = float(np.sqrt(energy) + 1e-6)
     crest_factor = peak / rms
     
-    # Highly sensitive micro-deviation formula
     deviation_factor = (
         (zcr * 45.0) +
         (high_freq_ratio * 25.0) +
@@ -285,13 +282,11 @@ def compute_micro_anomaly_score(clean_signal):
         (max(0.0, spectral_centroid - 180.0) / 30.0)
     )
     
-    # Strict scaling allowing true healthy scores (< 40%) and minute fault detection (>= 40%)
     anomaly_score = round(float(np.clip(deviation_factor * 1.35, 1.000, 99.999)), 3)
     return anomaly_score, spectral_centroid, energy
 
-# --- Specialized Domain Diagnostic Evaluator ---
 def get_domain_expert_diagnosis(domain, score, lang):
-    is_fault = score >= 40.0 # Threshold for micro-fault detection
+    is_fault = score >= 40.0
     
     if "Automotive" in domain:
         img_url = "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1000&q=80"
@@ -323,19 +318,18 @@ def get_domain_expert_diagnosis(domain, score, lang):
             zone = {"العربية": "لا توجد أي أعطال (الغسالة سليم 100%)", "English": "None (Appliance 100% Healthy)", "Русский": "Нет (Устройство исправно на 100%)"}
             rec = {"العربية": "الموتور والحوض يعملان بكفاءة تامة ودون أي أصوات احتكاك في رومان البلي.", "English": "Motor and drum assembly operating in pristine condition without bearing friction.", "Русский": "Двигатель и барабан работают в идеальном состоянии."}
 
-    else: # Industrial
+    else:
         img_url = "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80"
         title = "⚙️ Heavy Industrial Machinery Scan"
         if is_fault:
-            zone = {"العربية": "رولمان بلي المولد الرئيسي / مضخة الحقن", "English": "Main Alternator Bearing / Fuel Injection Pump", "Русский": "Подшипники генератора / Топливный насос"}
+            zone = {"العربية": "رمان بلي المولد الرئيسي / مضخة الحقن", "English": "Main Alternator Bearing / Fuel Injection Pump", "Русский": "Подшипники генератора / Топливный насос"}
             rec = {"العربية": "تم رصد اهتزاز دوري غير طبيعي في محامل المولد أو مضخة الوقود.", "English": "Periodic abnormal vibration detected in alternator bearings or fuel pump.", "Русский": "Обнаружена периодическая вибрация в подшипниках генератора."}
         else:
             zone = {"العربية": "لا توجد أي أعطال (المعدة الصناعية سليمة 100%)", "English": "None (Machinery 100% Healthy)", "Русский": "Нет (Оборудование исправно на 100%)"}
             rec = {"العربية": "المعدة الصناعية تعمل بتوازن واستقرار ممتازين وخالية من أي أعطال.", "English": "Industrial machinery operating with excellent acoustic balance and zero faults.", "Русский": "Промышленное оборудование работает с отличным балансом."}
 
-    return zone[lang], recs[lang], img_url, title, is_fault
+    return zone[lang], rec[lang], img_url, title, is_fault
 
-# --- 6. Processing Execution ---
 if audio_bytes is not None:
     st.audio(audio_bytes)
     with st.spinner(T['analyzing']):
@@ -345,9 +339,7 @@ if audio_bytes is not None:
         if max_val > 0:
             clean_signal = clean_signal / max_val
         
-        # Calculate Micro-Anomaly Score (0.001% precision)
         anomaly_score, spectral_centroid, energy = compute_micro_anomaly_score(clean_signal)
-        
         fault_zone, rec_text, visual_img_url, scan_title, is_fault = get_domain_expert_diagnosis(domain_choice, anomaly_score, lang_choice)
         
         st.divider()
@@ -384,10 +376,20 @@ if audio_bytes is not None:
         ''', unsafe_allow_html=True)
 
         st.markdown(f"### {scan_title}")
-        laser_color = "#EF4444" if is_fault else "#10B981"
+        laser_color = '#EF4444' if is_fault else '#10B981'
         
-        scanner_html = f'''
-        <div style="position: relative; width: 100%; height: 280px; border-radius: 14px; overflow: hidden; border: 2px solid {primary_color};">
-            <img src="{visual_img_url}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.75);" />
-            <div style="position: absolute; left: 0; width: 100%; height: 4px; background: {laser_color}; box-shadow: 0 0 15px 5px {laser_color}; animation: laserScan 2.5s infinite ease-in-out;"></div>
-            <div style="position: absolute; top: 12px; left: 12px; background: rg
+        scanner_html = (
+            f'<div style="position: relative; width: 100%; height: 280px; border-radius: 14px; overflow: hidden; border: 2px solid {primary_color};">'
+            f'<img src="{visual_img_url}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.75);" />'
+            f'<div style="position: absolute; left: 0; width: 100%; height: 4px; background: {laser_color}; box-shadow: 0 0 15px 5px {laser_color}; animation: laserScan 2.5s infinite ease-in-out;"></div>'
+            f'<div style="position: absolute; top: 12px; left: 12px; background: rgba(20,27,24,0.85); border: 1px solid {laser_color}; padding: 6px 14px; border-radius: 8px; color: {laser_color}; font-size: 12px; font-weight: bold;">'
+            f'● MICRO-SCANNER ACTIVE | {make.upper()}'
+            f'</div></div>'
+            f'<style>'
+            f'@keyframes laserScan {{ 0% {{ top: 0%; opacity: 0.8; }} 50% {{ top: 92%; opacity: 1; }} 100% {{ top: 0%; opacity: 0.8; }} }}'
+            f'</style>'
+        )
+        components.html(scanner_html, height=300)
+
+        st.markdown(f"### {T['waveform_title']}")
+        st.line_
