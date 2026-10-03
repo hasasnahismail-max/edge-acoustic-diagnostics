@@ -49,8 +49,8 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# =================-=========================
-# 2. القواميس وقاعدة البيانات الهندسية المحدثة
+# ==========================================
+# 2. القواميس وقاعدة البيانات الهندسية
 # ==========================================
 L = {
     "designer": "Platform Architect & Designer: Ismail Hasasna (إسماعيل حساسنة)",
@@ -145,7 +145,7 @@ UNIVERSAL_DATABASE = {
 }
 
 # ==========================================
-# 3. دوال قراءة الصوت والمعالجة الطيفية المتقدمة
+# 3. دوال قراءة الصوت والمعالجة الطيفية
 # ==========================================
 def read_any_audio(uploaded_file):
     bytes_data = uploaded_file.read()
@@ -220,10 +220,8 @@ def run_diagnostic(audio_data, sample_rate, unit_key):
     fault_type_key = L["healthy"]
     health_score = 94
 
-    # محرك مطابقة النطاقات الطيفية الذكي (Smart Spectral Matching Engine)
     matched_key = None
     for b_name, (low, high) in bands.items():
-        # فحص وجود طاقة قوية داخل النطاق المحدد
         mask_band = (fft_freqs >= low) & (fft_freqs <= high)
         if np.any(mask_band):
             band_energy = np.sum(fft_vals[mask_band])
@@ -281,7 +279,7 @@ def run_diagnostic(audio_data, sample_rate, unit_key):
     }
 
 # ==========================================
-# 4. الواجهة الرئيسية والتفاعل عبر Streamlit
+# 4. الواجهة الرئيسية والتفاعل
 # ==========================================
 st.markdown(f'<div class="theme-header">⚡ ZINO EADE WORKSTATION</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="designer-tag">{L["designer"]}<br><small style="color:#8b949e">{L["subtitle"]}</small></div>', unsafe_allow_html=True)
@@ -327,7 +325,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 run_click = st.button(L["run_btn"], type="primary")
 
 # ==========================================
-# 5. تنفيذ الفحص وعرض النتائج بالليزر والتبويبات
+# 5. تنفيذ الفحص وعرض النتائج
 # ==========================================
 if run_click or "has_run" in st.session_state:
     st.session_state["has_run"] = True
@@ -347,7 +345,20 @@ if run_click or "has_run" in st.session_state:
             progress_text.markdown(f"**{msg}**")
             progress_bar.progress(pct)
             time.sleep(delay)
-       if audio_data is not None:
+            
+        progress_text.empty()
+        progress_bar.empty()
+
+    audio_data, sample_rate = None, 22050
+    if source_mode == L["upload_mode"]:
+        if audio_file is not None:
+            audio_data, sample_rate = read_any_audio(audio_file)
+        else:
+            st.warning("⚠️ Please upload an audio file first / الرجاء رفع ملف صوتي أولاً.")
+    else:
+        audio_data, sample_rate = generate_synthetic_audio(synthetic_fault)
+
+    if audio_data is not None:
         res = run_diagnostic(audio_data, sample_rate, selected_unit)
         tab1, tab2, tab3, tab4 = st.tabs([L["tab_visual"], L["tab_fft"], L["tab_recs"], L["tab_report"]])
 
@@ -386,71 +397,4 @@ if run_click or "has_run" in st.session_state:
                 line=dict(color=theme["color"], width=2.5)
             ))
             fig.update_layout(
-                template="plotly_dark",
-                xaxis_title="Frequency (Hz)",
-                yaxis_title="Amplitude Spectrum Density",
-                plot_bgcolor="#0d1117",
-                paper_bgcolor="#0d1117",
-                margin=dict(l=20, r=20, t=30, b=20)
-            )
-            st.plotly_chart(fig, use_container_width=True)
-
-        with tab3:
-            st.info(res["recommendations"])
-            st.markdown("### Detected Fault Signatures:")
-            for f in res["detected_faults"]:
-                st.write(f"• **{f}**")
-
-        with tab4:
-            report_text = f"""==================================================
-ZINO EADE ACOUSTIC DIAGNOSTIC INSPECTION REPORT
-Platform Architect & Designer: Ismail Hasasna (إسماعيل حساسنة)
-==================================================
-Target Unit       : {res['target_unit']}
-Engineering Class : {res['category']}
-Specification     : {res['specs']}
-Engine Code       : {res['code']}
-Oil Spec          : {res['oil']}
-Health Status     : {res['status_text']}
-Health Index      : {res['health_score']}%
---------------------------------------------------
-ACOUSTIC SPECTRAL METRICS:
-Dominant Peak Freq: {res['peak_freq']} Hz
-Spectral Centroid : {res['centroid']} Hz
-Signal RMS Energy : {res['rms']} RMS Density
---------------------------------------------------
-DETECTED COMPONENT FAULTS:
-{chr(10).join(['- ' + f for f in res['detected_faults']])}
-==================================================
-Platform Designer : Ismail Hasasna (إسماعيل حساسنة)
-"""
-            st.code(report_text, language="text")
-            st.download_button(L["download_rep"], report_text, file_name="ZINO_EADE_Inspection_Report.txt")         
-        
-            fig = go.Figure()
-            mask = res["fft_freqs"] <= 8000
-            fig.add_trace(go.Scatter(
-                x=res["fft_freqs"][mask], 
-                y=res["fft_vals"][mask], 
-                mode="lines", 
-                line=dict(color=theme["color"], width=2.5)
-            ))
-            fig.update_layout(
-                template="plotly_dark",
-                xaxis_title="Frequency (Hz)",
-                yaxis_title="Amplitude Spectrum Density",
-                plot_bgcolor="#0d1117",
-                paper_bgcolor="#0d1117",
-                margin=dict(l=20, r=20, t=30, b=20)
-            )
-            st.plotly_chart(fig, use_container_width=True)
-            m1, m2, m3, m4 = st.columns(4)
-            m1.markdown(f'<div class="metric-card"><small>{L["status_label"]}</small><br><span class="{res["status_class"]}">{res["status_text"]}</span></div>', unsafe_allow_html=True)
-            m2.markdown(f'<div class="metric-card"><small>{L["health_index"]}</small><h2 style="color:{theme["color"]};margin:0">{res["health_score"]}%</h2></div>', unsafe_allow_html=True)
-            m3.markdown(f'<div class="metric-card"><small>{L["peak_freq"]}</small><h2 style="margin:0">{res["peak_freq"]} Hz</h2></div>', unsafe_allow_html=True)
-            m4.markdown(f'<div class="metric-card"><small>{L["centroid"]}</small><h2 style="margin:0">{res["centroid"]} Hz</h2></div>', unsafe_allow_html=True)
-
-        with tab2:
-            fig = go.Figure()
-            mask = res["fft_freqs"] <= 8000
-            fig.add_trace(go.Scatter(x=res["fft_freqs"][mask], y=res["fft_vals"][mask], mode="lines", line=
+                templ
