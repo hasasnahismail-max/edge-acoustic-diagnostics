@@ -1,36 +1,23 @@
-# Edge-Acoustic Diagnostic Engine (EADE) 🎙️⚙️
+cat << 'EOF' > /workspaces/edge-acoustic-diagnostics/README.md
+# ZINO Edge-Acoustic Diagnostic Engine (EADE)
 
-An ultra-lightweight, real-time acoustic anomaly detection framework designed for embedded edge devices (ESP32-S3 / Raspberry Pi / Jetson Nano).
+**ZINO EADE** is a high-performance C++17 acoustic diagnostic core designed for real-time engine health monitoring and mechanical anomaly detection on edge computing platforms.
 
-## 📌 Overview
-EADE processes real-time mechanical sound signatures, converts raw audio buffers into normalized Log-Mel Spectrograms, and uses a Deep Autoencoder neural network to detect mechanical wear and tear before system failure.
+## Key Features
+- **C++17 Core**: Optimized with `-O3` compilation flags for ultra-low latency on edge hardware.
+- **Audio Processing**: High-precision ingestion and normalization of PCM 16-bit WAV files.
+- **DSP Engine**: FFT spectral analysis, dominant peak frequency detection, spectral centroid, and RMS energy metrics.
+- **Automated Diagnostics**: Instant mechanical health scoring and fault identification.
 
-## 🛠️ Key Features
-- **Zero-Cloud Dependency:** Operates fully on edge nodes with sub-20ms inference latency.
-- **Unsupervised Anomaly Detection:** Learns normal operating sounds and flags deviations without needing labeled fault data.
-- **Optimized Pipeline:** Custom STFT signal conversion paired with ONNX/TFLite model quantization.
+## Build & Run Instructions
 
-## 🚀 Quick Start
-
-### Installation
 ```bash
-git clone [https://github.com/YOUR_USERNAME/edge-acoustic-diagnostics.git](https://github.com/YOUR_USERNAME/edge-acoustic-diagnostics.git)
-cd edge-acoustic-diagnostics
-pip install -r requirements.txt
-```
+# 1. Clone repository & enter build directory
+mkdir -p build && cd build
 
-### Basic Usage
-```python
-from audio_processor import AcousticFeatureExtractor
-from anomaly_model import AcousticAutoencoder
+# 2. Build with CMake
+cmake ..
+make
 
-# 1. Initialize Extractor and Autoencoder
-extractor = AcousticFeatureExtractor()
-model = AcousticAutoencoder()
-
-# 2. Extract Spectrogram Features
-# spec = extractor.extract_mel_spectrogram(audio_buffer)
-```
-
-## 🏗️ System Architecture
-`Audio Input (Mic/Sensor) -> STFT / Mel-Transformation -> Autoencoder Reconstruction -> Anomaly Score`
+# 3. Run diagnostics on a WAV audio file
+./zino_eade ../engine_sample.wav
