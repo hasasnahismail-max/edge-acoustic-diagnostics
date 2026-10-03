@@ -388,6 +388,7 @@ if run_click or "has_run" in st.session_state:
             m4.markdown(f'<div class="metric-card"><small>{L["centroid"]}</small><h2 style="margin:0">{res["centroid"]} Hz</h2></div>', unsafe_allow_html=True)
 
         with tab2:
+                    with tab2:
             fig = go.Figure()
             mask = res["fft_freqs"] <= 8000
             fig.add_trace(go.Scatter(
@@ -397,4 +398,11 @@ if run_click or "has_run" in st.session_state:
                 line=dict(color=theme["color"], width=2.5)
             ))
             fig.update_layout(
-                templ
+                template="plotly_dark",
+                xaxis_title="Frequency (Hz)",
+                yaxis_title="Amplitude Spectrum Density",
+                plot_bgcolor="#0d1117",
+                paper_bgcolor="#0d1117",
+                margin=dict(l=20, r=20, t=30, b=20)
+            )
+            st.plotly_chart(fig, use_container_width=True)
