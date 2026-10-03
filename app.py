@@ -358,7 +358,7 @@ def generate_synthetic_audio(fault_type="bearing_wear", sr=22050, duration=3.0):
 def run_diagnostic(audio_data, sample_rate, unit_key):
     unit = UNIVERSAL_DATABASE[unit_key]
     rms_energy = float(np.sqrt(np.mean(audio_data**2)))
-    fft_vals = np.abs(np.f
+fft_vals = np.abs(np.fft.rfft(audio_data))
 np.fft.rfft(audio_data))
     fft_freqs = np.fft.rfftfreq(len(audio_data), 1.0 / sample_rate)
 
