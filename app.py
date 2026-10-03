@@ -14,56 +14,51 @@ st.set_page_config(
 st.markdown("""
 <style>
     .stApp { background-color: #0d1117; color: #f0f6fc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .theme-header { font-size: 30px; font-weight: 800; color: #58a6ff; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; }
-    .designer-tag { font-size: 15px; color: #8b949e; font-weight: 600; margin-bottom: 25px; border-bottom: 1px solid #30363d; padding-bottom: 12px; }
-    .metric-card { background: rgba(22, 27, 34, 0.95); border: 1px solid #30363d; border-radius: 12px; padding: 18px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-    .status-healthy { color: #3fb950; font-weight: bold; font-size: 19px; }
-    .status-critical { color: #f85149; font-weight: bold; font-size: 19px; }
-    .laser-container { position: relative; border-radius: 12px; overflow: hidden; border: 2px solid #58a6ff; box-shadow: 0 0 25px rgba(88, 166, 255, 0.4); }
-    .laser-line { position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: #ff7b72; box-shadow: 0 0 15px #ff7b72; animation: scanLaser 2.5s infinite ease-in-out; z-index: 10; }
+    .theme-header { font-size: 26px; font-weight: 800; color: #58a6ff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+    .designer-tag { font-size: 13px; color: #8b949e; font-weight: 600; margin-bottom: 15px; border-bottom: 1px solid #30363d; padding-bottom: 8px; }
+    .metric-card { background: rgba(22, 27, 34, 0.95); border: 1px solid #30363d; border-radius: 10px; padding: 14px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+    .status-healthy { color: #3fb950; font-weight: bold; font-size: 17px; }
+    .status-critical { color: #f85149; font-weight: bold; font-size: 17px; }
+    .laser-container { position: relative; border-radius: 10px; overflow: hidden; border: 2px solid #58a6ff; box-shadow: 0 0 20px rgba(88, 166, 255, 0.3); }
+    .laser-line { position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: #ff7b72; box-shadow: 0 0 12px #ff7b72; animation: scanLaser 2.5s infinite ease-in-out; z-index: 10; }
     @keyframes scanLaser { 0% { top: 0%; } 50% { top: 100%; } 100% { top: 0%; } }
 </style>
 """, unsafe_allow_html=True)
 
 L = {
-    "designer": "Platform Architect & Designer: Ismail Hasasna (إسماعيل حساسنة)",
-    "subtitle": "Edge-Acoustic Diagnostic Engine (ZINO-EADE) — Real-Time Mechanical Frequency Analyzer",
+    "designer": "Platform Architect: Ismail Hasasna (إسماعيل حساسنة)",
+    "subtitle": "Edge-Acoustic Diagnostic Engine (ZINO-EADE)",
     "select_cat": "Select Engineering Sector / قطاع الفحص الهندسي:",
     "select_unit": "Select Target Unit / المركبة أو المعدة المستهدفة:",
-    "audio_src": "Audio Input Source / مصدر إشارة الفحص الصوتي:",
-    "upload_mode": "📁 Upload Audio File (ملف WAV)",
-    "demo_mode": "⚡ Synthetic Signal Generator (محاكاة سريعة)",
+    "audio_src": "Audio Input Source / مصدر إشارة الفحص:",
+    "upload_mode": "📁 Upload WAV File (رفع ملف)",
+    "demo_mode": "⚡ Synthetic Generator (محاكاة سريعة)",
     "run_btn": "🚀 Run Deep Acoustic & Laser Scan / تشخيص فوري",
-    "tab_visual": "🔬 Optical & Spectral Scan",
-    "tab_fft": "📈 FFT Frequency Analysis",
-    "tab_recs": "🛠️ Engineering Recommendations",
-    "tab_report": "📋 Inspection Report",
+    "tab_visual": "🔬 Optical & Scan",
+    "tab_fft": "📈 FFT Analysis",
+    "tab_recs": "🛠️️ Recommendations",
+    "tab_report": "📋 Report",
     "target_unit": "Target Unit:",
     "faulty_comp": "Isolated Anomaly / القطعة المعزولة:",
-    "status_label": "System Status / حالة الأداء:",
-    "health_index": "Health Index / مؤشر السلامة:",
+    "status_label": "System Status / الحالة:",
+    "health_index": "Health Index / المؤشر:",
     "peak_freq": "Dominant Peak Freq",
     "centroid": "Spectral Centroid",
-    "healthy": "Optimal Performance / أداء سليم ضمن الحدود الهندسية",
-    "critical": "Critical Deviation Detected / انحراف ميكانيكي حرج",
-    "download_rep": "📥 Download Official Inspection Report",
+    "healthy": "Optimal Performance / أداء سليم",
+    "critical": "Critical Deviation / انحراف حرج",
+    "download_rep": "📥 Download Inspection Report",
     "cats": {
-        "AUTOMOTIVE": "سيارات الركاب والدفع الرباعي (Automotive Fleet)",
-        "HVAC": "أنظمة التكييف والتبريد الصناعي (HVAC & Refrigeration)",
-        "MACHINERY": "المعدات الثقيلة والجرارات (Heavy Machinery & Tractors)"
+        "AUTOMOTIVE": "🚙 سيارات الركاب والدفع الرباعي (Automotive Fleet)",
+        "HVAC": "❄️ أنظمة التكييف والتبريد (HVAC & Refrigeration)",
+        "MACHINERY": "🚜 المعدات الثقيلة والجرارات (Heavy Machinery)"
     }
 }
 
 THEMES = {
-    "AUTOMOTIVE": {"color": "#58a6ff", "glow": "rgba(88,166,255,0.4)", "icon": "🚙"},
-    "HVAC": {"color": "#3fb950", "glow": "rgba(63,185,80,0.4)", "icon": "❄️"},
-    "MACHINERY": {"color": "#d29922", "glow": "rgba(210,153,34,0.4)", "icon": "🚜"}
+    "AUTOMOTIVE": {"color": "#58a6ff", "glow": "rgba(88,166,255,0.4)"},
+    "HVAC": {"color": "#3fb950", "glow": "rgba(63,185,80,0.4)"},
+    "MACHINERY": {"color": "#d29922", "glow": "rgba(210,153,34,0.4)"}
 }
-
-if "selected_category" not in st.session_state:
-    st.session_state["selected_category"] = "AUTOMOTIVE"
-current_cat = st.session_state["selected_category"]
-theme = THEMES[current_cat]
 
 COMPONENT_IMAGES = {
     "healthy": "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=800&q=80",
@@ -77,7 +72,7 @@ COMPONENT_IMAGES = {
 UNIVERSAL_DATABASE = {
     "Hyundai Santa Fe 2.2 CRDi VGT": {
         "category": "AUTOMOTIVE", "brand": "Hyundai", "model": "Santa Fe 2.2 CRDi VGT",
-        "code": "D4HB R-Engine", "oil": "5W-30 ACEA C3 Diesel Oil", "injection": "Bosch CRDi 2000 Bar VGT System",
+        "code": "D4HB R-Engine", "oil": "5W-30 ACEA C3 Diesel Oil", "injection": "Bosch CRDi 2000 Bar",
         "specs": "2.2L CRDi Variable Geometry Turbo Diesel", "has_turbo": True,
         "unit_image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80",
         "bands": {"bearing_wear": (15, 450), "turbo_shaft": (1200, 6000), "injector_clatter": (2200, 4800), "valve_clearance": (500, 1100)},
@@ -222,18 +217,18 @@ def run_diagnostic(audio_data, sample_rate, unit_key):
 st.markdown(f'<div class="theme-header">⚡ ZINO EADE WORKSTATION</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="designer-tag">{L["designer"]}<br><small style="color:#8b949e">{L["subtitle"]}</small></div>', unsafe_allow_html=True)
 
+# Sector Selection using clean st.radio
 st.markdown(f"### {L['select_cat']}")
-cols = st.columns(3)
 cat_keys = list(THEMES.keys())
-for idx, cat in enumerate(cat_keys):
-    t_info = THEMES[cat]
-    is_act = cat == current_cat
-    cat_translated = L["cats"].get(cat, cat)
-    with cols[idx]:
-        st.markdown(f'<div style="background: rgba(22, 27, 34, 0.95); border: 2px solid {t_info["color"] if is_act else "#30363d"}; border-radius: 12px; padding: 12px; text-align: center; box-shadow: 0 4px 18px {t_info["glow"] if is_act else "transparent"};"><h4 style="color: {t_info["color"]} !important; margin:0; font-size:15px;">{t_info["icon"]} {cat_translated}</h4></div>', unsafe_allow_html=True)
-        if st.button(f"{t_info['icon']} Select Sector", key=f"btn_cat_{idx}"):
-            st.session_state["selected_category"] = cat
-            st.rerun()
+selected_cat_label = st.radio(
+    "Sector",
+    options=cat_keys,
+    format_func=lambda x: L["cats"][x],
+    label_visibility="collapsed",
+    horizontal=True
+)
+current_cat = selected_cat_label
+theme = THEMES[current_cat]
 
 st.markdown("---")
 
@@ -243,7 +238,7 @@ filtered_units = {k: v for k, v in UNIVERSAL_DATABASE.items() if v["category"] =
 with ctl_col1:
     selected_unit = st.selectbox(L["select_unit"], list(filtered_units.keys()))
     unit_info = UNIVERSAL_DATABASE[selected_unit]
-    with st.popover("⚙️ View Unit Technical Specs / عرض المواصفات الفنية"):
+    with st.popover("⚙️ View Unit Technical Specs / عرض المواصفات"):
         st.markdown(f"### ⚙️ {selected_unit}")
         st.write(f"• **Engine Code:** {unit_info.get('code', 'N/A')}")
         st.write(f"• **Oil Spec:** {unit_info.get('oil', 'N/A')}")
@@ -257,7 +252,7 @@ audio_file, synthetic_fault = None, "bearing_wear"
 if source_mode == L["upload_mode"]:
     audio_file = st.file_uploader("Upload Audio Signal File (.wav):", type=["wav"])
 else:
-    synthetic_fault = st.selectbox("Synthetic Fault Pattern / نمط الخلل للاختبار:", ["bearing_wear", "turbo_shaft", "injector_clatter", "healthy"])
+    synthetic_fault = st.selectbox("Synthetic Fault Pattern / نمط الخلل:", ["bearing_wear", "turbo_shaft", "injector_clatter", "healthy"])
 
 st.markdown("<br>", unsafe_allow_html=True)
 run_click = st.button(L["run_btn"], type="primary")
@@ -273,14 +268,14 @@ def render_inspection_results(audio_data, sample_rate, selected_unit):
             st.markdown(f'''
                 <div class="laser-container">
                     <div class="laser-line"></div>
-                    <img src="{res['unit_image']}" alt="Target Unit" style="width:100%; height:320px; object-fit:cover;">
+                    <img src="{res['unit_image']}" alt="Target Unit" style="width:100%; height:260px; object-fit:cover;">
                 </div>
             ''', unsafe_allow_html=True)
         with c2:
             st.markdown(f"#### 🎯 {L['faulty_comp']} {res['fault_type_key']}")
             st.markdown(f'''
-                <div style="border-radius: 12px; overflow: hidden; border: 2px solid #30363d; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
-                    <img src="{res['component_image']}" alt="Component Anomaly" style="width:100%; height:320px; object-fit:cover;">
+                <div style="border-radius: 10px; overflow: hidden; border: 2px solid #30363d; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                    <img src="{res['component_image']}" alt="Component Anomaly" style="width:100%; height:260px; object-fit:cover;">
                 </div>
             ''', unsafe_allow_html=True)
         
@@ -338,7 +333,7 @@ def render_inspection_results(audio_data, sample_rate, selected_unit):
             "DETECTED COMPONENT FAULTS:\n" +
             "\n".join(['- ' + f for f in res['detected_faults']]) + "\n"
             "==================================================\n"
-            "Platform Designer : Ismail Hasasna (إسماعيل حساسنة)"
+            f"Platform Architect: {L['designer']}"
         )
         st.code(report_text, language="text")
         st.download_button(L["download_rep"], report_text, file_name="ZINO_EADE_Inspection_Report.txt")
