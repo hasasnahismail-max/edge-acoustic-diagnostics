@@ -2,6 +2,3 @@ streamlit
 numpy
 scipy
 plotly
-librosa
-soundfile
-pydub
