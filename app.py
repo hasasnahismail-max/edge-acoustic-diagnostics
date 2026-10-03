@@ -1,351 +1,294 @@
 import io
 import numpy as np
-from scipy.signal import butter, filtfilt
+import scipy.io.wavfile as wavfile
+import scipy.signal as signal
 import streamlit as st
-import streamlit.components.v1 as components
 
+# محاولة تحميل مكتبة soundfile للقراءة الصوتية المتقدمة
+try:
+    import soundfile as sf
+
+    HAS_SOUNDFILE = True
+except ImportError:
+    HAS_SOUNDFILE = False
+
+# ضبط إعدادات الصفحة
 st.set_page_config(
-    page_title="ZINO EADE - AI Acoustic Diagnostic Engine",
-    page_icon="⚙️",
-    layout="centered"
+    page_title="ZINO EADE - Visual Acoustic Diagnostic Workstation",
+    page_icon="🚘",
+    layout="wide",
 )
 
-LANG_DICT = {
-    "العربية": {
-        "title": "ZINO EADE",
-        "designer": "محرك الذكاء الاصطناعي للتشخيص الصوتي المتقدم | تطوير: إسماعيل حساسنة",
-        "select_domain": "🎛️ اختر قطاع التشخيص المتخصص:",
-        "step2": "🎧 الخطوة 2: إدخال البصمة الصوتية للمعدة",
-        "source": "اختر طريقة تزويد الصوت:",
-        "mic": "🎙️ تسجيل مباشر عبر المايك",
-        "upload": "📁 إرفاق ملف صوتي (.wav, .mp3, .m4a)",
-        "rec_prompt": "اضغط لبدء تسجيل البصمة الصوتية بدقة",
-        "up_prompt": "اختر ملف الصوت الفعلي من جهازك:",
-        "analyzing": "⚡ جاري الفحص الطيفي الدقيق ورصد أي انحراف ميكانيكي بنسبة 0.001%...",
-        "score_label": "📊 مؤشر الانحراف والشذوذ الدقيق (Anomaly Index)",
-        "defect_title": "⚠️ تم رصد خلل ميكانيكي / انحراف طيفي",
-        "normal_title": "✅ المعدة سليمة تماماً (لا توجد أخطاء)",
-        "report_title": "📝 التقرير الهندسي والتشخيص الدقيق",
-        "summary_header": "🔧 المواصفات وملخص الفحص:",
-        "status_label": "حالة الأداء الميكانيكي:",
-        "anomaly_zone": "القطعة المرشحة للخلل:",
-        "rec_header": "💡 التوصية الهندسية الدقيقة:",
-        "waveform_title": "📈 تحليل الموجة الصوتية المفلترة"
-    },
-    "English": {
-        "title": "ZINO EADE",
-        "designer": "ADVANCED AI ACOUSTIC DIAGNOSTIC ENGINE | ENGINEERED BY ISMAIL HASASNAH",
-        "select_domain": "🎛️ Select Specialized Diagnostic Domain:",
-        "step2": "🎧 Step 2: Machinery Acoustic Ingestion",
-        "source": "Select Audio Source:",
-        "mic": "🎙️ Live Microphone Input",
-        "upload": "📁 Upload Audio File (.wav, .mp3, .m4a)",
-        "rec_prompt": "Record High-Precision Sound Signature",
-        "up_prompt": "Choose actual audio file:",
-        "analyzing": "⚡ Running High-Resolution Spectral Analysis & Micro-Deviation Detection...",
-        "score_label": "📊 Micro-Anomaly Index Score",
-        "defect_title": "⚠️ MECHANICAL DEVIATION / FAULT DETECTED",
-        "normal_title": "✅ SYSTEM HEALTHY (Zero Faults Detected)",
-        "report_title": "📝 Engineering Diagnostic Report",
-        "summary_header": "🔧 Equipment Profile & Summary:",
-        "status_label": "Mechanical Performance Status:",
-        "anomaly_zone": "Identified Defect Zone:",
-        "rec_header": "💡 Precision Engineering Recommendation:",
-        "waveform_title": "📈 Filtered Acoustic Waveform"
-    },
-    "Русский": {
-        "title": "ZINO EADE",
-        "designer": "ПЕРЕДОВОЙ ИИ АКУСТИЧЕСКИЙ ДИАГНОСТИЧЕСКИЙ ДВИГАТЕЛЬ | РАЗРАБОТАНО: ИСМАИЛ ХАСАСНА",
-        "select_domain": "🎛️ Выберите специализированный домен диагностики:",
-        "step2": "🎧 Шаг 2: Ввод акустической подписи оборудования",
-        "source": "Выберите источник звука:",
-        "mic": "🎙️ Запись с микрофона",
-        "upload": "📁 Загрузить файл (.wav, .mp3, .m4a)",
-        "rec_prompt": "Запишите точный акустический профиль",
-        "up_prompt": "Выберите аудиофайл:",
-        "analyzing": "⚡ Высокоточный спектральный анализ и поиск микроаномалий...",
-        "score_label": "📊 Индекс микроаномалий ИИ",
-        "defect_title": "⚠️ ОБНАРУЖЕНО МЕХАНИЧЕСКОЕ ОТКЛОНЕНИЕ",
-        "normal_title": "✅ СИСТЕМА ИСПРАВНА (Ошибок не обнаружено)",
-        "report_title": "📝 Инженерный отчет диагностики",
-        "summary_header": "🔧 Сводка профиля оборудования:",
-        "status_label": "Состояние механической работы:",
-        "anomaly_zone": "Зона вероятного дефекта:",
-        "rec_header": "💡 Точная инженерная рекомендация:",
-        "waveform_title": "📈 Отфильтрованная акустическая волна"
-    }
+# ==========================================
+# 1. مكتبة الصور الميكانيكية والقطع
+# ==========================================
+COMPONENT_IMAGES = {
+    "injectors": "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=600&auto=format&fit=crop&q=80",
+    "turbo": "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=600&auto=format&fit=crop&q=80",
+    "bearings": "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=600&auto=format&fit=crop&q=80",
+    "valves": "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&auto=format&fit=crop&q=80",
+    "belt": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&auto=format&fit=crop&q=80",
+    "healthy": "https://images.unsplash.com/photo-1563720223185-11003d516935?w=600&auto=format&fit=crop&q=80",
 }
 
-lang_choice = st.selectbox("🌐 Choose Language / اختر اللغة / Выберите язык:", ["العربية", "English", "Русский"])
-T = LANG_DICT[lang_choice]
+# ==========================================
+# 2. قاعدة بيانات المحركات والسيارات الشاملة
+# ==========================================
+ENGINE_DATABASE = {
+    "VW Caddy 1.6 TDI (تنفس طبيعي / بدون تيربو)": {
+        "brand": "Volkswagen",
+        "model": "Caddy 1.6 TDI NA",
+        "specs": "1.6L TDI / Non-Turbo (Common Rail)",
+        "has_turbo": False,
+        "car_image": "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=800&auto=format&fit=crop&q=80",
+        "bands": {
+            "bearing_wear": (20, 350),
+            "belt_squeal": (700, 2000),
+            "valve_clearance": (1000, 2800),
+            "injector_clatter": (3000, 8000),
+        },
+    },
+    "VW Caddy 1.6 TDI (شاحن تيربو)": {
+        "brand": "Volkswagen",
+        "model": "Caddy 1.6 TDI Turbo",
+        "specs": "1.6L TDI / Turbocharged",
+        "has_turbo": True,
+        "car_image": "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=800&auto=format&fit=crop&q=80",
+        "bands": {
+            "bearing_wear": (20, 350),
+            "turbo_shaft": (1500, 5500),
+            "valve_clearance": (1000, 2800),
+            "injector_clatter": (3000, 8000),
+        },
+    },
+    "Hyundai Santa Fe 2.2 CRDi (تيربو)": {
+        "brand": "Hyundai",
+        "model": "Santa Fe 2.2 CRDi",
+        "specs": "2.2L CRDi / Turbo Diesel",
+        "has_turbo": True,
+        "car_image": "https://images.unsplash.com/photo-1563720223185-11003d516935?w=800&auto=format&fit=crop&q=80",
+        "bands": {
+            "bearing_wear": (20, 300),
+            "turbo_shaft": (1500, 5000),
+            "injector_clatter": (2500, 8000),
+        },
+    },
+    "Honda Civic 1.5 Turbo": {
+        "brand": "Honda",
+        "model": "Civic 1.5 VTEC Turbo",
+        "specs": "1.5L Direct Injection Turbo",
+        "has_turbo": True,
+        "car_image": "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=800&auto=format&fit=crop&q=80",
+        "bands": {
+            "bearing_wear": (30, 320),
+            "turbo_shaft": (1600, 5200),
+            "injector_clatter": (3200, 8500),
+        },
+    },
+    "Toyota Corolla 1.6L (بنزين)": {
+        "brand": "Toyota",
+        "model": "Corolla 1.6 VVT-i",
+        "specs": "1.6L VVT-i / Gasoline NA",
+        "has_turbo": False,
+        "car_image": "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800&auto=format&fit=crop&q=80",
+        "bands": {
+            "bearing_wear": (30, 350),
+            "belt_squeal": (800, 2000),
+            "valve_clearance": (1000, 3200),
+        },
+    },
+}
 
-domain_choice = st.selectbox(
-    T['select_domain'],
-    [
-        "🚗 قطاع السيارات والمركبات (Automotive Hub)",
-        "🧊 قطاع التبريد والثلاجات التجارية (Refrigeration Hub)",
-        "🧺 قطاع الغسالات والأجهزة المنزلية (Home Appliances Hub)",
-        "⚙️ قطاع المحركات والمولدات الصناعية (Industrial Machinery Hub)"
-    ]
-)
 
-if "Automotive" in domain_choice:
-    primary_color = "#FF6B00"
-    domain_badge = "AUTOMOTIVE DIESEL & GASOLINE ENGINE LAB"
-    domain_icon = "🚘"
-elif "Refrigeration" in domain_choice:
-    primary_color = "#06B6D4"
-    domain_badge = "COMMERCIAL REFRIGERATION & FREEZER LAB"
-    domain_icon = "🧊"
-elif "Appliances" in domain_choice:
-    primary_color = "#8B5CF6"
-    domain_badge = "HOME APPLIANCES & MOTOR LAB"
-    domain_icon = "🧺"
-else:
-    primary_color = "#F59E0B"
-    domain_badge = "HEAVY INDUSTRIAL MACHINERY LAB"
-    domain_icon = "⚙️"
+# ==========================================
+# 3. دالة استخراج ومعالجة الصوت الحقيقي
+# ==========================================
+def read_uploaded_audio(uploaded_file):
+    bytes_data = uploaded_file.read()
+    buffer = io.BytesIO(bytes_data)
 
-st.markdown(
-    "<style>"
-    "#vg-tooltip-element, .vg-tooltip, .vega-bind, .vega-actions, div[class*='tooltip'] { display: none !important; }"
-    ".stApp { background-color: #0E1210; color: #E2E8F0; font-family: 'Inter', sans-serif; }"
-    ".brand-card { background: #141C18; border: 2px solid " + primary_color + "; border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 25px; }"
-    ".brand-title { color: " + primary_color + "; font-size: 32px; font-weight: 950; margin: 0; text-transform: uppercase; }"
-    ".designer-tag { color: #94A3B8; font-size: 12px; font-weight: 700; margin-top: 5px; }"
-    ".report-card { background-color: #141C18; border: 1px solid #22332B; border-radius: 12px; padding: 20px; margin-top: 15px; margin-bottom: 20px; }"
-    "[data-testid='stMetricValue'] { color: " + primary_color + " !important; font-size: 36px !important; font-weight: 800 !important; }"
-    "</style>",
-    unsafe_allow_html=True
-)
+    if HAS_SOUNDFILE:
+        try:
+            data, samplerate = sf.read(buffer)
+            if data.ndim > 1:
+                data = np.mean(data, axis=1)
+            return data.astype(np.float32), samplerate
+        except Exception:
+            pass
 
-st.markdown(
-    '<div class="brand-card">'
-    '<h1 class="brand-title">' + domain_icon + " " + T['title'] + '</h1>'
-    '<div style="color: ' + primary_color + '; font-weight: 800; font-size: 14px; margin-top: 6px;">' + domain_badge + '</div>'
-    '<div class="designer-tag">' + T['designer'] + '</div>'
-    '</div>',
-    unsafe_allow_html=True
-)
-
-st.markdown("### 📋 Step 1: Specialized Technical Parameters")
-
-make, model, year, engine_spec = "", "", "", ""
-
-if "Automotive" in domain_choice:
-    col1, col2 = st.columns(2)
-    with col1:
-        make = st.selectbox("Vehicle Brand (Make):", ["Hyundai", "Volkswagen", "Skoda", "Honda", "Mitsubishi", "Toyota", "Other"])
-        model = st.text_input("Vehicle Model:", "Santa Fe / Pajero / Caddy")
-    with col2:
-        year = st.text_input("Production Year:", "2017")
-        engine_spec = st.selectbox("Engine & Fuel System:", ["2.0L CRDi Turbo Diesel", "1.6L TDI / CRDi", "2.0L TSI Turbo", "V6 3.5L Gasoline", "1.6L GDI Injection"])
-
-elif "Refrigeration" in domain_choice:
-    col1, col2 = st.columns(2)
-    with col1:
-        make = st.selectbox("Freezer / Refrigerator Brand:", ["Commercial Ice Cream Freezer", "Ugur", "Frigoglass", "Carrier", "Danfoss", "Other"])
-        model = st.text_input("Unit Type / Model:", "Vertical Glass Door Display / Deep Freezer")
-    with col2:
-        year = st.text_input("Compressor Capacity:", "1/3 HP / 1/2 HP Commercial")
-        engine_spec = st.selectbox("Cooling System Type:", ["Hermetic Reciprocating Compressor", "Rotary Compressor Inverter", "Scroll Compressor Unit"])
-
-elif "Appliances" in domain_choice:
-    col1, col2 = st.columns(2)
-    with col1:
-        make = st.selectbox("Appliance Brand:", ["LG", "Samsung", "Bosch", "Whirlpool", "Other"])
-        model = st.text_input("Appliance Model:", "Front Load Automatic Washer")
-    with col2:
-        year = st.text_input("Capacity / Spin RPM:", "8 KG / 1400 RPM")
-        engine_spec = st.selectbox("Motor Architecture:", ["Inverter Direct Drive Motor", "Universal Brush Motor", "AC Induction Drum Motor"])
-
-else:
-    col1, col2 = st.columns(2)
-    with col1:
-        make = st.selectbox("Industrial Brand:", ["Caterpillar", "Cummins", "Perkins", "Deutz", "Other"])
-        model = st.text_input("Generator / Heavy Unit:", "Diesel Generating Set")
-    with col2:
-        year = st.text_input("Power Rating:", "50 KVA - 150 KVA")
-        engine_spec = st.selectbox("Heavy Engine Spec:", ["Heavy Duty Turbocharged Diesel", "Inline 6 Cylinder Industrial"])
-
-st.divider()
-
-st.markdown("### " + T['step2'])
-
-input_method = st.radio(T['source'], [T['mic'], T['upload']], horizontal=True)
-
-audio_bytes = None
-if T['mic'] in input_method:
-    recorded_audio = st.audio_input(T['rec_prompt'])
-    if recorded_audio:
-        audio_bytes = recorded_audio.read()
-else:
-    uploaded_file = st.file_uploader(T['up_prompt'], type=["wav", "mp3", "m4a"])
-    if uploaded_file:
-        audio_bytes = uploaded_file.read()
-
-def parse_universal_audio_signal(raw_bytes):
     try:
-        from scipy.io import wavfile
-        sr, signal = wavfile.read(io.BytesIO(raw_bytes))
-        if len(signal.shape) > 1:
-            signal = np.mean(signal, axis=1)
-        return signal.astype(np.float32), float(sr)
-    except Exception:
-        pass
+        buffer.seek(0)
+        samplerate, data = wavfile.read(buffer)
+        if data.ndim > 1:
+            data = np.mean(data, axis=1)
+        if data.dtype == np.int16:
+            data = data / 32768.0
+        elif data.dtype == np.int32:
+            data = data / 2147483648.0
+        return data.astype(np.float32), samplerate
+    except Exception as e:
+        st.error(f"خطأ في قراءة ملف الصوت: {e}")
+        return None, None
 
-    raw_samples = np.frombuffer(raw_bytes, dtype=np.uint8).astype(np.float32)
-    if len(raw_samples) > 200:
-        raw_samples = raw_samples[100:]
-    centered_samples = (raw_samples - 128.0) / 128.0
-    target_length = 66150
-    if len(centered_samples) > target_length:
-        step = len(centered_samples) // target_length
-        signal = centered_samples[::step][:target_length]
-    else:
-        signal = np.pad(centered_samples, (0, max(0, target_length - len(centered_samples))), mode='wrap')
-    return signal.astype(np.float32), 22050.0
 
-def safe_butter_filter(signal, sample_rate):
-    nyquist = 0.5 * sample_rate
-    if nyquist <= 100:
-        return signal
-    low = max(0.01, min(80.0 / nyquist, 0.4))
-    high = max(low + 0.05, min(4500.0 / nyquist, 0.95))
-    try:
-        b, a = butter(2, [low, high], btype='band')
-        return filtfilt(b, a, signal)
-    except Exception:
-        return signal
+# ==========================================
+# 4. محرك التشخيص الطيفي والصوري المتقدم
+# ==========================================
+def run_visual_acoustic_analysis(audio_data, sample_rate, vehicle_key):
+    vehicle = ENGINE_DATABASE[vehicle_key]
 
-def compute_micro_anomaly_score(clean_signal):
-    energy = float(np.mean(clean_signal**2))
-    zcr = float(np.mean(np.diff(np.signbit(clean_signal)) != 0))
-    fft_spec = np.abs(np.fft.rfft(clean_signal[:2048]))
-    
-    spectral_centroid = float(np.sum(fft_spec * np.arange(len(fft_spec))) / (np.sum(fft_spec) + 1e-6))
-    high_freq_ratio = float(np.sum(fft_spec[80:]) / (np.sum(fft_spec) + 1e-6))
-    
-    peak = float(np.max(np.abs(clean_signal)))
-    rms = float(np.sqrt(energy) + 1e-6)
-    crest_factor = peak / rms
-    
-    deviation_factor = (
-        (zcr * 45.0) +
-        (high_freq_ratio * 25.0) +
-        (max(0.0, crest_factor - 1.8) * 8.0) +
-        (max(0.0, spectral_centroid - 180.0) / 30.0)
+    rms_energy = float(np.sqrt(np.mean(audio_data**2)))
+    fft_vals = np.abs(np.fft.rfft(audio_data))
+    fft_freqs = np.fft.rfftfreq(len(audio_data), 1.0 / sample_rate)
+
+    total_power = np.sum(fft_vals)
+    spectral_centroid = (
+        float(np.sum(fft_freqs * fft_vals) / total_power)
+        if total_power > 0
+        else 0.0
     )
-    
-    anomaly_score = round(float(np.clip(deviation_factor * 1.35, 1.000, 99.999)), 3)
-    return anomaly_score, spectral_centroid, energy
 
-def get_domain_expert_diagnosis(domain, score, lang):
-    is_fault = score >= 40.0
-    
-    if "Automotive" in domain:
-        img_url = "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1000&q=80"
-        title = "🚘 Automotive Acoustic & Micro-Scan"
-        if is_fault:
-            zone = {"العربية": "عمود التيربو / خلوص البخاخات / تآكل صمامات", "English": "Turbocharger Bearing / Fuel Injector Clearance", "Русский": "Вал турбины / Зазор форсунок"}
-            rec = {"العربية": "تم رصد انحراف طيفي طفيف يشير إلى احتكاك معدني في محمل التيربو أو تفاوت في حقن الوقود. يُنصح بالفحص العيني الفوري.", "English": "Micro-deviation detected indicating minor metallic friction in turbocharger shaft or fuel injector clearance.", "Русский": "Обнаружено микроотклонение, указывающее на трение в вале турбины."}
-        else:
-            zone = {"العربية": "لا توجد أي أعطال (نظام سليم 100%)", "English": "None (System 100% Healthy)", "Русский": "Нет (Система исправна на 100%)"}
-            rec = {"العربية": "محرك المركبة يعمل بسلاسة تامة ومطابق للمعايير القياسية. لا توجد أي أصوات احتكاك أو طقطقة.", "English": "Engine operating with absolute smoothness. Zero abnormal acoustic friction or mechanical knocking detected.", "Русский": "Двигатель работает идеально плавно. Аномальных шумов не обнаружено."}
+    peak_index = np.argmax(fft_vals)
+    peak_freq = float(fft_freqs[peak_index])
 
-    elif "Refrigeration" in domain:
-        img_url = "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=1000&q=80"
-        title = "🧊 Commercial Refrigeration Micro-Scan"
-        if is_fault:
-            zone = {"العربية": "صمامات ضاغط التبريد الداخلية / رمان بلي مروحة المكثف", "English": "Compressor Internal Valves / Condenser Fan Bearings", "Русский": "Внутренние клапаны компрессора / Вентилятор"}
-            rec = {"العربية": "تم رصد ذبذبة غير طبيعية في ضاغط التبريد أو احتكاك في مروحة المكثف. يُنصح بفحص دورة التبريد.", "English": "Abnormal compressor pulsation or condenser fan bearing friction detected. Inspect refrigeration unit.", "Русский": "Обнаружена пульсация компрессора или трение вентилятора."}
-        else:
-            zone = {"العربية": "لا توجد أي أعطال (ضاغط التبريد سليم 100%)", "English": "None (Compressor 100% Healthy)", "Русский": "Нет (Компрессор исправен на 100%)"}
-            rec = {"العربية": "ضاغط التبريد وموتور الثلاجة يعملان بنسق هادئ ومنتظم وخالٍ تماماً من أي اهتزازات أو أعطال.", "English": "Refrigeration compressor and motor operating quietly with absolute mechanical stability.", "Русский": "Компрессор холодильника работает тихо и стабильно."}
+    detected_faults = []
+    component_img = COMPONENT_IMAGES["healthy"]
+    fault_type_key = "none"
 
-    elif "Appliances" in domain:
-        img_url = "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=1000&q=80"
-        title = "🧺 Home Appliance Motor Micro-Scan"
-        if is_fault:
-            zone = {"العربية": "رمان بلي حوض الغسيل / شداد القشاط", "English": "Drum Main Bearings / Drive Belt Tensioner", "Русский": "Подшипники барабана / Натяжной ремень"}
-            rec = {"العربية": "تم رصد احتكاك دقيق في بلي الحوض أو عدم توازن في دوران المحرك.", "English": "Micro-friction detected in drum bearings or slight motor rotational imbalance.", "Русский": "Обнаружено микротрение в подшипниках барабана."}
-        else:
-            zone = {"العربية": "لا توجد أي أعطال (الغسالة سليم 100%)", "English": "None (Appliance 100% Healthy)", "Русский": "Нет (Устройство исправно на 100%)"}
-            rec = {"العربية": "الموتور والحوض يعملان بكفاءة تامة ودون أي أصوات احتكاك في رومان البلي.", "English": "Motor and drum assembly operating in pristine condition without bearing friction.", "Русский": "Двигатель и барабан работают в идеальном состоянии."}
+    bands = vehicle["bands"]
 
+    # مطابقة الخلل وإسناد صورة القطعة الميكانيكية المحددة
+    if "bearing_wear" in bands and bands["bearing_wear"][0] <= peak_freq <= bands["bearing_wear"][1]:
+        detected_faults.append(
+            "تآكل في سبيكة الكرنك ومحامل المحرك (Bearing Wear)"
+        )
+        component_img = COMPONENT_IMAGES["bearings"]
+        fault_type_key = "Crankshaft Bearings"
+
+    elif "belt_squeal" in bands and bands["belt_squeal"][0] <= peak_freq <= bands["belt_squeal"][1]:
+        detected_faults.append(
+            "انزلاق/احتكاك في سير المجموعات والبكرات (Belt Squeal)"
+        )
+        component_img = COMPONENT_IMAGES["belt"]
+        fault_type_key = "Timing/Drive Belt"
+
+    elif "valve_clearance" in bands and bands["valve_clearance"][0] <= peak_freq <= bands["valve_clearance"][1]:
+        detected_faults.append(
+            "اتساع خلوص الصمامات واحتكاك التاكيهات (Valve Clearance)"
+        )
+        component_img = COMPONENT_IMAGES["valves"]
+        fault_type_key = "Valvetrain System"
+
+    elif "injector_clatter" in bands and bands["injector_clatter"][0] <= peak_freq <= bands["injector_clatter"][1]:
+        detected_faults.append(
+            "تفاوت وضغط عالي في بخاخات الوقود (Injector Clatter)"
+        )
+        component_img = COMPONENT_IMAGES["injectors"]
+        fault_type_key = "Fuel Injectors"
+
+    elif (
+        vehicle["has_turbo"]
+        and "turbo_shaft" in bands
+        and bands["turbo_shaft"][0] <= peak_freq <= bands["turbo_shaft"][1]
+    ):
+        detected_faults.append(
+            "احتكاك / خلل في اتزان عمود التيربو (Turbocharger Shaft)"
+        )
+        component_img = COMPONENT_IMAGES["turbo"]
+        fault_type_key = "Turbocharger"
+
+    if not detected_faults:
+        status = "Healthy / أداء ميكانيكي منتظم"
+        fault_summary = (
+            "لم يتم رصد أي انحراف طيفي خارج الحدود المسموحة للمحرك."
+        )
+        recommendations = "المحرك يعمل بحالة ممتازة ضمن المدى الهندسي الطبيعي."
     else:
-        img_url = "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80"
-        title = "⚙️ Heavy Industrial Machinery Scan"
-        if is_fault:
-            zone = {"العربية": "رمان بلي المولد الرئيسي / مضخة الحقن", "English": "Main Alternator Bearing / Fuel Injection Pump", "Русский": "Подшипники генератора / Топливный насос"}
-            rec = {"العربية": "تم رصد اهتزاز دوري غير طبيعي في محامل المولد أو مضخة الوقود.", "English": "Periodic abnormal vibration detected in alternator bearings or fuel pump.", "Русский": "Обнаружена периодическая вибрация в подшипниках генератора."}
-        else:
-            zone = {"العربية": "لا توجد أي أعطال (المعدة الصناعية سليمة 100%)", "English": "None (Machinery 100% Healthy)", "Русский": "Нет (Оборудование исправно на 100%)"}
-            rec = {"العربية": "المعدة الصناعية تعمل بتوازن واستقرار ممتازين وخالية من أي أعطال.", "English": "Industrial machinery operating with excellent acoustic balance and zero faults.", "Русский": "Промышленное оборудование работает с отличным балансом."}
+        status = "Critical / Inspection Required"
+        fault_summary = " | ".join(detected_faults)
+        recommendations = f"تم تشخيص خلل بصري وطيفي لسيارة {vehicle['brand']} {vehicle['model']}. القطعة التالفة المحددة بالمسح: ({fault_type_key})."
 
-    return zone[lang], rec[lang], img_url, title, is_fault
+    return {
+        "target_unit": f"{vehicle['brand']} {vehicle['model']}",
+        "specs": vehicle["specs"],
+        "car_image": vehicle["car_image"],
+        "component_image": component_img,
+        "fault_type_key": fault_type_key,
+        "status": status,
+        "fault_summary": fault_summary,
+        "centroid": round(spectral_centroid, 2),
+        "rms": round(rms_energy, 5),
+        "peak_freq": round(peak_freq, 2),
+        "recommendations": recommendations,
+    }
 
-if audio_bytes is not None:
-    st.audio(audio_bytes)
-    with st.spinner(T['analyzing']):
-        clean_signal, sr = parse_universal_audio_signal(audio_bytes)
-        clean_signal = safe_butter_filter(clean_signal, sr)
-        max_val = np.max(np.abs(clean_signal))
-        if max_val > 0:
-            clean_signal = clean_signal / max_val
-        
-        anomaly_score, spectral_centroid, energy = compute_micro_anomaly_score(clean_signal)
-        fault_zone, rec_text, visual_img_url, scan_title, is_fault = get_domain_expert_diagnosis(domain_choice, anomaly_score, lang_choice)
-        
-        st.divider()
-        
-        col_res1, col_res2 = st.columns(2)
-        with col_res1:
-            st.metric(label=T['score_label'], value=str(anomaly_score) + "%")
-        with col_res2:
-            if is_fault:
-                st.error(T['defect_title'])
-                st.caption("Deviation detected for " + make + " " + model + ".")
-            else:
-                st.success(T['normal_title'])
-                st.caption("System operating perfectly for " + make + " " + model + ".")
 
-        st.markdown("### " + T['report_title'])
-        status_color = '#EF4444' if is_fault else '#10B981'
-        status_text = "Critical / Deviation Requires Inspection" if is_fault else "Optimal / 100% Healthy"
-        
-        report_html = (
-            '<div class="report-card">'
-            '<h4 style="color: ' + primary_color + '; margin-top:0;">' + T["summary_header"] + '</h4>'
-            '<ul>'
-            '<li><strong>Target Unit:</strong> ' + make + ' ' + model + ' (' + year + ')</li>'
-            '<li><strong>Specification:</strong> ' + engine_spec + '</li>'
-            '<li><strong>' + T["status_label"] + '</strong> <span style="color:' + status_color + '; font-weight:bold;">' + status_text + '</span></li>'
-            '<li><strong>' + T["anomaly_zone"] + '</strong> ' + fault_zone + '</li>'
-            '<li><strong>Spectral Centroid Frequency:</strong> ' + str(round(spectral_centroid, 2)) + ' Hz</li>'
-            '<li><strong>Signal Energy Density:</strong> ' + str(round(energy, 6)) + ' RMS</li>'
-            '</ul>'
-            '<h4 style="color: #10B981; margin-top:15px;">' + T["rec_header"] + '</h4>'
-            '<p style="color:#CBD5E1; font-size:14px;">' + rec_text + '</p>'
-            '</div>'
-        )
-        st.markdown(report_html, unsafe_allow_html=True)
+# ==========================================
+# 5. واجهة المستخدم البصرية (Streamlit UI)
+# ==========================================
+st.title("🚘 ZINO EADE - Visual Acoustic Diagnostic Workstation")
+st.caption(
+    "المنظومة الذكية المتقدمة للتشخيص الطيفي والبصري المباشر لأعطال السيارات"
+)
 
-        st.markdown("### " + scan_title)
-        laser_color = '#EF4444' if is_fault else '#10B981'
-        
-        scanner_html = (
-            '<div style="position: relative; width: 100%; height: 280px; border-radius: 14px; overflow: hidden; border: 2px solid ' + primary_color + ';">'
-            '<img src="' + visual_img_url + '" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.75);" />'
-            '<div style="position: absolute; left: 0; width: 100%; height: 4px; background: ' + laser_color + '; box-shadow: 0 0 15px 5px ' + laser_color + '; animation: laserScan 2.5s infinite ease-in-out;"></div>'
-            '<div style="position: absolute; top: 12px; left: 12px; background: rgba(20,27,24,0.85); border: 1px solid ' + laser_color + '; padding: 6px 14px; border-radius: 8px; color: ' + laser_color + '; font-size: 12px; font-weight: bold;">'
-            '● MICRO-SCANNER ACTIVE | ' + make.upper() +
-            '</div></div>'
-            '<style>'
-            '@keyframes laserScan { 0% { top: 0%; opacity: 0.8; } 50% { top: 92%; opacity: 1; } 100% { top: 0%; opacity: 0.8; } }'
-            '</style>'
-        )
-        components.html(scanner_html, height=300)
+st.sidebar.header("🎯 تحديد وحدة الفحص")
+selected_vehicle = st.sidebar.selectbox(
+    "اختر نوع السيارة والمحرك المباشر:", list(ENGINE_DATABASE.keys())
+)
 
-        st.markdown("### " + T['waveform_title'])
-        st.line_chart(clean_signal[::150])
+uploaded_file = st.sidebar.file_uploader(
+    "ارفع تسجيل صوت المحرك (WAV / MP3):", type=["wav", "mp3"]
+)
+
+if st.sidebar.button("بدء المسح البصري والتشخيص الطيفي"):
+    if uploaded_file is None:
+        st.warning("يرجى رفع ملف صوت المحرك أولاً للبدء.")
+    else:
+        with st.spinner(
+            "جاري معالجة موجات الصوت وإسقاط المسح البصري على المكونات..."
+        ):
+            audio_data, sample_rate = read_uploaded_audio(uploaded_file)
+
+            if audio_data is not None:
+                res = run_visual_acoustic_analysis(
+                    audio_data, sample_rate, selected_vehicle
+                )
+
+                st.markdown("---")
+
+                # عرض الصورة المركبة (صورة السيارة + صورة القطعة المحددة)
+                col1, col2 = st.columns(2)
+
+                with col1:
+                    st.markdown(f"### 🚗 وحدة الفحص: {res['target_unit']}")
+                    st.image(
+                        res["car_image"],
+                        caption=f"Target: {res['target_unit']} ({res['specs']})",
+                        use_container_width=True,
+                    )
+
+                with col2:
+                    st.markdown(
+                        f"### 🔍 القطعة المحددة بالمسح: {res['fault_type_key']}"
+                    )
+                    st.image(
+                        res["component_image"],
+                        caption=f"Component Diagnostic Focus: {res['fault_type_key']}",
+                        use_container_width=True,
+                    )
+
+                st.markdown("---")
+                st.markdown("### 📊 التقرير الطيفي والهندسي:")
+
+                m1, m2, m3, m4 = st.columns(4)
+                m1.metric("حالة الأداء", res["status"])
+                m2.metric("Peak Frequency", f"{res['peak_freq']} Hz")
+                m3.metric("Spectral Centroid", f"{res['centroid']} Hz")
+                m4.metric("Signal RMS Energy", f"{res['rms']}")
+
+                st.write(f"• **المواصفات:** {res['specs']}")
+                st.write(f"• **القطعة المرشحة للخلل:** {res['fault_summary']}")
+
+                st.markdown("---")
+                st.markdown("### 💡 التوصية الهندسية المباشرة:")
+                st.info(res["recommendations"])
