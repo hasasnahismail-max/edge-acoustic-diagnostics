@@ -354,12 +354,10 @@ def generate_synthetic_audio(fault_type="bearing_wear", sr=22050, duration=3.0):
     base = 0.2 * np.sin(2 * np.pi * 50 * t)
     f_sig = 0.45 * np.sin(2 * np.pi * 180 * t) if fault_type == "bearing_wear" else (0.5 * np.sin(2 * np.pi * 3200 * t) if fault_type == "turbo_shaft" else 0.0)
     return (base + f_sig + np.random.normal(0, 0.02, len(t))).astype(np.float32), sr
-
 def run_diagnostic(audio_data, sample_rate, unit_key):
     unit = UNIVERSAL_DATABASE[unit_key]
     rms_energy = float(np.sqrt(np.mean(audio_data**2)))
-fft_vals = np.abs(np.fft.rfft(audio_data))
-np.fft.rfft(audio_data))
+    fft_vals = np.abs(np.fft.rfft(audio_data))
     fft_freqs = np.fft.rfftfreq(len(audio_data), 1.0 / sample_rate)
 
     total_power = np.sum(fft_vals)
