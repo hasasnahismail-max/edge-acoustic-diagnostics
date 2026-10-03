@@ -347,62 +347,82 @@ if run_click or "has_run" in st.session_state:
             time.sleep(delay)
             
         progress_text.empty()
-        progress_bar.empty()
+        if audio_data is not None:
+    res = run_diagnostic(audio_data, sample_rate, selected_unit)
+    tab1, tab2, tab3, tab4 = st.tabs([L["tab_visual"], L["tab_fft"], L["tab_recs"], L["tab_report"]])
 
-    audio_data, sample_rate = None, 22050
-    if source_mode == L["upload_mode"]:
-        if audio_file is not None:
-            audio_data, sample_rate = read_any_audio(audio_file)
-        else:
-            st.warning("⚠️ Please upload an audio file first / الرجاء رفع ملف صوتي أولاً.")
-    else:
-        audio_data, sample_rate = generate_synthetic_audio(synthetic_fault)
+    with tab1:
+        c1, c2 = st.columns(2)
+        with c1:
+            st.markdown(f"#### 🚙 {L['target_unit']} {res['target_unit']}")
+            st.markdown(f'''
+                <div class="laser-container">
+                    <div class="laser-line"></div>
+                    <img src="{res['unit_image']}" alt="Target Unit" style="width:100%; height:320px; object-fit:cover;">
+                </div>
+            ''', unsafe_allow_html=True)
+        with c2:
+            st.markdown(f"#### 🎯 {L['faulty_comp']} {res['fault_type_key']}")
+            st.markdown(f'''
+                <div style="border-radius: 12px; overflow: hidden; border: 2px solid #30363d; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                    <img src="{res['component_image']}" alt="Component Anomaly" style="width:100%; height:320px; object-fit:cover;">
+                </div>
+            ''', unsafe_allow_html=True)
+        
+        st.markdown("---")
+        m1, m2, m3, m4 = st.columns(4)
+        m1.markdown(f'<div class="metric-card"><small>{L["status_label"]}</small><br><span class="{res["status_class"]}">{res["status_text"]}</span></div>', unsafe_allow_html=True)
+        m2.markdown(f'<div class="metric-card"><small>{L["health_index"]}</small><h2 style="color:{theme["color"]};margin:0">{res["health_score"]}%</h2></div>', unsafe_allow_html=True)
+        m3.markdown(f'<div class="metric-card"><small>{L["peak_freq"]}</small><h2 style="margin:0">{res["peak_freq"]} Hz</h2></div>', unsafe_allow_html=True)
+        m4.markdown(f'<div class="metric-card"><small>{L["centroid"]}</small><h2 style="margin:0">{res["centroid"]} Hz</h2></div>', unsafe_allow_html=True)
 
-    if audio_data is not None:
-        res = run_diagnostic(audio_data, sample_rate, selected_unit)
-        tab1, tab2, tab3, tab4 = st.tabs([L["tab_visual"], L["tab_fft"], L["tab_recs"], L["tab_report"]])
+    with tab2:
+        fig = go.Figure()
+        mask = res["fft_freqs"] <= 8000
+        fig.add_trace(go.Scatter(
+            x=res["fft_freqs"][mask], 
+            y=res["fft_vals"][mask], 
+            mode="lines", 
+            line=dict(color=theme["color"], width=2.5)
+        ))
+        fig.update_layout(
+            template="plotly_dark",
+            xaxis_title="Frequency (Hz)",
+            yaxis_title="Amplitude Spectrum Density",
+            plot_bgcolor="#0d1117",
+            paper_bgcolor="#0d1117",
+            margin=dict(l=20, r=20, t=30, b=20)
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
-        with tab1:
-            c1, c2 = st.columns(2)
-            with c1:
-                st.markdown(f"#### 🚙 {L['target_unit']} {res['target_unit']}")
-                st.markdown(f'''
-                    <div class="laser-container">
-                        <div class="laser-line"></div>
-                        <img src="{res['unit_image']}" alt="Target Unit" style="width:100%; height:320px; object-fit:cover;">
-                    </div>
-                ''', unsafe_allow_html=True)
-            with c2:
-                st.markdown(f"#### 🎯 {L['faulty_comp']} {res['fault_type_key']}")
-                st.markdown(f'''
-                    <div style="border-radius: 12px; overflow: hidden; border: 2px solid #30363d; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
-                        <img src="{res['component_image']}" alt="Component Anomaly" style="width:100%; height:320px; object-fit:cover;">
-                    </div>
-                ''', unsafe_allow_html=True)
-            
-            st.markdown("---")
-            m1, m2, m3, m4 = st.columns(4)
-            m1.markdown(f'<div class="metric-card"><small>{L["status_label"]}</small><br><span class="{res["status_class"]}">{res["status_text"]}</span></div>', unsafe_allow_html=True)
-            m2.markdown(f'<div class="metric-card"><small>{L["health_index"]}</small><h2 style="color:{theme["color"]};margin:0">{res["health_score"]}%</h2></div>', unsafe_allow_html=True)
-            m3.markdown(f'<div class="metric-card"><small>{L["peak_freq"]}</small><h2 style="margin:0">{res["peak_freq"]} Hz</h2></div>', unsafe_allow_html=True)
-            m4.markdown(f'<div class="metric-card"><small>{L["centroid"]}</small><h2 style="margin:0">{res["centroid"]} Hz</h2></div>', unsafe_allow_html=True)
+    with tab3:
+        st.info(res["recommendations"])
+        st.markdown("### Detected Fault Signatures:")
+        for f in res["detected_faults"]:
+            st.write(f"• **{f}**")
 
-        with tab2:
-                    with tab2:
-            fig = go.Figure()
-            mask = res["fft_freqs"] <= 8000
-            fig.add_trace(go.Scatter(
-                x=res["fft_freqs"][mask], 
-                y=res["fft_vals"][mask], 
-                mode="lines", 
-                line=dict(color=theme["color"], width=2.5)
-            ))
-            fig.update_layout(
-                template="plotly_dark",
-                xaxis_title="Frequency (Hz)",
-                yaxis_title="Amplitude Spectrum Density",
-                plot_bgcolor="#0d1117",
-                paper_bgcolor="#0d1117",
-                margin=dict(l=20, r=20, t=30, b=20)
-            )
-            st.plotly_chart(fig, use_container_width=True)
+    with tab4:
+        report_text = f"""==================================================
+ZINO EADE ACOUSTIC DIAGNOSTIC INSPECTION REPORT
+{L['designer']}
+==================================================
+Target Unit       : {res['target_unit']}
+Engineering Class : {res['category']}
+Specification     : {res['specs']}
+Engine Code       : {res['code']}
+Oil Spec          : {res['oil']}
+Health Status     : {res['status_text']}
+Health Index      : {res['health_score']}%
+--------------------------------------------------
+ACOUSTIC SPECTRAL METRICS:
+Dominant Peak Freq: {res['peak_freq']} Hz
+Spectral Centroid : {res['centroid']} Hz
+Signal RMS Energy : {res['rms']} RMS Density
+--------------------------------------------------
+DETECTED COMPONENT FAULTS:
+{chr(10).join(['- ' + f for f in res['detected_faults']])}
+==================================================
+Platform Designer : Ismail Hasasna (إسماعيل حساسنة)
+"""
+        st.code(report_text, language="text")
+        st.download_button(L["download_rep"], report_text, file_name="ZINO_EADE_Inspection_Report.txt")
