@@ -1,21 +1,20 @@
 import io
-import json
 import numpy as np
 import plotly.graph_objects as go
 import scipy.io.wavfile as wavfile
 import scipy.signal as signal
 import streamlit as st
 
-# ضبط إعدادات الصفحة الاحترافية
+# ضبط إعدادات الصفحة
 st.set_page_config(
-    page_title="ZINO EADE - Universal Acoustic Diagnostic Workstation",
+    page_title="ZINO EADE - Universal Acoustic Diagnostic Platform",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
 # ==========================================
-# 1. تصميم CSS هندسي عالي الجودة (Cyberpunk UI)
+# 1. تصميم CSS هندسي عالي الجودة
 # ==========================================
 st.markdown(
     """
@@ -25,22 +24,14 @@ st.markdown(
         color: #c9d1d9;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    
     .metric-card {
         background: rgba(22, 27, 34, 0.85);
         border: 1px solid rgba(48, 54, 61, 0.9);
         border-radius: 12px;
         padding: 20px;
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(10px);
         margin-bottom: 15px;
-        transition: transform 0.3s ease, border-color 0.3s ease;
     }
-    .metric-card:hover {
-        transform: translateY(-4px);
-        border-color: #58a6ff;
-    }
-
     .status-badge-healthy {
         background: rgba(46, 160, 67, 0.2);
         color: #3fb950;
@@ -48,9 +39,7 @@ st.markdown(
         padding: 8px 16px;
         border-radius: 20px;
         font-weight: 700;
-        font-size: 1rem;
         display: inline-block;
-        box-shadow: 0 0 15px rgba(63, 185, 80, 0.3);
     }
     .status-badge-critical {
         background: rgba(248, 81, 73, 0.2);
@@ -59,11 +48,8 @@ st.markdown(
         padding: 8px 16px;
         border-radius: 20px;
         font-weight: 700;
-        font-size: 1rem;
         display: inline-block;
-        box-shadow: 0 0 15px rgba(248, 81, 73, 0.3);
     }
-
     .stButton>button {
         background: linear-gradient(90deg, #1f6beb 0%, #238636 100%);
         color: #ffffff;
@@ -71,16 +57,8 @@ st.markdown(
         border-radius: 8px;
         border: none;
         padding: 12px 28px;
-        font-size: 1.05rem;
-        box-shadow: 0 0 20px rgba(31, 107, 235, 0.5);
-        transition: all 0.3s ease;
         width: 100%;
     }
-    .stButton>button:hover {
-        box-shadow: 0 0 30px rgba(35, 134, 54, 0.8);
-        transform: scale(1.02);
-    }
-    
     h1, h2, h3, h4 {
         color: #f0f6fc !important;
         font-weight: 700;
@@ -107,10 +85,9 @@ COMPONENT_IMAGES = {
 }
 
 # ==========================================
-# 3. قاعدة البيانات العالمية الشاملة (Universal Database)
+# 3. قاعدة البيانات العالمية الشاملة
 # ==========================================
 UNIVERSAL_DATABASE = {
-    # ------------------ أجهزة منزلية وصناعية ------------------
     "ضاغط ثلاجة (Inverter Refrigerator Compressor)": {
         "category": "Household & HVAC",
         "brand": "LG / General Electric",
@@ -121,7 +98,6 @@ UNIVERSAL_DATABASE = {
         "bands": {
             "bearing_wear": (20, 280),
             "compressor_valves": (850, 2400),
-            "motor_vibration": (40, 150),
         },
         "component_names": {
             "bearing_wear": "محامل الكرنك والضاغط (Crank Bearings)",
@@ -137,46 +113,13 @@ UNIVERSAL_DATABASE = {
         "unit_image": "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=800&auto=format&fit=crop&q=80",
         "bands": {
             "bearing_wear": (30, 320),
-            "motor_brushes": (1200, 3600),
             "belt_squeal": (700, 1900),
         },
         "component_names": {
             "bearing_wear": "محامل الحلة والمحرك (Drum Bearings)",
-            "motor_brushes": "فحمات التلامس الكهربائي (Carbon Brushes)",
             "belt_squeal": "قشاط / سير الحركة (Drive Belt)",
         },
     },
-    "مضخة مياه كهربائية (Electric Water Pump 2HP)": {
-        "category": "Household & HVAC",
-        "brand": "Pedrollo / Grundfos",
-        "model": "CPM-158 Centrifugal Water Pump",
-        "specs": "2.0 HP Single-Phase Induction Motor",
-        "has_turbo": False,
-        "unit_image": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80",
-        "bands": {
-            "bearing_wear": (20, 260),
-            "pump_impeller": (900, 2700),
-        },
-        "component_names": {
-            "bearing_wear": "محامل المحرك الكهربائي (Motor Bearings)",
-            "pump_impeller": "عنفة / فراشة المضخة (Pump Impeller)",
-        },
-    },
-    "محرك حثي صناعي (Industrial 3-Phase AC Motor 15kW)": {
-        "category": "Industrial Automation",
-        "brand": "Siemens / ABB",
-        "model": "1LE1 Severe Duty Industrial Motor",
-        "specs": "15 kW / 400V 3-Phase 50Hz Heavy Unit",
-        "has_turbo": False,
-        "unit_image": "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=80",
-        "bands": {
-            "bearing_wear": (20, 300),
-        },
-        "component_names": {
-            "bearing_wear": "محامل الدوران الأمامية والخلفية (Drive Bearings)",
-        },
-    },
-    # ------------------ معدات ثقيلة وزراعية ------------------
     "محرك حفار JCB (JCB EcoMAX 4.4L Turbo)": {
         "category": "Heavy Machinery",
         "brand": "JCB Construction Equipment",
@@ -195,7 +138,6 @@ UNIVERSAL_DATABASE = {
             "injector_clatter": "بخاخات الديزل الضغط العالي (Common Rail Injectors)",
         },
     },
-    # ------------------ سيارات ومركبات ------------------
     "VW Caddy 1.6 TDI (تنفس طبيعي / بدون تيربو)": {
         "category": "Automotive Passenger",
         "brand": "Volkswagen",
@@ -254,9 +196,8 @@ UNIVERSAL_DATABASE = {
     },
 }
 
-
 # ==========================================
-# 4. معالج الصوت السريع
+# 4. معالج الصوت والدوال
 # ==========================================
 def read_wav_safe(uploaded_file):
     try:
@@ -271,9 +212,8 @@ def read_wav_safe(uploaded_file):
             data = data / 2147483648.0
         return data.astype(np.float32), samplerate
     except Exception:
-        st.error("⚠️ يرجى استخدام ملف بصيغة WAV معيارية.")
+        st.error("⚠️ يرجى رفع ملف بصيغة WAV صالحة.")
         return None, None
-
 
 def generate_synthetic_audio(fault_type="bearing_wear", sr=22050, duration=3.0):
     t = np.linspace(0, duration, int(sr * duration))
@@ -289,10 +229,6 @@ def generate_synthetic_audio(fault_type="bearing_wear", sr=22050, duration=3.0):
     noise = np.random.normal(0, 0.02, len(t))
     return (base + f_sig + noise).astype(np.float32), sr
 
-
-# ==========================================
-# 5. محرك التشخيص والتقرير
-# ==========================================
 def run_full_diagnostic(audio_data, sample_rate, selected_unit_key):
     unit = UNIVERSAL_DATABASE[selected_unit_key]
     rms_energy = float(np.sqrt(np.mean(audio_data**2)))
@@ -300,11 +236,7 @@ def run_full_diagnostic(audio_data, sample_rate, selected_unit_key):
     fft_freqs = np.fft.rfftfreq(len(audio_data), 1.0 / sample_rate)
 
     total_power = np.sum(fft_vals)
-    spectral_centroid = (
-        float(np.sum(fft_freqs * fft_vals) / total_power)
-        if total_power > 0
-        else 0.0
-    )
+    spectral_centroid = float(np.sum(fft_freqs * fft_vals) / total_power) if total_power > 0 else 0.0
     peak_freq = float(fft_freqs[np.argmax(fft_vals)])
 
     bands = unit["bands"]
@@ -315,82 +247,43 @@ def run_full_diagnostic(audio_data, sample_rate, selected_unit_key):
     component_img = COMPONENT_IMAGES["healthy"]
     health_score = 100
 
-    if (
-        "bearing_wear" in bands
-        and bands["bearing_wear"][0] <= peak_freq <= bands["bearing_wear"][1]
-    ):
-        name_str = component_names.get(
-            "bearing_wear", "محامل الكرنك (Bearings Wear)"
-        )
+    if "bearing_wear" in bands and bands["bearing_wear"][0] <= peak_freq <= bands["bearing_wear"][1]:
+        name_str = component_names.get("bearing_wear", "محامل الكرنك (Bearings Wear)")
         detected_faults.append(f"تآكل في {name_str}")
-        component_img = COMPONENT_IMAGES.get(
-            "motor_bearings", COMPONENT_IMAGES["bearings"]
-        )
+        component_img = COMPONENT_IMAGES.get("motor_bearings", COMPONENT_IMAGES["bearings"])
         fault_type_key = "Bearing Wear / السبيكة والمحامل"
         health_score = 42
 
-    elif (
-        "compressor_valves" in bands
-        and bands["compressor_valves"][0]
-        <= peak_freq
-        <= bands["compressor_valves"][1]
-    ):
-        name_str = component_names.get(
-            "compressor_valves", "صمامات الضاغط (Reed Valves)"
-        )
+    elif "compressor_valves" in bands and bands["compressor_valves"][0] <= peak_freq <= bands["compressor_valves"][1]:
+        name_str = component_names.get("compressor_valves", "صمامات الضاغط (Reed Valves)")
         detected_faults.append(f"انحراف في {name_str}")
         component_img = COMPONENT_IMAGES["compressor_valves"]
         fault_type_key = "Compressor Reed Valves / صمامات الضاغط"
         health_score = 38
 
-    elif (
-        "belt_squeal" in bands
-        and bands["belt_squeal"][0] <= peak_freq <= bands["belt_squeal"][1]
-    ):
-        name_str = component_names.get(
-            "belt_squeal", "سير المجموعات (Drive Belt)"
-        )
+    elif "belt_squeal" in bands and bands["belt_squeal"][0] <= peak_freq <= bands["belt_squeal"][1]:
+        name_str = component_names.get("belt_squeal", "سير المجموعات (Drive Belt)")
         detected_faults.append(f"انزلاق/ارتخاء في {name_str}")
         component_img = COMPONENT_IMAGES["belt"]
         fault_type_key = "Drive Belt / سير الحركة"
         health_score = 65
 
-    elif (
-        "valve_clearance" in bands
-        and bands["valve_clearance"][0]
-        <= peak_freq
-        <= bands["valve_clearance"][1]
-    ):
-        name_str = component_names.get(
-            "valve_clearance", "صمامات المحرك (Valvetrain)"
-        )
+    elif "valve_clearance" in bands and bands["valve_clearance"][0] <= peak_freq <= bands["valve_clearance"][1]:
+        name_str = component_names.get("valve_clearance", "صمامات المحرك (Valvetrain)")
         detected_faults.append(f"اتساع خلوص {name_str}")
         component_img = COMPONENT_IMAGES["valves"]
         fault_type_key = "Valvetrain / صمامات المحرك"
         health_score = 50
 
-    elif (
-        "injector_clatter" in bands
-        and bands["injector_clatter"][0]
-        <= peak_freq
-        <= bands["injector_clatter"][1]
-    ):
-        name_str = component_names.get(
-            "injector_clatter", "بخاخات الوقود (Injectors)"
-        )
+    elif "injector_clatter" in bands and bands["injector_clatter"][0] <= peak_freq <= bands["injector_clatter"][1]:
+        name_str = component_names.get("injector_clatter", "بخاخات الوقود (Injectors)")
         detected_faults.append(f"تفاوت ضغط في {name_str}")
         component_img = COMPONENT_IMAGES["injectors"]
         fault_type_key = "Fuel Injectors / البخاخات"
         health_score = 45
 
-    elif (
-        unit["has_turbo"]
-        and "turbo_shaft" in bands
-        and bands["turbo_shaft"][0] <= peak_freq <= bands["turbo_shaft"][1]
-    ):
-        name_str = component_names.get(
-            "turbo_shaft", "عمود التيربو (Turbo Shaft)"
-        )
+    elif unit["has_turbo"] and "turbo_shaft" in bands and bands["turbo_shaft"][0] <= peak_freq <= bands["turbo_shaft"][1]:
+        name_str = component_names.get("turbo_shaft", "عمود التيربو (Turbo Shaft)")
         detected_faults.append(f"احتراق/احتكاك في {name_str}")
         component_img = COMPONENT_IMAGES["turbo"]
         fault_type_key = "Turbocharger Shaft / عمود التيربو"
@@ -419,21 +312,14 @@ def run_full_diagnostic(audio_data, sample_rate, selected_unit_key):
         "peak_freq": round(peak_freq, 2),
         "centroid": round(spectral_centroid, 2),
         "rms": round(rms_energy, 5),
-        "detected_faults": (
-            detected_faults
-            if detected_faults
-            else ["لا يوجد انحرافات طيفية"]
-        ),
+        "detected_faults": detected_faults if detected_faults else ["لا يوجد انحرافات طيفية"],
         "recommendations": recommendations,
         "fft_freqs": fft_freqs,
         "fft_vals": fft_vals,
-        "audio_data": audio_data,
-        "sample_rate": sample_rate,
     }
 
-
 # ==========================================
-# 6. الواجهة والتفاعل
+# 5. الواجهة والتفاعل
 # ==========================================
 st.markdown(
     """
@@ -448,39 +334,23 @@ st.markdown(
 )
 
 st.sidebar.header("🎯 إعدادات وحدة الفحص")
-category_list = sorted(
-    list(set(v["category"] for v in UNIVERSAL_DATABASE.values()))
-)
+category_list = sorted(list(set(v["category"] for v in UNIVERSAL_DATABASE.values())))
 selected_category = st.sidebar.selectbox("اختر فئة المعدة:", category_list)
 
-filtered_units = {
-    k: v
-    for k, v in UNIVERSAL_DATABASE.items()
-    if v["category"] == selected_category
-}
-selected_unit = st.sidebar.selectbox(
-    "اختر الطراز والمحرك المباشر:", list(filtered_units.keys())
-)
+filtered_units = {k: v for k, v in UNIVERSAL_DATABASE.items() if v["category"] == selected_category}
+selected_unit = st.sidebar.selectbox("اختر الطراز والمحرك المباشر:", list(filtered_units.keys()))
 
 st.sidebar.markdown("---")
 st.sidebar.header("🔊 مصدر الصوت")
-source_mode = st.sidebar.radio(
-    "اختر طريقة وضع الصوت:",
-    ("رفع ملف صوتي (WAV)", "محاكي الموجات الهندسي (Demo Engine)"),
-)
+source_mode = st.sidebar.radio("اختر طريقة وضع الصوت:", ("رفع ملف صوتي (WAV)", "محاكي الموجات الهندسي (Demo Engine)"))
 
 audio_file = None
 synthetic_fault = "bearing_wear"
 
 if source_mode == "رفع ملف صوتي (WAV)":
-    audio_file = st.sidebar.file_uploader(
-        "ارفع ملف الصوت المطلوب إخضاعه للفحص:", type=["wav"]
-    )
+    audio_file = st.sidebar.file_uploader("ارفع ملف الصوت المطلوب إخضاعه للفحص:", type=["wav"])
 else:
-    synthetic_fault = st.sidebar.selectbox(
-        "اختر نمط الخلل المراد محاكاته:",
-        ["bearing_wear", "turbo_shaft", "injector_clatter", "healthy"],
-    )
+    synthetic_fault = st.sidebar.selectbox("اختر نمط الخلل المراد محاكاته:", ["bearing_wear", "turbo_shaft", "injector_clatter", "healthy"])
 
 run_button = st.sidebar.button("🚀 بدء المسح والتشخيص المباشر")
 
@@ -499,14 +369,12 @@ if run_button:
     if audio_data is not None:
         res = run_full_diagnostic(audio_data, sample_rate, selected_unit)
 
-        tab1, tab2, tab3, tab4 = st.tabs(
-            [
-                "📷 المسح البصري المباشر",
-                "📈 التحليل الطيفي والموجي (FFT)",
-                "🔧 التوصيات والقطع التالفة",
-                "📑 التقرير الهندسي الشامل",
-            ]
-        )
+        tab1, tab2, tab3, tab4 = st.tabs([
+            "📷 المسح البصري المباشر",
+            "📈 التحليل الطيفي والموجي (FFT)",
+            "🔧 التوصيات والقطع التالفة",
+            "📑 التقرير الهندسي الشامل"
+        ])
 
         with tab1:
             st.markdown("### 🔍 نتيجة المسح البصري الثنائي")
@@ -516,24 +384,62 @@ if run_button:
                 st.image(res["unit_image"], use_container_width=True)
 
             with c2:
-                st.markdown(
-                    f"#### 🎯 القطعة المحددة بالمسح: {res['fault_type_key']}"
-                )
+                st.markdown(f"#### 🎯 القطعة المحددة بالمسح: {res['fault_type_key']}")
                 st.image(res["component_image"], use_container_width=True)
 
             st.markdown("---")
             m1, m2, m3, m4 = st.columns(4)
-            m1.markdown(
-                f'<div class="metric-card"><small>حالة الأداء</small><br><span class="{res["status_class"]}">{res["status_text"]}</span></div>',
-                unsafe_allow_html=True,
+            m1.markdown(f'<div class="metric-card"><small>حالة الأداء</small><br><span class="{res["status_class"]}">{res["status_text"]}</span></div>', unsafe_allow_html=True)
+            m2.markdown(f'<div class="metric-card"><small>مؤشر السلامة</small><h2 style="color:#58a6ff;margin:0">{res["health_score"]}%</h2></div>', unsafe_allow_html=True)
+            m3.markdown(f'<div class="metric-card"><small>Peak Frequency</small><h2 style="color:#f0f6fc;margin:0">{res["peak_freq"]} Hz</h2></div>', unsafe_allow_html=True)
+            m4.markdown(f'<div class="metric-card"><small>Spectral Centroid</small><h2 style="color:#f0f6fc;margin:0">{res["centroid"]} Hz</h2></div>', unsafe_allow_html=True)
+
+        with tab2:
+            st.markdown("### 📈 التحليل الطيفي ذو النطاق العريض (FFT Spectrum)")
+            freq_fig = go.Figure()
+            freq_mask = res["fft_freqs"] <= 8000
+            freq_fig.add_trace(go.Scatter(x=res["fft_freqs"][freq_mask], y=res["fft_vals"][freq_mask], mode="lines", name="FFT Power Spectrum", line=dict(color="#58a6ff", width=1.5)))
+            freq_fig.add_vline(x=res["peak_freq"], line_dash="dash", line_color="#f85149", annotation_text=f"Peak: {res['peak_freq']} Hz")
+            freq_fig.update_layout(template="plotly_dark", xaxis_title="Frequency (Hz)", yaxis_title="Amplitude")
+            st.plotly_chart(freq_fig, use_container_width=True)
+
+        with tab3:
+            st.markdown("### 🛠️ التوصيات الميكانيكية والهندسية المباشرة")
+            st.info(res["recommendations"])
+            st.markdown("#### 📋 ملخص القطع التالفة المكتشفة بالمسح:")
+            for fault in res["detected_faults"]:
+                st.write(f"• **{fault}**")
+
+        with tab4:
+            st.markdown("### 📑 تقرير الفحص الأكاديمي الصادر عن ZINO EADE")
+            report_text = f"""==================================================
+ZINO EADE - ACOUSTIC DIAGNOSTIC INSPECTION REPORT
+==================================================
+Target Unit       : {res['target_unit']}
+Engineering Class : {res['category']}
+Specification     : {res['specs']}
+Health Status     : {res['status_text']}
+Health Index      : {res['health_score']}%
+--------------------------------------------------
+ACOUSTIC SPECTRAL METRICS:
+Dominant Peak Freq: {res['peak_freq']} Hz
+Spectral Centroid : {res['centroid']} Hz
+Signal RMS Energy : {res['rms']} RMS Density
+--------------------------------------------------
+DETECTED COMPONENT FAULTS:
+{chr(10).join(['- ' + f for f in res['detected_faults']])}
+
+ENGINEERING RECOMMENDATION:
+{res['recommendations']}
+==================================================
+Generated by ZINO EADE Acoustic Diagnostic Platform
+"""
+            st.code(report_text, language="text")
+            st.download_button(
+                label="📥 تحميل التقرير بصيغة نصية (TXT Report)",
+                data=report_text,
+                file_name=f"ZINO_EADE_Report_{res['target_unit'].replace(' ', '_')}.txt",
+                mime="text/plain",
             )
-            m2.markdown(
-                f'<div class="metric-card"><small>مؤشر السلامة</small><h2 style="color:#58a6ff;margin:0">{res["health_score"]}%</h2></div>',
-                unsafe_allow_html=True,
-            )
-            m3.markdown(
-                f'<div class="metric-card"><small>Peak Frequency</small><h2 style="color:#f0f6fc;margin:0">{res["peak_freq"]} Hz</h2></div>',
-                unsafe_allow_html=True,
-            )
-            m4.markdown(
-                f'<div cla
+else:
+    st.info("👈 يرجى تحديد وحدة الفحص من القائمة الجانبية ثم الضغط على **[بدء المسح والتشخيص المباشر]**.")
