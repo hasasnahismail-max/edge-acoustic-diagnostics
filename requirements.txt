@@ -1,7 +1,7 @@
 streamlit
 numpy
-scipy
 plotly
+scipy
 librosa
 soundfile
 pydub
