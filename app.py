@@ -362,27 +362,24 @@ if run_click or "has_run" in st.session_state:
 
     if audio_data is not None:
         res = run_diagnostic(audio_data, sample_rate, selected_unit)
-        tab1, tab2, tab3, tab4 = st.tabs([L["tab_visual"], L["tab_fft"], L["tab_recs"], L["tab_report"]])
-
-        with tab1:
-            c1, c2 = st.columns(2)
-            with c1:
-                st.markdown(f"#### 🚙 {L['target_unit']} {res['target_unit']}")
-                st.markdown(f'''
-                    <div class="laser-container">
-                        <div class="laser-line"></div>
-                        <img src="{res['unit_image']}" alt="Target Unit" style="width:100%; height:320px; object-fit:cover;">
-                    </div>
-                ''', unsafe_allow_html=True)
-            with c2:
-                st.markdown(f"#### 🎯 {L['faulty_comp']} {res['fault_type_key']}")
-                st.markdown(f'''
-                    <div style="border-radius: 12px; overflow: hidden; border: 2px solid #30363d; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
-                        <img src="{res['component_image']}" alt="Component Anomaly" style="width:100%; height:320px; object-fit:cover;">
-                    </div>
-                ''', unsafe_allow_html=True)
-            
-            st.markdown("---")
+                with tab2:
+            fig = go.Figure()
+            mask = res["fft_freqs"] <= 8000
+            fig.add_trace(go.Scatter(
+                x=res["fft_freqs"][mask], 
+                y=res["fft_vals"][mask], 
+                mode="lines", 
+                line=dict(color=theme["color"], width=2.5)
+            ))
+            fig.update_layout(
+                template="plotly_dark",
+                xaxis_title="Frequency (Hz)",
+                yaxis_title="Amplitude Spectrum Density",
+                plot_bgcolor="#0d1117",
+                paper_bgcolor="#0d1117",
+                margin=dict(l=20, r=20, t=30, b=20)
+            )
+            st.plotly_chart(fig, use_container_width=True)
             m1, m2, m3, m4 = st.columns(4)
             m1.markdown(f'<div class="metric-card"><small>{L["status_label"]}</small><br><span class="{res["status_class"]}">{res["status_text"]}</span></div>', unsafe_allow_html=True)
             m2.markdown(f'<div class="metric-card"><small>{L["health_index"]}</small><h2 style="color:{theme["color"]};margin:0">{res["health_score"]}%</h2></div>', unsafe_allow_html=True)
