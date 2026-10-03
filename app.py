@@ -2,26 +2,6 @@ import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
 import io
-import time
-
-try:
-    import librosa
-    HAS_LIBROSA = True
-except ImportError:
-    HAS_LIBROSA = False
-
-try:
-    import soundfile as sf
-    HAS_SOUNDFILE = True
-except ImportError:
-    HAS_SOUNDFILE = False
-
-try:
-    from pydub import AudioSegment
-    HAS_PYDUB = True
-except ImportError:
-    HAS_PYDUB = False
-
 from scipy.io import wavfile
 
 st.set_page_config(
@@ -51,9 +31,9 @@ L = {
     "select_cat": "Select Engineering Sector / قطاع الفحص الهندسي:",
     "select_unit": "Select Target Unit / المركبة أو المعدة المستهدفة:",
     "audio_src": "Audio Input Source / مصدر إشارة الفحص الصوتي:",
-    "upload_mode": "📁 Upload Audio File (ملف حقيقي)",
-    "demo_mode": "⚡ Synthetic Signal Generator (محاكاة)",
-    "run_btn": "🚀 Run Deep Acoustic & Laser Scan / بدء التشخيص الطيفي الكامل",
+    "upload_mode": "📁 Upload Audio File (ملف WAV)",
+    "demo_mode": "⚡ Synthetic Signal Generator (محاكاة سريعة)",
+    "run_btn": "🚀 Run Deep Acoustic & Laser Scan / تشخيص فوري",
     "tab_visual": "🔬 Optical & Spectral Scan",
     "tab_fft": "📈 FFT Frequency Analysis",
     "tab_recs": "🛠️ Engineering Recommendations",
@@ -137,37 +117,9 @@ UNIVERSAL_DATABASE = {
     }
 }
 
-def read_any_audio(uploaded_file):
-    bytes_data = uploaded_file.read()
-    if HAS_LIBROSA:
-        try:
-            buffer = io.BytesIO(bytes_data)
-            data, samplerate = librosa.load(buffer, sr=None, mono=True)
-            return data.astype(np.float32), samplerate
-        except Exception:
-            pass
-    if HAS_SOUNDFILE:
-        try:
-            buffer = io.BytesIO(bytes_data)
-            data, samplerate = sf.read(buffer)
-            if data.ndim > 1:
-                data = np.mean(data, axis=1)
-            return data.astype(np.float32), samplerate
-        except Exception:
-            pass
-    if HAS_PYDUB:
-        try:
-            buffer = io.BytesIO(bytes_data)
-            sound = AudioSegment.from_file(buffer)
-            samplerate = sound.frame_rate
-            samples = np.array(sound.get_array_of_samples())
-            if sound.channels > 1:
-                samples = samples.reshape((-1, sound.channels)).mean(axis=1)
-            return (samples.astype(np.float32) / (2 ** (sound.sample_width * 8 - 1))), samplerate
-        except Exception:
-            pass
+def read_wav_safe(uploaded_file):
     try:
-        buffer = io.BytesIO(bytes_data)
+        buffer = io.BytesIO(uploaded_file.read())
         samplerate, data = wavfile.read(buffer)
         if data.ndim > 1:
             data = np.mean(data, axis=1)
@@ -176,10 +128,9 @@ def read_any_audio(uploaded_file):
         elif data.dtype == np.int32:
             data = data / 2147483648.0
         return data.astype(np.float32), samplerate
-    except Exception:
-        pass
-    st.error("⚠️ Error decoding audio file / تعذر فك تشفير الملف الصوتي.")
-    return None, None
+    except Exception as e:
+        st.error(f"⚠️ خطأ في قراءة ملف الـ WAV: {e}")
+        return None, None
 
 def generate_synthetic_audio(fault_type="bearing_wear", sr=22050, duration=3.0):
     t = np.linspace(0, duration, int(sr * duration))
@@ -304,7 +255,7 @@ with ctl_col2:
 
 audio_file, synthetic_fault = None, "bearing_wear"
 if source_mode == L["upload_mode"]:
-    audio_file = st.file_uploader("Upload Audio Signal File (.wav, .mp3, .flac):", type=["wav", "mp3", "m4a", "ogg", "flac"])
+    audio_file = st.file_uploader("Upload Audio Signal File (.wav):", type=["wav"])
 else:
     synthetic_fault = st.selectbox("Synthetic Fault Pattern / نمط الخلل للاختبار:", ["bearing_wear", "turbo_shaft", "injector_clatter", "healthy"])
 
@@ -392,7 +343,15 @@ def render_inspection_results(audio_data, sample_rate, selected_unit):
         st.code(report_text, language="text")
         st.download_button(L["download_rep"], report_text, file_name="ZINO_EADE_Inspection_Report.txt")
 
-if run_click or "has_run" in st.session_state:
-    st.session_state["has_run"] = True
-    
-    if ru
+if run_click:
+    audio_data, sample_rate = None, 22050
+    if source_mode == L["upload_mode"]:
+        if audio_file is not None:
+            audio_data, sample_rate = read_wav_safe(audio_file)
+        else:
+            st.warning("⚠️ الرجاء رفع ملف صوتي (WAV) أولاً.")
+    else:
+        audio_data, sample_rate = generate_synthetic_audio(synthetic_fault)
+
+    if audio_data is not None:
+        render_inspection_results(audio_data, sample_rate, selected_unit)
