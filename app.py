@@ -4,7 +4,10 @@ import plotly.graph_objects as go
 import io
 import time
 
-# Optional Audio Libraries
+# =====================================================================
+# الجزء الأول (300 سطر تقريباً): إعدادات النظام، التصميم، والقاعدة الهندسية
+# =====================================================================
+
 try:
     import librosa
     HAS_LIBROSA = True
@@ -25,9 +28,6 @@ except ImportError:
 
 from scipy.io import wavfile
 
-# ==========================================
-# 1. إعدادات الصفحة والتصميم العام (ZINO EADE Theme)
-# ==========================================
 st.set_page_config(
     page_title="ZINO EADE - Edge-Acoustic Diagnostic Engine",
     page_icon="⚡",
@@ -38,20 +38,17 @@ st.set_page_config(
 st.markdown("""
 <style>
     .stApp { background-color: #0d1117; color: #f0f6fc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .theme-header { font-size: 28px; font-weight: 800; color: #58a6ff; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; }
-    .designer-tag { font-size: 14px; color: #8b949e; font-weight: 600; margin-bottom: 25px; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
-    .metric-card { background: rgba(22, 27, 34, 0.95); border: 1px solid #30363d; border-radius: 10px; padding: 15px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-    .status-healthy { color: #3fb950; font-weight: bold; font-size: 18px; }
-    .status-critical { color: #f85149; font-weight: bold; font-size: 18px; }
-    .laser-container { position: relative; border-radius: 12px; overflow: hidden; border: 2px solid #58a6ff; box-shadow: 0 0 20px rgba(88, 166, 255, 0.3); }
-    .laser-line { position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: #ff7b72; box-shadow: 0 0 12px #ff7b72; animation: scanLaser 2.5s infinite ease-in-out; z-index: 10; }
+    .theme-header { font-size: 30px; font-weight: 800; color: #58a6ff; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; }
+    .designer-tag { font-size: 15px; color: #8b949e; font-weight: 600; margin-bottom: 25px; border-bottom: 1px solid #30363d; padding-bottom: 12px; }
+    .metric-card { background: rgba(22, 27, 34, 0.95); border: 1px solid #30363d; border-radius: 12px; padding: 18px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+    .status-healthy { color: #3fb950; font-weight: bold; font-size: 19px; }
+    .status-critical { color: #f85149; font-weight: bold; font-size: 19px; }
+    .laser-container { position: relative; border-radius: 12px; overflow: hidden; border: 2px solid #58a6ff; box-shadow: 0 0 25px rgba(88, 166, 255, 0.4); }
+    .laser-line { position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: #ff7b72; box-shadow: 0 0 15px #ff7b72; animation: scanLaser 2.5s infinite ease-in-out; z-index: 10; }
     @keyframes scanLaser { 0% { top: 0%; } 50% { top: 100%; } 100% { top: 0%; } }
 </style>
 """, unsafe_allow_html=True)
 
-# ==========================================
-# 2. القواميس وقاعدة البيانات الهندسية
-# ==========================================
 L = {
     "designer": "Platform Architect & Designer: Ismail Hasasna (إسماعيل حساسنة)",
     "subtitle": "Edge-Acoustic Diagnostic Engine (ZINO-EADE) — Real-Time Mechanical Frequency Analyzer",
@@ -144,9 +141,11 @@ UNIVERSAL_DATABASE = {
     }
 }
 
-# ==========================================
-# 3. دوال قراءة الصوت والمعالجة الطيفية
-# ==========================================
+
+# =====================================================================
+# الجزء الثاني (200 سطر تقريباً): دوال قراءة الصوت وتحليل الطيف الرياضي
+# =====================================================================
+
 def read_any_audio(uploaded_file):
     bytes_data = uploaded_file.read()
     if HAS_LIBROSA:
@@ -278,9 +277,11 @@ def run_diagnostic(audio_data, sample_rate, unit_key):
         "fft_vals": fft_vals
     }
 
-# ==========================================
-# 4. الواجهة الرئيسية والتفاعل
-# ==========================================
+
+# =====================================================================
+# الجزء الثالث (300 سطر تقريباً): واجهة المستخدم Streamlit وعرض التبويبات الأربعة
+# =====================================================================
+
 st.markdown(f'<div class="theme-header">⚡ ZINO EADE WORKSTATION</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="designer-tag">{L["designer"]}<br><small style="color:#8b949e">{L["subtitle"]}</small></div>', unsafe_allow_html=True)
 
@@ -324,30 +325,7 @@ else:
 st.markdown("<br>", unsafe_allow_html=True)
 run_click = st.button(L["run_btn"], type="primary")
 
-# ==========================================
-# 5. تنفيذ الفحص وعرض النتائج
-# ==========================================
-if run_click or "has_run" in st.session_state:
-    st.session_state["has_run"] = True
-    
-    if run_click:
-        progress_text = st.empty()
-        progress_bar = st.progress(0)
-        
-        stages = [
-            ("⚡ المرحلة 1: تهيئة محرك المعالجة الطيفية وعزل الضوضاء المحيطة...", 25, 0.3),
-            ("📈 المرحلة 2: تشريح موجات الصوت وتحويل فوريه السريع (FFT Spectrum)...", 50, 0.4),
-            ("🔍 المرحلة 3: مطابقة البصمة الصوتية مع بنك وحدات (VW, Hyundai, Mitsubishi, JCB)...", 75, 0.4),
-            ("🎯 المرحلة 4: عزل القطعة التالفة وتوليد مؤشر السلامة الميكانيكية بالليزر...", 100, 0.3)
-        ]
-        
-        for msg, pct, delay in stages:
-            progress_text.markdown(f"**{msg}**")
-            progress_bar.progress(pct)
-            time.sleep(delay)
-            
-        progress_text.empty()
-        def render_inspection_results(audio_data, sample_rate, selected_unit):
+def render_inspection_results(audio_data, sample_rate, selected_unit):
     res = run_diagnostic(audio_data, sample_rate, selected_unit)
     tab1, tab2, tab3, tab4 = st.tabs([L["tab_visual"], L["tab_fft"], L["tab_recs"], L["tab_report"]])
 
@@ -421,11 +399,4 @@ Signal RMS Energy : {res['rms']} RMS Density
 --------------------------------------------------
 DETECTED COMPONENT FAULTS:
 {chr(10).join(['- ' + f for f in res['detected_faults']])}
-==================================================
-Platform Designer : Ismail Hasasna (إسماعيل حساسنة)
-"""
-        st.code(report_text, language="text")
-        st.download_button(L["download_rep"], report_text, file_name="ZINO_EADE_Inspection_Report.txt")
-
-if audio_data is not None:
-    render_inspection_results(audio_data, sample_rate, selected_unit)
+========================================
