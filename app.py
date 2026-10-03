@@ -5,71 +5,56 @@ import scipy.io.wavfile as wavfile
 import scipy.signal as signal
 import streamlit as st
 
-# ضبط إعدادات الصفحة
-st.set_page_config(
-    page_title="ZINO EADE - Universal Acoustic Diagnostic Platform",
-    page_icon="⚡",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
+# استدعاء آمن لمكتبات الصوت لدعم كافة الصيغ
+HAS_LIBROSA, HAS_SOUNDFILE, HAS_PYDUB = False, False, False
+try:
+    import librosa
+    HAS_LIBROSA = True
+except ImportError:
+    pass
+try:
+    import soundfile as sf
+    HAS_SOUNDFILE = True
+except ImportError:
+    pass
+try:
+    from pydub import AudioSegment
+    HAS_PYDUB = True
+except ImportError:
+    pass
+
+st.set_page_config(page_title="ZINO EADE - Acoustic Workstation", page_icon="⚡", layout="wide")
 
 # ==========================================
-# 1. تصميم CSS هندسي عالي الجودة
+# 1. الثيمات والألوان الديناميكية للأقسام
 # ==========================================
-st.markdown(
-    """
+THEMES = {
+    "السيارات والمركبات": {"color": "#ff7b00", "glow": "rgba(255, 123, 0, 0.25)", "icon": "🚗", "desc": "فحص محركات البنزين والديزل والتيربو"},
+    "الثلاجات والتبريد": {"color": "#0099ff", "glow": "rgba(0, 153, 255, 0.25)", "icon": "🧊", "desc": "تشخيص ضواغط الإنفرتر وغرف التبريد"},
+    "الأجهزة الكهربائية": {"color": "#a855f7", "glow": "rgba(168, 85, 247, 0.25)", "icon": "🔌", "desc": "محركات الغسالات، المضخات والمحركات العامة"},
+    "الماكينات والمعدات": {"color": "#94a3b8", "glow": "rgba(148, 163, 184, 0.25)", "icon": "⚙️", "desc": "محركات JCB، الجرارات والمولدات الصناعية"}
+}
+
+if "selected_category" not in st.session_state:
+    st.session_state["selected_category"] = "السيارات والمركبات"
+
+current_cat = st.session_state["selected_category"]
+theme = THEMES[current_cat]
+
+st.markdown(f"""
 <style>
-    .stApp {
-        background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
-        color: #c9d1d9;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    .metric-card {
-        background: rgba(22, 27, 34, 0.85);
-        border: 1px solid rgba(48, 54, 61, 0.9);
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-        margin-bottom: 15px;
-    }
-    .status-badge-healthy {
-        background: rgba(46, 160, 67, 0.2);
-        color: #3fb950;
-        border: 1px solid #2ea043;
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-weight: 700;
-        display: inline-block;
-    }
-    .status-badge-critical {
-        background: rgba(248, 81, 73, 0.2);
-        color: #f85149;
-        border: 1px solid #da3633;
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-weight: 700;
-        display: inline-block;
-    }
-    .stButton>button {
-        background: linear-gradient(90deg, #1f6beb 0%, #238636 100%);
-        color: #ffffff;
-        font-weight: bold;
-        border-radius: 8px;
-        border: none;
-        padding: 12px 28px;
-        width: 100%;
-    }
-    h1, h2, h3, h4 {
-        color: #f0f6fc !important;
-        font-weight: 700;
-    }
+    .stApp {{ background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%); color: #c9d1d9; }}
+    .theme-header {{ color: {theme['color']} !important; text-shadow: 0 0 15px {theme['glow']}; font-weight: 800; }}
+    .metric-card {{ background: rgba(22, 27, 34, 0.85); border: 2px solid {theme['color']}; border-radius: 12px; padding: 18px; box-shadow: 0 6px 20px {theme['glow']}; margin-bottom: 15px; }}
+    .stButton>button {{ background: linear-gradient(90deg, {theme['color']} 0%, #238636 100%) !important; color: #fff !important; font-weight: bold !important; border-radius: 8px !important; border: none !important; padding: 12px 24px !important; width: 100%; }}
+    .status-healthy {{ background: rgba(46, 160, 67, 0.2); color: #3fb950; border: 1px solid #2ea043; padding: 6px 14px; border-radius: 20px; font-weight: 700; display: inline-block; }}
+    .status-critical {{ background: rgba(248, 81, 73, 0.2); color: #f85149; border: 1px solid #da3633; padding: 6px 14px; border-radius: 20px; font-weight: 700; display: inline-block; }}
+    h1, h2, h3, h4 {{ color: #f0f6fc !important; }}
 </style>
-""",
-    unsafe_allow_html=True,
-)
+""", unsafe_allow_html=True)
 
 # ==========================================
-# 2. صور المكونات والأجزاء الميكانيكية
+# 2. صور القطع الميكانيكية
 # ==========================================
 COMPONENT_IMAGES = {
     "injectors": "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=600&auto=format&fit=crop&q=80",
@@ -79,158 +64,124 @@ COMPONENT_IMAGES = {
     "belt": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&auto=format&fit=crop&q=80",
     "compressor_valves": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80",
     "motor_bearings": "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&auto=format&fit=crop&q=80",
-    "motor_brushes": "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=600&auto=format&fit=crop&q=80",
     "pump_impeller": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80",
-    "healthy": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80",
+    "healthy": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80"
 }
 
 # ==========================================
 # 3. قاعدة البيانات العالمية الشاملة
 # ==========================================
 UNIVERSAL_DATABASE = {
-    "ضاغط ثلاجة (Inverter Refrigerator Compressor)": {
-        "category": "Household & HVAC",
-        "brand": "LG / General Electric",
-        "model": "Smart Inverter R600a Compressor",
-        "specs": "Variable Speed Hermetic Reciprocating Unit",
-        "has_turbo": False,
-        "unit_image": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&auto=format&fit=crop&q=80",
-        "bands": {
-            "bearing_wear": (20, 280),
-            "compressor_valves": (850, 2400),
-        },
-        "component_names": {
-            "bearing_wear": "محامل الكرنك والضاغط (Crank Bearings)",
-            "compressor_valves": "صمامات الضاغط الداخلية (Reed Valves)",
-        },
-    },
-    "محرك غسالة ملابس (Washing Machine Direct Drive)": {
-        "category": "Household & HVAC",
-        "brand": "Samsung / Bosch",
-        "model": "Inverter Direct Drive BLDC Motor",
-        "specs": "Brushless DC Motor / Belt Drive Assembly",
-        "has_turbo": False,
-        "unit_image": "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=800&auto=format&fit=crop&q=80",
-        "bands": {
-            "bearing_wear": (30, 320),
-            "belt_squeal": (700, 1900),
-        },
-        "component_names": {
-            "bearing_wear": "محامل الحلة والمحرك (Drum Bearings)",
-            "belt_squeal": "قشاط / سير الحركة (Drive Belt)",
-        },
-    },
-    "محرك حفار JCB (JCB EcoMAX 4.4L Turbo)": {
-        "category": "Heavy Machinery",
-        "brand": "JCB Construction Equipment",
-        "model": "EcoMAX 444 Heavy Diesel Engine",
-        "specs": "4.4L Turbocharged Direct Injection Unit",
-        "has_turbo": True,
-        "unit_image": "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&auto=format&fit=crop&q=80",
-        "bands": {
-            "bearing_wear": (20, 280),
-            "turbo_shaft": (1400, 4800),
-            "injector_clatter": (2200, 7500),
-        },
-        "component_names": {
-            "bearing_wear": "سبيكة العمود الفقري والكرنك (Main Bearings)",
-            "turbo_shaft": "عمود شاحن التيربو (Turbocharger Shaft)",
-            "injector_clatter": "بخاخات الديزل الضغط العالي (Common Rail Injectors)",
-        },
-    },
+    # --- السيارات ---
     "VW Caddy 1.6 TDI (تنفس طبيعي / بدون تيربو)": {
-        "category": "Automotive Passenger",
-        "brand": "Volkswagen",
-        "model": "Caddy (1.6L TDI NA)",
-        "specs": "1.6L TDI Naturally Aspirated (Common Rail)",
-        "has_turbo": False,
+        "category": "السيارات والمركبات", "brand": "Volkswagen", "model": "Caddy 1.6 TDI NA", "specs": "1.6L TDI Non-Turbo", "has_turbo": False,
         "unit_image": "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=800&auto=format&fit=crop&q=80",
-        "bands": {
-            "bearing_wear": (20, 350),
-            "belt_squeal": (700, 2000),
-            "valve_clearance": (1000, 2800),
-            "injector_clatter": (3000, 8000),
-        },
-        "component_names": {
-            "bearing_wear": "سبيكة محامل الكرنك (Engine Crank Bearings)",
-            "belt_squeal": "قشاط المجموعات والمكواة (Serpentine Belt)",
-            "valve_clearance": "تاكيهات وصمامات المحرك (Engine Valves)",
-            "injector_clatter": "بخاخات الديزل (CRDi Fuel Injectors)",
-        },
+        "bands": {"bearing_wear": (20, 350), "belt_squeal": (700, 2000), "valve_clearance": (1000, 2800), "injector_clatter": (3000, 8000)},
+        "names": {"bearing_wear": "سبيكة محامل الكرنك", "belt_squeal": "قشاط المجموعات", "valve_clearance": "صمامات المحرك", "injector_clatter": "بخاخات الديزل"}
     },
     "VW Caddy 1.6 TDI (شاحن تيربو)": {
-        "category": "Automotive Passenger",
-        "brand": "Volkswagen",
-        "model": "Caddy (1.6L TDI Turbo)",
-        "specs": "1.6L TDI Turbocharged Engine",
-        "has_turbo": True,
+        "category": "السيارات والمركبات", "brand": "Volkswagen", "model": "Caddy 1.6 TDI Turbo", "specs": "1.6L TDI Turbocharged", "has_turbo": True,
         "unit_image": "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=800&auto=format&fit=crop&q=80",
-        "bands": {
-            "bearing_wear": (20, 350),
-            "turbo_shaft": (1500, 5500),
-            "injector_clatter": (3000, 8000),
-        },
-        "component_names": {
-            "bearing_wear": "سبيكة الكرنك (Crank Bearings)",
-            "turbo_shaft": "مروحة وعمود التيربو (Turbocharger Shaft)",
-            "injector_clatter": "بخاخات الوقود (Injectors)",
-        },
+        "bands": {"bearing_wear": (20, 350), "turbo_shaft": (1500, 5500), "injector_clatter": (3000, 8000)},
+        "names": {"bearing_wear": "سبيكة الكرنك", "turbo_shaft": "عمود ومروحة التيربو", "injector_clatter": "بخاخات الديزل"}
     },
-    "Hyundai Santa Fe 2.2 CRDi (تيربو ديزل)": {
-        "category": "Automotive Passenger",
-        "brand": "Hyundai",
-        "model": "Santa Fe 2.2L CRDi",
-        "specs": "2.2L CRDi VGT Turbo Diesel Engine",
-        "has_turbo": True,
+    "Hyundai Santa Fe 2.2 CRDi (تيربو)": {
+        "category": "السيارات والمركبات", "brand": "Hyundai", "model": "Santa Fe 2.2 CRDi", "specs": "2.2L CRDi Turbo Diesel", "has_turbo": True,
         "unit_image": "https://images.unsplash.com/photo-1563720223185-11003d516935?w=800&auto=format&fit=crop&q=80",
-        "bands": {
-            "bearing_wear": (20, 300),
-            "turbo_shaft": (1500, 5000),
-            "injector_clatter": (2500, 8000),
-        },
-        "component_names": {
-            "bearing_wear": "سبيكة الكرنك والسلندر (Engine Bearings)",
-            "turbo_shaft": "عمود شاحن التيربو (Turbocharger Assembly)",
-            "injector_clatter": "بخاخات الديزل الضغط العالي (CRDi Injectors)",
-        },
+        "bands": {"bearing_wear": (20, 300), "turbo_shaft": (1500, 5000), "injector_clatter": (2500, 8000)},
+        "names": {"bearing_wear": "سبيكة محامل المحرك", "turbo_shaft": "شاحن التيربو", "injector_clatter": "بخاخات الديزل"}
     },
+    "Toyota Corolla 1.6L (بنزين)": {
+        "category": "السيارات والمركبات", "brand": "Toyota", "model": "Corolla 1.6 VVT-i", "specs": "1.6L VVT-i NA Engine", "has_turbo": False,
+        "unit_image": "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800&auto=format&fit=crop&q=80",
+        "bands": {"bearing_wear": (30, 350), "belt_squeal": (800, 2000), "valve_clearance": (1000, 3200)},
+        "names": {"bearing_wear": "سبيكة الكرنك", "belt_squeal": "سير الحركة", "valve_clearance": "صمامات VVT-i"}
+    },
+
+    # --- الثلاجات والتبريد ---
+    "ضاغط ثلاجة منزلي (Inverter Compressor)": {
+        "category": "الثلاجات والتبريد", "brand": "LG / GE", "model": "Inverter R600a Compressor", "specs": "Variable Speed Hermetic Unit", "has_turbo": False,
+        "unit_image": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&auto=format&fit=crop&q=80",
+        "bands": {"bearing_wear": (20, 280), "compressor_valves": (850, 2400)},
+        "names": {"bearing_wear": "محامل الكرنك والضاغط", "compressor_valves": "صمامات الضاغط الداخلية"}
+    },
+
+    # --- الأجهزة الكهربائية ---
+    "محرك غسالة ملابس (Direct Drive Motor)": {
+        "category": "الأجهزة الكهربائية", "brand": "Samsung / Bosch", "model": "BLDC Direct Drive", "specs": "Inverter Motor Assembly", "has_turbo": False,
+        "unit_image": "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=800&auto=format&fit=crop&q=80",
+        "bands": {"bearing_wear": (30, 320), "belt_squeal": (700, 1900)},
+        "names": {"bearing_wear": "محامل الحلة والمحرك", "belt_squeal": "قشاط / سير الحركة"}
+    },
+    "مضخة مياه كهربائية (Electric Water Pump 2HP)": {
+        "category": "الأجهزة الكهربائية", "brand": "Pedrollo / Grundfos", "model": "CPM-158 Pump", "specs": "2.0 HP Single-Phase", "has_turbo": False,
+        "unit_image": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80",
+        "bands": {"bearing_wear": (20, 260), "pump_impeller": (900, 2700)},
+        "names": {"bearing_wear": "محامل المحرك", "pump_impeller": "عنفة المضخة"}
+    },
+
+    # --- الماكينات والمعدات ---
+    "محرك حفار JCB (JCB EcoMAX 4.4L Turbo)": {
+        "category": "الماكينات والمعدات", "brand": "JCB", "model": "EcoMAX 4.4L Diesel", "specs": "Heavy Duty Turbo Engine", "has_turbo": True,
+        "unit_image": "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&auto=format&fit=crop&q=80",
+        "bands": {"bearing_wear": (20, 280), "turbo_shaft": (1400, 4800), "injector_clatter": (2200, 7500)},
+        "names": {"bearing_wear": "سبيكة العمود الفقري", "turbo_shaft": "عمود شاحن التيربو", "injector_clatter": "بخاخات الديزل"}
+    }
 }
 
 # ==========================================
-# 4. معالج الصوت والدوال
+# 4. المعالج الصوتي الشامل لجميع الصيغ
 # ==========================================
-def read_wav_safe(uploaded_file):
+def read_any_audio(uploaded_file):
+    bytes_data = uploaded_file.read()
+    if HAS_LIBROSA:
+        try:
+            buffer = io.BytesIO(bytes_data)
+            data, samplerate = librosa.load(buffer, sr=None, mono=True)
+            return data.astype(np.float32), samplerate
+        except Exception:
+            pass
+    if HAS_SOUNDFILE:
+        try:
+            buffer = io.BytesIO(bytes_data)
+            data, samplerate = sf.read(buffer)
+            if data.ndim > 1: data = np.mean(data, axis=1)
+            return data.astype(np.float32), samplerate
+        except Exception:
+            pass
+    if HAS_PYDUB:
+        try:
+            buffer = io.BytesIO(bytes_data)
+            sound = AudioSegment.from_file(buffer)
+            samplerate = sound.frame_rate
+            samples = np.array(sound.get_array_of_samples())
+            if sound.channels > 1: samples = samples.reshape((-1, sound.channels)).mean(axis=1)
+            return (samples.astype(np.float32) / (2 ** (sound.sample_width * 8 - 1))), samplerate
+        except Exception:
+            pass
     try:
-        bytes_data = uploaded_file.read()
         buffer = io.BytesIO(bytes_data)
         samplerate, data = wavfile.read(buffer)
-        if data.ndim > 1:
-            data = np.mean(data, axis=1)
-        if data.dtype == np.int16:
-            data = data / 32768.0
-        elif data.dtype == np.int32:
-            data = data / 2147483648.0
+        if data.ndim > 1: data = np.mean(data, axis=1)
+        if data.dtype == np.int16: data = data / 32768.0
+        elif data.dtype == np.int32: data = data / 2147483648.0
         return data.astype(np.float32), samplerate
     except Exception:
-        st.error("⚠️ يرجى رفع ملف بصيغة WAV صالحة.")
-        return None, None
+        pass
+    st.error("⚠️ تعذر فك تشفير الصوت. يرجى استخدام ملف صالحة (MP3, WAV, M4A, OGG).")
+    return None, None
 
 def generate_synthetic_audio(fault_type="bearing_wear", sr=22050, duration=3.0):
     t = np.linspace(0, duration, int(sr * duration))
     base = 0.2 * np.sin(2 * np.pi * 50 * t)
-    if fault_type == "bearing_wear":
-        f_sig = 0.45 * np.sin(2 * np.pi * 180 * t)
-    elif fault_type == "turbo_shaft":
-        f_sig = 0.5 * np.sin(2 * np.pi * 3200 * t)
-    elif fault_type == "injector_clatter":
-        f_sig = 0.4 * np.sin(2 * np.pi * 4800 * t)
-    else:
-        f_sig = 0.0
-    noise = np.random.normal(0, 0.02, len(t))
-    return (base + f_sig + noise).astype(np.float32), sr
+    f_sig = 0.45 * np.sin(2 * np.pi * 180 * t) if fault_type == "bearing_wear" else (0.5 * np.sin(2 * np.pi * 3200 * t) if fault_type == "turbo_shaft" else 0.0)
+    return (base + f_sig + np.random.normal(0, 0.02, len(t))).astype(np.float32), sr
 
-def run_full_diagnostic(audio_data, sample_rate, selected_unit_key):
-    unit = UNIVERSAL_DATABASE[selected_unit_key]
+# ==========================================
+# 5. محرك التشخيص
+# ==========================================
+def run_diagnostic(audio_data, sample_rate, unit_key):
+    unit = UNIVERSAL_DATABASE[unit_key]
     rms_energy = float(np.sqrt(np.mean(audio_data**2)))
     fft_vals = np.abs(np.fft.rfft(audio_data))
     fft_freqs = np.fft.rfftfreq(len(audio_data), 1.0 / sample_rate)
@@ -239,181 +190,108 @@ def run_full_diagnostic(audio_data, sample_rate, selected_unit_key):
     spectral_centroid = float(np.sum(fft_freqs * fft_vals) / total_power) if total_power > 0 else 0.0
     peak_freq = float(fft_freqs[np.argmax(fft_vals)])
 
-    bands = unit["bands"]
-    component_names = unit.get("component_names", {})
-
-    detected_faults = []
-    fault_type_key = "سليم (Healthy)"
-    component_img = COMPONENT_IMAGES["healthy"]
-    health_score = 100
+    bands, names = unit["bands"], unit.get("names", {})
+    detected_faults, component_img, fault_type_key, health_score = [], COMPONENT_IMAGES["healthy"], "سليم (Healthy)", 100
 
     if "bearing_wear" in bands and bands["bearing_wear"][0] <= peak_freq <= bands["bearing_wear"][1]:
-        name_str = component_names.get("bearing_wear", "محامل الكرنك (Bearings Wear)")
-        detected_faults.append(f"تآكل في {name_str}")
-        component_img = COMPONENT_IMAGES.get("motor_bearings", COMPONENT_IMAGES["bearings"])
-        fault_type_key = "Bearing Wear / السبيكة والمحامل"
-        health_score = 42
-
+        detected_faults.append(f"تآكل في {names.get('bearing_wear', 'محامل الكرنك')}")
+        component_img, fault_type_key, health_score = COMPONENT_IMAGES.get("motor_bearings", COMPONENT_IMAGES["bearings"]), "Bearing Wear / السبيكة والمحامل", 42
     elif "compressor_valves" in bands and bands["compressor_valves"][0] <= peak_freq <= bands["compressor_valves"][1]:
-        name_str = component_names.get("compressor_valves", "صمامات الضاغط (Reed Valves)")
-        detected_faults.append(f"انحراف في {name_str}")
-        component_img = COMPONENT_IMAGES["compressor_valves"]
-        fault_type_key = "Compressor Reed Valves / صمامات الضاغط"
-        health_score = 38
-
+        detected_faults.append(f"انحراف في {names.get('compressor_valves', 'صمامات الضاغط')}")
+        component_img, fault_type_key, health_score = COMPONENT_IMAGES["compressor_valves"], "Compressor Valves / صمامات الضاغط", 38
     elif "belt_squeal" in bands and bands["belt_squeal"][0] <= peak_freq <= bands["belt_squeal"][1]:
-        name_str = component_names.get("belt_squeal", "سير المجموعات (Drive Belt)")
-        detected_faults.append(f"انزلاق/ارتخاء في {name_str}")
-        component_img = COMPONENT_IMAGES["belt"]
-        fault_type_key = "Drive Belt / سير الحركة"
-        health_score = 65
-
+        detected_faults.append(f"انزلاق في {names.get('belt_squeal', 'سير الحركة')}")
+        component_img, fault_type_key, health_score = COMPONENT_IMAGES["belt"], "Drive Belt / سير الحركة", 65
     elif "valve_clearance" in bands and bands["valve_clearance"][0] <= peak_freq <= bands["valve_clearance"][1]:
-        name_str = component_names.get("valve_clearance", "صمامات المحرك (Valvetrain)")
-        detected_faults.append(f"اتساع خلوص {name_str}")
-        component_img = COMPONENT_IMAGES["valves"]
-        fault_type_key = "Valvetrain / صمامات المحرك"
-        health_score = 50
-
+        detected_faults.append(f"اتساع خلوص {names.get('valve_clearance', 'صمامات المحرك')}")
+        component_img, fault_type_key, health_score = COMPONENT_IMAGES["valves"], "Valvetrain / صمامات المحرك", 50
     elif "injector_clatter" in bands and bands["injector_clatter"][0] <= peak_freq <= bands["injector_clatter"][1]:
-        name_str = component_names.get("injector_clatter", "بخاخات الوقود (Injectors)")
-        detected_faults.append(f"تفاوت ضغط في {name_str}")
-        component_img = COMPONENT_IMAGES["injectors"]
-        fault_type_key = "Fuel Injectors / البخاخات"
-        health_score = 45
-
+        detected_faults.append(f"تفاوت ضغط {names.get('injector_clatter', 'بخاخات الوقود')}")
+        component_img, fault_type_key, health_score = COMPONENT_IMAGES["injectors"], "Fuel Injectors / البخاخات", 45
     elif unit["has_turbo"] and "turbo_shaft" in bands and bands["turbo_shaft"][0] <= peak_freq <= bands["turbo_shaft"][1]:
-        name_str = component_names.get("turbo_shaft", "عمود التيربو (Turbo Shaft)")
-        detected_faults.append(f"احتراق/احتكاك في {name_str}")
-        component_img = COMPONENT_IMAGES["turbo"]
-        fault_type_key = "Turbocharger Shaft / عمود التيربو"
-        health_score = 25
-
-    if not detected_faults:
-        status_text = "Healthy / أداء منتظم وسليم"
-        status_class = "status-badge-healthy"
-        recommendations = f"وحدة {unit['brand']} {unit['model']} تعمل بكفاءة عالية وضمن النطاق الطيفي الطبيعي."
-    else:
-        status_text = "Critical / يلزم الصيانة"
-        status_class = "status-badge-critical"
-        faults_str = " | ".join(detected_faults)
-        recommendations = f"تم رصد انحراف طيفي محدد عند تردد ({peak_freq:.1f} Hz). يُنصح بالفحص الميداني المباشر للقطع التالية: ({faults_str})."
+        detected_faults.append(f"احتراق/احتكاك {names.get('turbo_shaft', 'عمود التيربو')}")
+        component_img, fault_type_key, health_score = COMPONENT_IMAGES["turbo"], "Turbocharger Shaft / عمود التيربو", 25
 
     return {
-        "target_unit": f"{unit['brand']} {unit['model']}",
-        "category": unit["category"],
-        "specs": unit["specs"],
-        "unit_image": unit["unit_image"],
-        "component_image": component_img,
-        "fault_type_key": fault_type_key,
-        "status_text": status_text,
-        "status_class": status_class,
-        "health_score": health_score,
-        "peak_freq": round(peak_freq, 2),
-        "centroid": round(spectral_centroid, 2),
-        "rms": round(rms_energy, 5),
-        "detected_faults": detected_faults if detected_faults else ["لا يوجد انحرافات طيفية"],
-        "recommendations": recommendations,
-        "fft_freqs": fft_freqs,
-        "fft_vals": fft_vals,
+        "target_unit": f"{unit['brand']} {unit['model']}", "category": unit["category"], "specs": unit["specs"],
+        "unit_image": unit["unit_image"], "component_image": component_img, "fault_type_key": fault_type_key,
+        "status_text": "Critical / يلزم الصيانة" if detected_faults else "Healthy / أداء منتظم",
+        "status_class": "status-critical" if detected_faults else "status-healthy",
+        "health_score": health_score, "peak_freq": round(peak_freq, 2), "centroid": round(spectral_centroid, 2),
+        "rms": round(rms_energy, 5), "detected_faults": detected_faults if detected_faults else ["لا يوجد انحرافات طيفية"],
+        "recommendations": f"تم رصد خلل طيفي عند تردد ({peak_freq:.1f} Hz) يقتضي الفحص المباشر." if detected_faults else "الوحدة تعمل بكفاءة طبيعية.",
+        "fft_freqs": fft_freqs, "fft_vals": fft_vals
     }
 
 # ==========================================
-# 5. الواجهة والتفاعل
+# 6. الواجهة الرئيسية
 # ==========================================
-st.markdown(
-    """
-<div style="text-align: center; padding: 10px 0 25px 0;">
-    <h1 style="font-size: 2.8rem; margin-bottom: 0px;">⚡ ZINO EADE</h1>
-    <p style="font-size: 1.1rem; color: #8b949e; margin-top: 5px;">
-        Universal Edge Acoustic Diagnostic Engine | المنظومة الذكية الشاملة للتشخيص الصوتي الهندسي
-    </p>
-</div>
-""",
-    unsafe_allow_html=True,
-)
+st.markdown(f'<div style="text-align: center;"><h1 class="theme-header">⚡ ZINO EADE</h1><p style="color: #8b949e;">Universal Edge Acoustic Diagnostic Workstation</p></div>', unsafe_allow_html=True)
 
-st.sidebar.header("🎯 إعدادات وحدة الفحص")
-category_list = sorted(list(set(v["category"] for v in UNIVERSAL_DATABASE.values())))
-selected_category = st.sidebar.selectbox("اختر فئة المعدة:", category_list)
+st.markdown("### 🎯 اختر القطاع المطلوب فدحصه:")
+cols = st.columns(4)
+for idx, (cat, t_info) in enumerate(THEMES.items()):
+    is_act = (cat == current_cat)
+    with cols[idx]:
+        st.markdown(f'<div style="background: rgba(22, 27, 34, 0.9); border: 2px solid {t_info["color"] if is_act else "#30363d"}; border-radius: 12px; padding: 12px; text-align: center; box-shadow: 0 4px 15px {t_info["glow"] if is_act else "transparent"};"><h3 style="color: {t_info["color"]} !important; margin:0;">{t_info["icon"]} {cat}</h3></div>', unsafe_allow_html=True)
+        if st.button(f"اختيار {t_info['icon']}", key=f"btn_{idx}"):
+            st.session_state["selected_category"] = cat
+            st.rerun()
 
-filtered_units = {k: v for k, v in UNIVERSAL_DATABASE.items() if v["category"] == selected_category}
-selected_unit = st.sidebar.selectbox("اختر الطراز والمحرك المباشر:", list(filtered_units.keys()))
+st.markdown("---")
+filtered_units = {k: v for k, v in UNIVERSAL_DATABASE.items() if v["category"] == current_cat}
 
-st.sidebar.markdown("---")
-st.sidebar.header("🔊 مصدر الصوت")
-source_mode = st.sidebar.radio("اختر طريقة وضع الصوت:", ("رفع ملف صوتي (WAV)", "محاكي الموجات الهندسي (Demo Engine)"))
+st.sidebar.markdown(f"<h3 style='color: {theme['color']}'>{theme['icon']} {current_cat}</h3>", unsafe_allow_html=True)
+selected_unit = st.sidebar.selectbox("اختر الطراز والمحرك:", list(filtered_units.keys()))
+source_mode = st.sidebar.radio("مصدر الصوت:", ("رفع ملف صوتي (MP3, WAV, M4A)", "محاكي الموجات الهندسي"))
 
-audio_file = None
-synthetic_fault = "bearing_wear"
-
-if source_mode == "رفع ملف صوتي (WAV)":
-    audio_file = st.sidebar.file_uploader("ارفع ملف الصوت المطلوب إخضاعه للفحص:", type=["wav"])
+audio_file, synthetic_fault = None, "bearing_wear"
+if source_mode == "رفع ملف صوتي (MP3, WAV, M4A)":
+    audio_file = st.sidebar.file_uploader("ارفع الصوت:", type=["wav", "mp3", "m4a", "ogg", "flac"])
 else:
-    synthetic_fault = st.sidebar.selectbox("اختر نمط الخلل المراد محاكاته:", ["bearing_wear", "turbo_shaft", "injector_clatter", "healthy"])
+    synthetic_fault = st.sidebar.selectbox("نمط الخلل المحاكى:", ["bearing_wear", "turbo_shaft", "healthy"])
 
-run_button = st.sidebar.button("🚀 بدء المسح والتشخيص المباشر")
-
-if run_button:
-    audio_data = None
-    sample_rate = 22050
-
-    if source_mode == "رفع ملف صوتي (WAV)":
-        if audio_file is None:
-            st.warning("⚠️ يرجى رفع ملف صوت أولاً للبدء.")
+if st.sidebar.button("🚀 بدء المسح والتشخيص المباشر"):
+    audio_data, sample_rate = None, 22050
+    if source_mode == "رفع ملف صوتي (MP3, WAV, M4A)":
+        if audio_file is not None:
+            audio_data, sample_rate = read_any_audio(audio_file)
         else:
-            audio_data, sample_rate = read_wav_safe(audio_file)
+            st.warning("⚠️ يرجى رفع ملف صوتي أولاً.")
     else:
         audio_data, sample_rate = generate_synthetic_audio(synthetic_fault)
 
     if audio_data is not None:
-        res = run_full_diagnostic(audio_data, sample_rate, selected_unit)
-
-        tab1, tab2, tab3, tab4 = st.tabs([
-            "📷 المسح البصري المباشر",
-            "📈 التحليل الطيفي والموجي (FFT)",
-            "🔧 التوصيات والقطع التالفة",
-            "📑 التقرير الهندسي الشامل"
-        ])
+        res = run_diagnostic(audio_data, sample_rate, selected_unit)
+        tab1, tab2, tab3, tab4 = st.tabs(["📷 المسح البصري", "📈 التحليل الطيفي (FFT)", "🔧 التوصيات والقطع", "📑 التقرير الشامل"])
 
         with tab1:
-            st.markdown("### 🔍 نتيجة المسح البصري الثنائي")
             c1, c2 = st.columns(2)
-            with c1:
-                st.markdown(f"#### ⚙️ وحدة الفحص: {res['target_unit']}")
-                st.image(res["unit_image"], use_container_width=True)
-
-            with c2:
-                st.markdown(f"#### 🎯 القطعة المحددة بالمسح: {res['fault_type_key']}")
-                st.image(res["component_image"], use_container_width=True)
-
+            c1.markdown(f"#### ⚙️ وحدة الفحص: {res['target_unit']}")
+            c1.image(res["unit_image"], use_container_width=True)
+            c2.markdown(f"#### 🎯 القطعة المحددة: {res['fault_type_key']}")
+            c2.image(res["component_image"], use_container_width=True)
             st.markdown("---")
             m1, m2, m3, m4 = st.columns(4)
             m1.markdown(f'<div class="metric-card"><small>حالة الأداء</small><br><span class="{res["status_class"]}">{res["status_text"]}</span></div>', unsafe_allow_html=True)
-            m2.markdown(f'<div class="metric-card"><small>مؤشر السلامة</small><h2 style="color:#58a6ff;margin:0">{res["health_score"]}%</h2></div>', unsafe_allow_html=True)
-            m3.markdown(f'<div class="metric-card"><small>Peak Frequency</small><h2 style="color:#f0f6fc;margin:0">{res["peak_freq"]} Hz</h2></div>', unsafe_allow_html=True)
-            m4.markdown(f'<div class="metric-card"><small>Spectral Centroid</small><h2 style="color:#f0f6fc;margin:0">{res["centroid"]} Hz</h2></div>', unsafe_allow_html=True)
+            m2.markdown(f'<div class="metric-card"><small>مؤشر السلامة</small><h2 style="color:{theme["color"]};margin:0">{res["health_score"]}%</h2></div>', unsafe_allow_html=True)
+            m3.markdown(f'<div class="metric-card"><small>Peak Freq</small><h2 style="margin:0">{res["peak_freq"]} Hz</h2></div>', unsafe_allow_html=True)
+            m4.markdown(f'<div class="metric-card"><small>Centroid</small><h2 style="margin:0">{res["centroid"]} Hz</h2></div>', unsafe_allow_html=True)
 
         with tab2:
-            st.markdown("### 📈 التحليل الطيفي ذو النطاق العريض (FFT Spectrum)")
-            freq_fig = go.Figure()
-            freq_mask = res["fft_freqs"] <= 8000
-            freq_fig.add_trace(go.Scatter(x=res["fft_freqs"][freq_mask], y=res["fft_vals"][freq_mask], mode="lines", name="FFT Power Spectrum", line=dict(color="#58a6ff", width=1.5)))
-            freq_fig.add_vline(x=res["peak_freq"], line_dash="dash", line_color="#f85149", annotation_text=f"Peak: {res['peak_freq']} Hz")
-            freq_fig.update_layout(template="plotly_dark", xaxis_title="Frequency (Hz)", yaxis_title="Amplitude")
-            st.plotly_chart(freq_fig, use_container_width=True)
+            fig = go.Figure()
+            mask = res["fft_freqs"] <= 8000
+            fig.add_trace(go.Scatter(x=res["fft_freqs"][mask], y=res["fft_vals"][mask], mode="lines", line=dict(color=theme["color"], width=2)))
+            fig.update_layout(template="plotly_dark", xaxis_title="Frequency (Hz)", yaxis_title="Amplitude Density")
+            st.plotly_chart(fig, use_container_width=True)
 
         with tab3:
-            st.markdown("### 🛠️ التوصيات الميكانيكية والهندسية المباشرة")
             st.info(res["recommendations"])
-            st.markdown("#### 📋 ملخص القطع التالفة المكتشفة بالمسح:")
-            for fault in res["detected_faults"]:
-                st.write(f"• **{fault}**")
+            for f in res["detected_faults"]: st.write(f"• **{f}**")
 
         with tab4:
-            st.markdown("### 📑 تقرير الفحص الأكاديمي الصادر عن ZINO EADE")
             report_text = f"""==================================================
-ZINO EADE - ACOUSTIC DIAGNOSTIC INSPECTION REPORT
+ZINO EADE ACOUSTIC DIAGNOSTIC INSPECTION REPORT
 ==================================================
 Target Unit       : {res['target_unit']}
 Engineering Class : {res['category']}
@@ -428,18 +306,7 @@ Signal RMS Energy : {res['rms']} RMS Density
 --------------------------------------------------
 DETECTED COMPONENT FAULTS:
 {chr(10).join(['- ' + f for f in res['detected_faults']])}
-
-ENGINEERING RECOMMENDATION:
-{res['recommendations']}
 ==================================================
-Generated by ZINO EADE Acoustic Diagnostic Platform
 """
             st.code(report_text, language="text")
-            st.download_button(
-                label="📥 تحميل التقرير بصيغة نصية (TXT Report)",
-                data=report_text,
-                file_name=f"ZINO_EADE_Report_{res['target_unit'].replace(' ', '_')}.txt",
-                mime="text/plain",
-            )
-else:
-    st.info("👈 يرجى تحديد وحدة الفحص من القائمة الجانبية ثم الضغط على **[بدء المسح والتشخيص المباشر]**.")
+            st.download_button("📥 تحميل التقرير (TXT)", report_text, file_name="ZINO_EADE_Report.txt")
