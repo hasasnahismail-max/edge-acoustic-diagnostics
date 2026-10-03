@@ -347,7 +347,7 @@ if run_click or "has_run" in st.session_state:
             time.sleep(delay)
             
         progress_text.empty()
-        if audio_data is not None:
+        def render_inspection_results(audio_data, sample_rate, selected_unit):
     res = run_diagnostic(audio_data, sample_rate, selected_unit)
     tab1, tab2, tab3, tab4 = st.tabs([L["tab_visual"], L["tab_fft"], L["tab_recs"], L["tab_report"]])
 
@@ -426,3 +426,6 @@ Platform Designer : Ismail Hasasna (إسماعيل حساسنة)
 """
         st.code(report_text, language="text")
         st.download_button(L["download_rep"], report_text, file_name="ZINO_EADE_Inspection_Report.txt")
+
+if audio_data is not None:
+    render_inspection_results(audio_data, sample_rate, selected_unit)
