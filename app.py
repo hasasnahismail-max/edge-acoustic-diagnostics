@@ -1,12 +1,11 @@
 import streamlit as st
 
-# إعداد الصفحة
 st.set_page_config(
     page_title="ZINO EADE Workstation", page_icon="🚗", layout="wide"
 )
 
-# اختيار المركبة مع إمكانية التحديد والإدخال اليدوي
-st.markdown("### 🚘 اختيار المركبة ونظام الفحص")
+st.markdown("### 🚘 اختيار المركبة ونظام الفحص الهندسي")
+
 car_option = st.selectbox(
     "اختر طراز المركبة الأساسي:",
     [
@@ -17,114 +16,103 @@ car_option = st.selectbox(
     ],
 )
 
-# خانة إضافية للكتابة اليدوية إذا اخترت الإدخال المخصص
 if "أخرى" in car_option:
     custom_car_input = st.text_input(
         "اكتب اسم ورقم طراز المركبة يدوياً:",
         value="",
         placeholder="مثال: Mercedes W124 2.3L",
     )
-    selected_brand_name = (
+    selected_car = (
         custom_car_input
         if custom_car_input
         else "مركبة مخصصة (Custom Vehicle)"
     )
 else:
-    selected_brand_name = car_option
+    selected_car = car_option
 
 # تحديد الثيم اللوني حصرياً بناءً على العلامة التجارية (خمري، بيج، زيتي)
 if "Mitsubishi" in car_option:
     theme_color = "#556B2F"  # زيتي (Olive Green)
-    color_name = "زيتي"
+    color_name = "الزيتي (Olive Green)"
 elif "Hyundai" in car_option:
     theme_color = "#7A1C2E"  # خمري (Burgundy)
-    color_name = "خمري"
+    color_name = "الخمري (Burgundy)"
 elif "Volkswagen" in car_option:
-    theme_color = "#A39171"  # بيج (Beige / Khaki)
-    color_name = "بيج"
+    theme_color = "#A39171"  # بيج (Beige)
+    color_name = "البيج (Beige)"
 else:
-    theme_color = "#7A1C2E"  # افتراضي خمري للطرازات المخصصة
-    color_name = "خمري مخصص"
+    theme_color = "#7A1C2E"
+    color_name = "الخمري"
 
-# حقن أكواد CSS لتصميم الواجهة وتطبيق الألوان الكبيرة والديناميكية
 st.markdown(
     f"""
     <style>
-    .main-title {{
+    .main-header {{
         font-size: 28px;
         font-weight: bold;
         color: {theme_color};
         border-bottom: 4px solid {theme_color};
-        padding-bottom: 12px;
+        padding-bottom: 10px;
         margin-bottom: 20px;
     }}
-    .engine-box {{
-        background-color: #1a1a1a;
+    .engine-card {{
+        background-color: #1e1e1e;
         border-left: 8px solid {theme_color};
         padding: 20px;
         border-radius: 10px;
-        margin: 20px 0px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        margin: 15px 0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }}
     .engine-title {{
         font-size: 22px;
         font-weight: bold;
         color: #ffffff;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
     }}
-    .engine-details {{
+    .engine-text {{
         font-size: 16px;
-        color: #cccccc;
-        line-height: 1.6;
+        color: #dddddd;
+        line-height: 1.5;
     }}
-    .badge {{
+    .stButton>button {{
         background-color: {theme_color};
         color: white;
-        padding: 6px 14px;
-        border-radius: 6px;
         font-weight: bold;
-        display: inline-block;
-        margin-top: 10px;
+        border-radius: 8px;
+        padding: 10px 20px;
+        border: none;
     }}
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# عنوان النظام الرئيسي
 st.markdown(
-    '<div class="main-title">⚙️ ZINO EADE - محطة التشخيص الهندسي المتقدمة</div>',
+    '<div class="main-header">⚙️ ZINO EADE - محطة التشخيص الهندسي المتقدم</div>',
     unsafe_allow_html=True,
 )
 
-# قسم معلومات المحرك المخصص والبارز بأيقونة كبيرة
 st.markdown(
     f"""
-<div class="engine-box">
-    <div class="engine-title">🔍 بطاقة معلومات المحرك والتشخيص المتقدم</div>
-    <div class="engine-details">
-        <b>المركبة المحددة:</b> {selected_brand_name}<br>
-        <b>نظام التحليل:</b> مطابقة ترددات الأكستيك الصوتي (STFT) وفحص الاحتراق الداخلي.<br>
-        <b>الثيم اللوني النشط:</b> <span style="color: {theme_color}; font-weight: bold;">{color_name}</span>
+<div class="engine-card">
+    <div class="engine-title">🔍 بطاقة معلومات المحرك والتشخيص</div>
+    <div class="engine-text">
+        <b>المركبة الحالية:</b> {selected_car}<br>
+        <b>الثيم اللوني النشط:</b> <span style="color: {theme_color}; font-weight: bold;">{color_name}</span><br>
+        <b>نظام التحليل:</b> مطابقة ترددات الصوت العكسية وفحص أداء المحرك والاحتراق الداخلي.
     </div>
-    <div class="badge">النظام جاهز للفحص الهندسي</div>
 </div>
 """,
     unsafe_allow_html=True,
 )
 
-# أزرار التشخيص المتقدمة بأسلوب واضح وكبير
-st.markdown("### 🎛️ لوحة التحكم التنفيذية للتشخيص")
+st.markdown("### 🎛️ خيارات الفحص والتحليل المتقدم")
 col1, col2 = st.columns(2)
 
 with col1:
-    if st.button("🚀 تشخيص الصوت العميق والترددات"):
-        st.success(
-            f"جاري فحص الاهتزازات الصوتية لطراز ({selected_brand_name})..."
-        )
+    if st.button("🚀 بدء فحص الصوت والترددات"):
+        st.success(f"جاري تحليل ترددات المحرك لـ ({selected_car})...")
 
 with col2:
     if st.button("📊 تقرير سلامة قطع المحرك"):
-        st.info(
-            f"جاري مطابقة المصفوفات الحسابية لأجزاء المحرك الخاصة بـ ({selected_brand_name})..."
-        )
+        st.info(f"جاري مطابقة مصفوفات الفحص لـ ({selected_car})...")
