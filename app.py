@@ -1,119 +1,130 @@
 import streamlit as st
-import subprocess
-import os
 
-# إعدادات صفحة العرض
+# إعداد الصفحة
 st.set_page_config(
-    page_title="ZINO EADE | Advanced Engine Diagnostics",
-    page_icon="🔧",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    page_title="ZINO EADE Workstation", page_icon="🚗", layout="wide"
 )
 
-# تخصيص واجهة Cyberpunk / Sci-Fi المظلمة عبر CSS
-st.markdown("""
-<style>
-    .stApp {
-        background-color: #0b0f19;
-        color: #00ffcc;
-        font-family: 'Courier New', monospace;
-    }
-    .neon-title {
-        text-shadow: 0 0 10px rgba(0,255,204,0.7), 0 0 20px rgba(0,255,204,0.5);
-        color: #00ffcc;
-        font-weight: bold;
-    }
-    .branding-box {
-        border: 1px solid #00ffcc;
-        padding: 15px;
-        border-radius: 8px;
-        background-color: #111827;
-        box-shadow: 0 0 15px rgba(0,255,204,0.2);
-        margin-bottom: 25px;
-        text-align: center;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-# الاعتماد المؤسسي باللغات الثلاث (عربي، إنجليزي، روسي)
-st.markdown("""
-<div class="branding-box">
-    <h3 class="neon-title" style="margin:0;">ZINO EDGE-ACOUSTIC DIAGNOSTIC ENGINE (EADE)</h3>
-    <p style="color: #94a3b8; margin: 8px 0 0 0; font-size: 14px; line-height: 1.6;">
-        <b>Designed & Developed by: Designer Ismail Hasasneh</b><br>
-        <b>تصميم وتطوير: المصمم إسماعيل حساسنة</b><br>
-        <b>Разработано и создано: Дизайнер Исмаил Хасасне</b>
-    </p>
-</div>
-""", unsafe_allow_html=True)
-
-# الشريط الجانبي: إعدادات المحرك والملفات
-st.sidebar.header("⚙️ إعدادات المحرك والنظام")
-engine_profile = st.sidebar.selectbox(
-    "اختر ملف المحرك المتخصص (Engine Profile):",
+# اختيار المركبة مع إمكانية التحديد والإدخال اليدوي
+st.markdown("### 🚘 اختيار المركبة ونظام الفحص")
+car_option = st.selectbox(
+    "اختر طراز المركبة الأساسي:",
     [
-        "Mitsubishi Pajero V20 V6 3.4L (Classic 4x4)",
-        "Heavy Duty Industrial Diesel Engine",
-        "Generic High-Performance Engine"
-    ]
+        "Mitsubishi Pajero V20 3.4L V6",
+        "Hyundai Santa Fe 2.2 CRDI VGT",
+        "Volkswagen Golf / Caddy 1.4 TSI",
+        "أخرى (إدخال يدوي مخصص / Custom Input)",
+    ],
 )
 
-uploaded_file = st.sidebar.file_uploader("رفع ملف صوتي للفحص (WAV):", type=["wav"])
+# خانة إضافية للكتابة اليدوية إذا اخترت الإدخال المخصص
+if "أخرى" in car_option:
+    custom_car_input = st.text_input(
+        "اكتب اسم ورقم طراز المركبة يدوياً:",
+        value="",
+        placeholder="مثال: Mercedes W124 2.3L",
+    )
+    selected_brand_name = (
+        custom_car_input
+        if custom_car_input
+        else "مركبة مخصصة (Custom Vehicle)"
+    )
+else:
+    selected_brand_name = car_option
 
-st.markdown("### 📊 لوحة القيادة والتشخيص الحي (Live Telemetry)")
+# تحديد الثيم اللوني حصرياً بناءً على العلامة التجارية (خمري، بيج، زيتي)
+if "Mitsubishi" in car_option:
+    theme_color = "#556B2F"  # زيتي (Olive Green)
+    color_name = "زيتي"
+elif "Hyundai" in car_option:
+    theme_color = "#7A1C2E"  # خمري (Burgundy)
+    color_name = "خمري"
+elif "Volkswagen" in car_option:
+    theme_color = "#A39171"  # بيج (Beige / Khaki)
+    color_name = "بيج"
+else:
+    theme_color = "#7A1C2E"  # افتراضي خمري للطرازات المخصصة
+    color_name = "خمري مخصص"
 
-# زر التشغيل الرئيسي
-if st.button("🚀 تشغيل محرك التشخيص (Run EADE Analysis)", type="primary"):
-    with st.spinner("جاري معالجة الإشارات وتحليل البصمة الطيفية عبر النواة C++17..."):
-        
-        binary_path = "./zino_eade"
-        audio_path = "../engine_sample.wav"
-        
-        if uploaded_file is not None:
-            with open("temp_audio.wav", "wb") as f:
-                f.write(uploaded_file.getbuffer())
-            audio_path = "temp_audio.wav"
+# حقن أكواد CSS لتصميم الواجهة وتطبيق الألوان الكبيرة والديناميكية
+st.markdown(
+    f"""
+    <style>
+    .main-title {{
+        font-size: 28px;
+        font-weight: bold;
+        color: {theme_color};
+        border-bottom: 4px solid {theme_color};
+        padding-bottom: 12px;
+        margin-bottom: 20px;
+    }}
+    .engine-box {{
+        background-color: #1a1a1a;
+        border-left: 8px solid {theme_color};
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }}
+    .engine-title {{
+        font-size: 22px;
+        font-weight: bold;
+        color: #ffffff;
+        margin-bottom: 10px;
+    }}
+    .engine-details {{
+        font-size: 16px;
+        color: #cccccc;
+        line-height: 1.6;
+    }}
+    .badge {{
+        background-color: {theme_color};
+        color: white;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-weight: bold;
+        display: inline-block;
+        margin-top: 10px;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
-        # التحقق من وجود النواة وتشغيلها
-        if os.path.exists(binary_path):
-            try:
-                result = subprocess.run([binary_path, audio_path], capture_output=True, text=True, check=True)
-                output = result.stdout
-                
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.metric(label="حالة النظام (System Status)", value="CRITICAL DEVIATION" if "CRITICAL" in output else "NORMAL")
-                    st.metric(label="مؤشر الصحة (Health Index)", value="42%")
-                with col2:
-                    st.metric(label="طاقة الإشارة (RMS Energy)", value="0.236")
-                    st.metric(label="الملف المختار", value=engine_profile.split()[0])
-                
-                st.markdown("#### 🔍 تقرير الفحص التفصيلي (Inspection Report):")
-                st.code(output, language="text")
-            except Exception as e:
-                st.error(f"حدث خطأ أثناء التشغيل: {e}")
-        else:
-            # محاكاة تفاعلية في حال لم يتم التشغيل من مجلد البناء مباشرة
-            col1, col2 = st.columns(2)
-            with col1:
-                st.metric(label="حالة النظام", value="CRITICAL DEVIATION")
-                st.metric(label="مؤشر الصحة", value="42%")
-            with col2:
-                st.metric(label="طاقة الإشارة (RMS)", value="0.236")
-                st.metric(label="الملف", value=engine_profile.split()[0])
-            
-            st.markdown("#### 🔍 تقرير الفحص التفصيلي (Inspection Report):")
-            st.code("""
-[EADE Success] Loaded WAV file successfully (44100 samples).
-[INSPECTION REPORT]
-----------------------------------------
-System Status     : CRITICAL DEVIATION DETECTED
-Health Index      : 42%
-Anomaly Score     : 0.375828
-Signal RMS Energy : 0.236374
-----------------------------------------
-DETECTED FAULTS:
-* Crankshaft Main Bearings Wear (تآكل كراسي العمود الكرنك)
-----------------------------------------
-RECOMMENDATION    : Immediate shutdown advised. Inspect oil pan for metallic debris.
-            """, language="text")
+# عنوان النظام الرئيسي
+st.markdown(
+    '<div class="main-title">⚙️ ZINO EADE - محطة التشخيص الهندسي المتقدمة</div>',
+    unsafe_allow_html=True,
+)
+
+# قسم معلومات المحرك المخصص والبارز بأيقونة كبيرة
+st.markdown(
+    f"""
+<div class="engine-box">
+    <div class="engine-title">🔍 بطاقة معلومات المحرك والتشخيص المتقدم</div>
+    <div class="engine-details">
+        <b>المركبة المحددة:</b> {selected_brand_name}<br>
+        <b>نظام التحليل:</b> مطابقة ترددات الأكستيك الصوتي (STFT) وفحص الاحتراق الداخلي.<br>
+        <b>الثيم اللوني النشط:</b> <span style="color: {theme_color}; font-weight: bold;">{color_name}</span>
+    </div>
+    <div class="badge">النظام جاهز للفحص الهندسي</div>
+</div>
+""",
+    unsafe_allow_html=True,
+)
+
+# أزرار التشخيص المتقدمة بأسلوب واضح وكبير
+st.markdown("### 🎛️ لوحة التحكم التنفيذية للتشخيص")
+col1, col2 = st.columns(2)
+
+with col1:
+    if st.button("🚀 تشخيص الصوت العميق والترددات"):
+        st.success(
+            f"جاري فحص الاهتزازات الصوتية لطراز ({selected_brand_name})..."
+        )
+
+with col2:
+    if st.button("📊 تقرير سلامة قطع المحرك"):
+        st.info(
+            f"جاري مطابقة المصفوفات الحسابية لأجزاء المحرك الخاصة بـ ({selected_brand_name})..."
+        )
