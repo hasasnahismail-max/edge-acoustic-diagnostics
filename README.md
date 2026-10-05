@@ -1,36 +1,39 @@
-# 🔊 EADE: Edge-Acoustic Diagnostic Engine
+# 🎙️ ZINO EADE - Edge Acoustic Diagnostic Engine
 
-![C++](https://img.shields.io/badge/Language-C%2B%2B17-blue.svg)
-![Python](https://img.shields.io/badge/Language-Python%203.10-green.svg)
-![Signal Processing](https://img.shields.io/badge/Domain-Signal%20Processing-orange.svg)
+![Python](https://img.shields.io/badge/Language-Python%203.10-blue.svg)
+![Streamlit](https://img.shields.io/badge/Framework-Streamlit-red.svg)
+![Signal Processing](https://img.shields.io/badge/Domain-FFT%20%26%20Audio%20Diagnostics-orange.svg)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)
 
-> An edge-compatible acoustic and vibration signal processing framework designed for automated mechanical anomaly detection using Short-Time Fourier Transform (STFT) and spectral analysis.
+> An edge-compatible acoustic diagnostic platform leveraging Fast Fourier Transform (FFT) signal processing for real-time mechanical anomaly detection and predictive maintenance across automotive, industrial, and home appliance domains.
 
 ---
 
-## 📸 Quick Visual Demo
+## 🔑 Key Features & Technical Highlights
 
-![EADE Spectrogram Processing Demo](./assets/demo_preview.gif)
-
-🎬 **[Watch High-Resolution Demo Video](https://github.com/IsmailHasasna)** | 📄 **[Read Technical Overview](./docs/TECHNICAL_REPORT.pdf)**
-
----
-
-## 🔑 Core Features & Engineering Highlights
-
-- **Time-Frequency Spectral Decomposition:** Utilizes Short-Time Fourier Transform (STFT) with custom windowing (Hann/Hamming) to isolate acoustic frequency variations.
-- **Edge Hardware Optimization:** Low-memory array processing designed to execute efficiently on embedded ARM/Linux architecture.
-- **Automated Anomaly Detection:** Extracts spectral centroid and energy distribution to detect mechanical irregularities in real time.
-- **Noise Suppression Pipeline:** Integrates digital FIR/Butterworth filtering to remove ambient background noise prior to signal evaluation.
+- **Live & File Audio Ingestion:** Direct microphone input streaming (`st.audio_input`) or pre-recorded audio file analysis (`WAV`, `MP3`, `OGG`).
+- **FFT Spectrum Analysis:** Decomposes acoustic signatures to calculate **Acoustic Health Score**, **Dominant FFT Peak Frequency**, and **Anomaly Index**.
+- **Multi-Domain Diagnostic Engine:**
+  - 🚗 **Automotive Platform:** Specialized acoustic profiling for **Mitsubishi Pajero V20**, **Hyundai Santa Fe**, and **Volkswagen Caddy TDI**.
+  - 🔌 **Home Appliances:** Diagnostic modules for washing machines, refrigerators, air conditioners, and dishwashers.
+  - 🏭 **Industrial Machinery:** Vibration and acoustic fault analysis for 3-phase induction motors, hydraulic pumps, and screw compressors.
+- **Interactive Visuals & Multilingual Support:** Features dynamic color laser scan simulations and full trilingual UI support (**Arabic, English, Russian**).
 
 ---
 
-## 🛠️ Tech Stack & Requirements
+## 🛠️ Tech Stack & Dependencies
 
-- **Languages:** C++17, Python 3.10
-- **Signal Processing & Math:** STFT Algorithms, NumPy, SciPy
-- **Target Hardware:** Embedded Nodes / Linux Workstations
+- **Core Language:** Python 3.10+
+- **Frontend / UI Framework:** Streamlit, HTML5, Custom CSS3 Styling
+- **Signal Processing:** Audio Spectrum Breakdown, FFT Peak Detection, NumPy, SciPy
+
+---
+
+## 📁 Repository Structure
+
+- `app.py` - Main Streamlit execution & UI pipeline
+- `requirements.txt` - Python dependencies
+- `README.md` - Project technical documentation
 
 ---
 
@@ -38,8 +41,11 @@
 
 ```bash
 # Clone repository
-git clone https://github.com/IsmailHasasna/EADE.git
-cd EADE
+git clone https://github.com/hasasnahismail-max/edge-acoustic-diagnostics.git
+cd edge-acoustic-diagnostics
 
-# Run signal analysis pipeline
-python src/main_analysis.py --input data/sample_vibration.wav
+# Install dependencies
+pip install -r requirements.txt
+
+# Launch application
+streamlit run app.py
