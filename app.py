@@ -76,26 +76,11 @@ CARS_DATA = {
         "engine": "3.5L V6 6G74 Gasoline Engine",
         "logo": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Mitsubishi_logo.svg",
         "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Mitsubishi_Pajero_V20_front.jpg/800px-Mitsubishi_Pajero_V20_front.jpg",
-        "color": "#556B2F",  # زيتوني
+        "color": "#556B2F",
         "reports": {
-            "العربية": """
-            • <b>نظام الاحتراق والصبابات:</b> تم التقاط تردد الاحتراق الأساسي عند 142.5 هرتز لـ 6 أسطوانات V6. جميع الصبابات تعمل بالتزامن وبدون أصوات طقطقة.<br>
-            • <b>نظام البخاخات والوقود:</b> ترددات حقن البنزين مستقرة ونظيفة خالية من الضوضاء عالية التردد.<br>
-            • <b>محامل الدوران وعمود الكرنك:</b> غياب كامل لترددات الاحتكاك المعدني المنخفضة.<br>
-            • <b>الخلاصة الميكانيكية:</b> المحرك بحالة ممتازة جداً ونسبة الكفاءة الصوتية 94.2%.
-            """,
-            "English": """
-            • <b>Combustion & Valve Train:</b> Fundamental V6 firing frequency peak captured at 142.5 Hz. Valve train operating in total synchronization.<br>
-            • <b>Fuel Injection System:</b> Clean high-frequency pulse signature across all injectors.<br>
-            • <b>Crankshaft & Bearings:</b> No low-frequency mechanical friction or bearing play detected.<br>
-            • <b>Mechanical Verdict:</b> Engine is in optimal health condition with 94.2% Acoustic Health Score.
-            """,
-            "Русский": """
-            • <b>Сгорание и клапанный механизм:</b> Пиковая частота воспламенения V6 зафиксирована на 142.5 Гц. Клапаны работают синхронно.<br>
-            • <b>Топливные форсунки:</b> Стабильный сигнал импульсов впрыска бензина без шумов.<br>
-            • <b>Коленчатый вал и подшипники:</b> Низкочастотные шумы трения отсутствуют.<br>
-            • <b>Заключение:</b> Двигатель находится в отличном техническом состоянии (94.2%).
-            """,
+            "العربية": "• <b>نظام الاحتراق والصبابات:</b> تم التقاط تردد الاحتراق الأساسي عند 142.5 هرتز لـ 6 أسطوانات V6. جميع الصبابات تعمل بالتزامن وبدون أصوات طقطقة.<br>• <b>نظام البخاخات والوقود:</b> ترددات حقن البنزين مستقرة ونظيفة خالية من الضوضاء عالية التردد.<br>• <b>محامل الدوران وعمود الكرنك:</b> غياب كامل لترددات الاحتكاك المعدني المنخفضة.<br>• <b>الخلاصة الميكانيكية:</b> المحرك بحالة ممتازة جداً ونسبة الكفاءة الصوتية 94.2%.",
+            "English": "• <b>Combustion & Valve Train:</b> Fundamental V6 firing frequency peak captured at 142.5 Hz. Valve train operating in total synchronization.<br>• <b>Fuel Injection System:</b> Clean high-frequency pulse signature across all injectors.<br>• <b>Crankshaft & Bearings:</b> No low-frequency mechanical friction or bearing play detected.<br>• <b>Mechanical Verdict:</b> Engine is in optimal health condition with 94.2% Acoustic Health Score.",
+            "Русский": "• <b>Сгорание и клапанный механизм:</b> Пиковая частота воспламенения V6 зафиксирована на 142.5 Гц. Клапаны работают синхронно.<br>• <b>Топливные форсунки:</b> Стабильный сигнал импульсов впрыска бензина без шумов.<br>• <b>Коленчатый вал и подшипники:</b> Низкочастотные шумы трения отсутствуют.<br>• <b>Заключение:</b> Двигатель находится в отличном техническом состоянии (94.2%).",
         },
     },
     "Hyundai": {
@@ -103,26 +88,11 @@ CARS_DATA = {
         "engine": "2.2L CRDi Turbo Diesel Engine",
         "logo": "https://upload.wikimedia.org/wikipedia/commons/4/44/Hyundai_Motor_Company_logo.svg",
         "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Hyundai_Santa_Fe_DM_IMG_0392.jpg/800px-Hyundai_Santa_Fe_DM_IMG_0392.jpg",
-        "color": "#7A1C2E",  # عنابي
+        "color": "#7A1C2E",
         "reports": {
-            "العربية": """
-            • <b>حقن الديزل المباشر (CRDi):</b> التردد البارز عند 285.0 هرتز يمثل النبض الطبيعي لمضخة وتكتكة بخاخات الضغط العالي (Common Rail).<br>
-            • <b>الشاحن التوربيني (Turbocharger):</b> لا يوجد صفير حاد مرتفع التردد، الشاحن يعمل ضمن النطاق الطبيعي.<br>
-            • <b>الاهتزاز والدينامو:</b> اتزان نغمة المحرك مستقر بدون تشوهات ترددية ضارة.<br>
-            • <b>الخلاصة الميكانيكية:</b> محرك الديزل يعمل بكفاءة تشغيلية ممتازة بنسبة سلامة 91.8%.
-            """,
-            "English": """
-            • <b>Common Rail Diesel Injection (CRDi):</b> Dominant 285.0 Hz frequency corresponds to high-pressure injector pulses and combustion rhythm.<br>
-            • <b>Turbocharger Assembly:</b> No high-pitch whistle anomaly; turbo compressor operates smoothly.<br>
-            • <b>Vibration & Belt Drive:</b> Stable acoustic harmonic profile with minimal structural noise.<br>
-            • <b>Mechanical Verdict:</b> Diesel engine operates at top health with 91.8% Acoustic Score.
-            """,
-            "Русский": """
-            • <b>Система впрыска CRDi:</b> Частота 285.0 Гц соответствует нормальной работе дизельных форсунок высокого давления.<br>
-            • <b>Турбокомпрессор:</b> Высокочастотный свист отсутствует, турбина работает плавно.<br>
-            • <b>Вибрации и приводные ремни:</b> Гармонический профиль стабилен.<br>
-            • <b>Заключение:</b> Дизельный двигатель работает с высокой эффективностью (91.8%).
-            """,
+            "العربية": "• <b>حقن الديزل المباشر (CRDi):</b> التردد البارز عند 285.0 هرتز يمثل النبض الطبيعي لمضخة وتكتكة بخاخات الضغط العالي (Common Rail).<br>• <b>الشاحن التوربيني (Turbocharger):</b> لا يوجد صفير حاد مرتفع التردد، الشاحن يعمل ضمن النطاق الطبيعي.<br>• <b>الاهتزاز والدينامو:</b> اتزان نغمة المحرك مستقر بدون تشوهات ترددية ضارة.<br>• <b>الخلاصة الميكانيكية:</b> محرك الديزل يعمل بكفاءة تشغيلية ممتازة بنسبة سلامة 91.8%.",
+            "English": "• <b>Common Rail Diesel Injection (CRDi):</b> Dominant 285.0 Hz frequency corresponds to high-pressure injector pulses and combustion rhythm.<br>• <b>Turbocharger Assembly:</b> No high-pitch whistle anomaly; turbo compressor operates smoothly.<br>• <b>Vibration & Belt Drive:</b> Stable acoustic harmonic profile with minimal structural noise.<br>• <b>Mechanical Verdict:</b> Diesel engine operates at top health with 91.8% Acoustic Score.",
+            "Русский": "• <b>Система впрыска CRDi:</b> Частота 285.0 Гц соответствует нормальной работе дизельных форсунок высокого давления.<br>• <b>Турбокомпрессор:</b> Высокочастотный свист отсутствует, турбина работает плавно.<br>• <b>Вибрации и приводные ремни:</b> Гармонический профиль стабилен.<br>• <b>Заключение:</b> Дизельный двигатель работает с высокой эффективностью (91.8%).",
         },
     },
     "Volkswagen": {
@@ -130,26 +100,11 @@ CARS_DATA = {
         "engine": "2.0L TDI Common Rail Diesel Engine",
         "logo": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Volkswagen_logo_2019.svg",
         "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Volkswagen_Caddy_Maxi_TDI_Facelift_front.jpg/800px-Volkswagen_Caddy_Maxi_TDI_Facelift_front.jpg",
-        "color": "#004B87",  # أزرق فولكسفاغن
+        "color": "#004B87",
         "reports": {
-            "العربية": """
-            • <b>حذافة الفولام المزدوجة (Dual-Mass Flywheel):</b> طيف التردد المنخفض عند 98.2 هرتز يوضح امتصاصاً كاملاً للاهتزازات دون صدمات ميكانيكية.<br>
-            • <b>مجموعة القشاط/السير (Timing Belt):</b> حركة السير متوازنة دون أصوات صرير أو احتكاك متزايد.<br>
-            • <b>احتراق TDI:</b> نظام الحقن التراكمي مستقر مع توزيع متكافئ للضغط على الأسطوانات.<br>
-            • <b>الخلاصة الميكانيكية:</b> حالة المحرك ممتازة بنسبة كفاءة 95.6%.
-            """,
-            "English": """
-            • <b>Dual-Mass Flywheel (DMF):</b> Low frequency peak at 98.2 Hz confirms excellent damping with zero chatter.<br>
-            • <b>Timing Belt & Tensioners:</b> Smooth rotational acoustic harmonics without squeal.<br>
-            • <b>TDI Combustion:</b> Common Rail pressure delivery is balanced evenly across all cylinders.<br>
-            • <b>Mechanical Verdict:</b> Vehicle engine is in prime condition with 95.6% Acoustic Score.
-            """,
-            "Русский": """
-            • <b>Двухмассовый маховик (DMF):</b> Низкочастотный пик 98.2 Гц подтверждает отличную гашение вибраций.<br>
-            • <b>Ремень ГРМ и ролики:</b> Плавные акустические гармоники без посторонних шумов.<br>
-            • <b>Сгорание TDI:</b> Подача топлива сбалансирована по всем цилиндрам.<br>
-            • <b>Заключение:</b> Двигатель находится в превосходном состоянии (95.6%).
-            """,
+            "العربية": "• <b>حذافة الفولام المزدوجة (Dual-Mass Flywheel):</b> طيف التردد المنخفض عند 98.2 هرتز يوضح امتصاصاً كاملاً للاهتزازات دون صدمات ميكانيكية.<br>• <b>مجموعة القشاط/السير (Timing Belt):</b> حركة السير متوازنة دون أصوات صرير أو احتكاك متزايد.<br>• <b>احتراق TDI:</b> نظام الحقن التراكمي مستقر مع توزيع متكافئ للضغط على الأسطوانات.<br>• <b>الخلاصة الميكانيكية:</b> حالة المحرك ممتازة بنسبة كفاءة 95.6%.",
+            "English": "• <b>Dual-Mass Flywheel (DMF):</b> Low frequency peak at 98.2 Hz confirms excellent damping with zero chatter.<br>• <b>Timing Belt & Tensioners:</b> Smooth rotational acoustic harmonics without squeal.<br>• <b>TDI Combustion:</b> Common Rail pressure delivery is balanced evenly across all cylinders.<br>• <b>Mechanical Verdict:</b> Vehicle engine is in prime condition with 95.6% Acoustic Score.",
+            "Русский": "• <b>Двухмассовый маховик (DMF):</b> Низкочастотный пик 98.2 Гц подтверждает отличную гашение вибраций.<br>• <b>Ремень ГРМ и ролики:</b> Плавные акустические гармоники без посторонних шумов.<br>• <b>Сгорание TDI:</b> Подача топлива сбалансирована по всем цилиндрам.<br>• <b>Заключение:</b> Двигатель находится в превосходном состоянии (95.6%).",
         },
     },
 }
@@ -173,7 +128,6 @@ st.sidebar.info(f"**{t['developer_credit']}**")
 if "selected_car" not in st.session_state:
     st.session_state["selected_car"] = "Hyundai"
 
-# تحديد لون الهوية المختار
 if domain == t["d_cars"]:
     active_color = CARS_DATA[st.session_state["selected_car"]]["color"]
 elif domain == t["d_appliances"]:
@@ -206,7 +160,6 @@ st.markdown(
         border-radius: 8px !important;
     }}
     
-    /* صندوق المسح الليزري فوق مجسم السيارة */
     .laser-box {{
         position: relative;
         border: 3px solid {active_color};
@@ -230,7 +183,6 @@ st.markdown(
         100% {{ top: 0%; }}
     }}
     
-    /* حاوية التقرير الفني المنسقة لتفادي خلط النصوص */
     .report-card {{
         background-color: #f8fafc;
         border: 1px solid #e2e8f0;
@@ -247,7 +199,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# عرض العنوان واسم المطور
 st.markdown(
     f'<div class="main-header">{t["main_title"]}</div>', unsafe_allow_html=True
 )
@@ -355,7 +306,7 @@ col_rec1, col_rec2 = st.columns(2)
 
 with col_rec1:
     st.write(f"<b>1. {t['rec_mic']}</b>", unsafe_allow_html=True)
-    recorded_audio = st.audio_input("اضغط للبدء بالتسجيل الصوتي المباشر 🎙️")
+    recorded_audio = st.audio_input("اضغط للبدء بالتسجيل الصوتي المباشر 🎙️️")
 
 with col_rec2:
     st.write(f"<b>2. {t['upload_file']}</b>", unsafe_allow_html=True)
@@ -379,7 +330,6 @@ if st.button(t["scan_btn"], use_container_width=True):
         car_info = CARS_DATA[st.session_state["selected_car"]]
         st.markdown(f"#### ⚡ {t['laser_scanning']}")
 
-        # عرض صورة مجسم السيارة المحددة مع خط الليزر الأحمر المتحرك فوقها
         laser_placeholder = st.empty()
         laser_placeholder.markdown(
             f"""
@@ -419,7 +369,6 @@ if st.button(t["scan_btn"], use_container_width=True):
             r2.metric(t["fft_peak"], "98.2 Hz (DMF Resonance)")
             r3.metric(t["anomaly"], "0.012 (Optimal)")
 
-        # عرض التقرير الفني المترجم والمحمي من التداخل
         report_html = car_info["reports"][lang]
         st.markdown(
             f"""
@@ -437,7 +386,7 @@ if st.button(t["scan_btn"], use_container_width=True):
         r3.metric(t["anomaly"], "0.045 (Minor Wear)")
 
         appliance_report = {
-            "العربية": "• <b>محرك الدوران:</b> تم كشف تردد اهتزاز عند 50 هرتز.<br>• <b>الخلاصة:</b> وجود احتكاك بسيط في محامل الدوران (Bearings). يوصى بالتشحيم الصيانة الوقائية.",
+            "العربية": "• <b>محرك الدوران:</b> تم كشف تردد اهتزاز عند 50 هرتز.<br>• <b>الخلاصة:</b> وجود احتكاك بسيط في محامل الدوران (Bearings). يوصى بالتشحيم والصيانة الوقائية.",
             "English": "• <b>Rotational Motor:</b> Vibration frequency detected at 50 Hz.<br>• <b>Verdict:</b> Minor bearing friction observed. Preventive maintenance recommended.",
             "Русский": "• <b>Электродвигатель:</b> Частота вибрации зафиксирована на 50 Гц.<br>• <b>Заключение:</b> Небольшой износ подшипников. Рекомендуется техническое обслуживание.",
         }
@@ -460,4 +409,15 @@ if st.button(t["scan_btn"], use_container_width=True):
         ind_report = {
             "العربية": "• <b>محاور الماكينة:</b> الترددات ممتازة ولا توجد ظاهرة تكهف (No Cavitation).<br>• <b>الخلاصة:</b> المضخات والتروس تعمل بكفاءة هيدروليكية وصوتية كاملة.",
             "English": "• <b>Machine Axles:</b> Optimal frequencies with zero cavitation.<br>• <b>Verdict:</b> Hydraulic pumps and gears are operating in full harmonic balance.",
-            "Русский": "• <b>Оси оборудования:</b> Оптимальные частоты без кавитации.<br>• <b>Заключение:</
+            "Русский": "• <b>Оси оборудования:</b> Оптимальные частоты без кавитации.<br>• <b>Заключение:</b> Гидравлические насосы и шестерни работают идеально.",
+        }
+
+        st.markdown(
+            f"""
+            <div class="report-card" dir="{text_dir}">
+                <h4 style="margin-top:0; color:#D97706;">{t['detailed_report_title']}</h4>
+                {ind_report[lang]}
+            </div>
+            """,
+            unsafe_allow_html=True,
+)
