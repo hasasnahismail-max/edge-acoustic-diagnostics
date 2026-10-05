@@ -38,7 +38,7 @@
 
 ```bash
 # Clone repository
-git clone [https://github.com/IsmailHasasna/EADE.git](https://github.com/IsmailHasasna/EADE.git)
+git clone https://github.com/IsmailHasasna/EADE.git
 cd EADE
 
 # Run signal analysis pipeline
