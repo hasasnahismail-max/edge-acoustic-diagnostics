@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. القاموس متعدد اللغات
+# 2. القاموس متعدد اللغات (العربية، الإنجليزية، الروسية)
 I18N = {
     "العربية": {
         "main_title": "🎙️ محطة التشخيص الصوتي الهندسي الشاملة - ZINO EADE",
@@ -41,7 +41,7 @@ I18N = {
         "plot_title": "📈 منحنى الطيف الصوتي وتحليل الترددات (FFT Spectrum)",
     },
     "English": {
-        "main_title": "🎙️️ ZINO EADE - Precision Acoustic Diagnostic Workstation",
+        "main_title": "🎙️ ZINO EADE - Precision Acoustic Diagnostic Workstation",
         "developer_credit": "🛠️ Designed & Developed by Ismail Hassasneh",
         "domain_label": "🏢 Select Diagnostic Sector:",
         "d_cars": "🚗 Automotive Sector",
@@ -65,6 +65,32 @@ I18N = {
         "anomaly": "Acoustic Anomaly Index",
         "detailed_report_title": "📑 Comprehensive Technical Engineering Report",
         "plot_title": "📈 Acoustic Spectrum & Frequency Analysis (FFT)",
+    },
+    "Русский": {
+        "main_title": "🎙️ ZINO EADE - Станция акустической диагностики",
+        "developer_credit": "🛠️ Разработчик: Исмаил Хасасне",
+        "domain_label": "🏢 Выберите сектор диагностики:",
+        "d_cars": "🚗 Автомобильный сектор",
+        "d_appliances": "🔌 Бытовая техника",
+        "d_industrial": "🏭 Промышленное оборудование",
+        "select_car_brand": "🏢 Выберите производителя автомобиля:",
+        "select_car_model": "🚗 Выберите модель автомобиля:",
+        "select_engine_type": "⚙️ Выберите тип двигателя:",
+        "custom_model_label": "✍️ Введите модель (своя):",
+        "custom_engine_label": "✍️ Введите спецификацию двигателя:",
+        "fuel_type_label": "⛽ Тип топлива и впрыска:",
+        "cylinders_label": "🔢 Конфигурация цилиндров:",
+        "audio_section": "🎙️ Блок захвата и записи звука",
+        "rec_mic": "Запись живого звука с микрофона:",
+        "upload_file": "Или загрузить аудиофайл (WAV, MP3, OGG):",
+        "scan_btn": "🚀 Запустить сканирование и анализ FFT",
+        "laser_scanning": "⚡ Обработка аудиосигнала и расчет FFT...",
+        "results_title": "📊 Отчет высокоточной спектральной диагностики (FFT)",
+        "health": "Индекс акустического здоровья",
+        "fft_peak": "Доминирующий пик FFT",
+        "anomaly": "Индекс акустических аномалий",
+        "detailed_report_title": "📑 Комплексный технический инженерный отчет",
+        "plot_title": "📈 Акустический спектр и частотный анализ (FFT)",
     }
 }
 
@@ -75,30 +101,30 @@ BRAND_DATABASE = {
         "color": "#556B2F",
         "logo": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Mitsubishi_logo.svg",
         "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Mitsubishi_Pajero_V20_front.jpg/800px-Mitsubishi_Pajero_V20_front.jpg",
-        "models": ["Pajero (V20 / V60 / V80)", "Lancer (EX / Evolution)", "Outlander", "L200 Pickup", "Montero Sport", "Custom Model / طراز آخر"],
-        "engines": ["3.5L V6 6G74 Gasoline", "3.0L V6 6G72 Gasoline", "3.2L Di-D 4M41 Turbo Diesel", "2.0L I4 Turbo", "Custom Engine / محرك آخر"],
+        "models": ["Pajero (V20 / V60 / V80)", "Lancer (EX / Evolution)", "Outlander", "L200 Pickup", "Montero Sport", "Custom Model / Другая модель"],
+        "engines": ["3.5L V6 6G74 Gasoline", "3.0L V6 6G72 Gasoline", "3.2L Di-D 4M41 Turbo Diesel", "2.0L I4 Turbo", "Custom Engine / Другой двигатель"],
     },
     "Hyundai": {
         "brand_name": "Hyundai Motor Company",
         "color": "#002C5F",
         "logo": "https://upload.wikimedia.org/wikipedia/commons/4/44/Hyundai_Motor_Company_logo.svg",
         "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Hyundai_Santa_Fe_DM_IMG_0392.jpg/800px-Hyundai_Santa_Fe_DM_IMG_0392.jpg",
-        "models": ["Santa Fe", "Tucson", "Elantra", "Sonata", "Accent", "Palisade", "Custom Model / طراز آخر"],
-        "engines": ["2.2L CRDi VGT Turbo Diesel", "2.0L CRDi Diesel", "2.0L Nu MPI Gasoline", "1.6L GDI Turbo", "Custom Engine / محرك آخر"],
+        "models": ["Santa Fe", "Tucson", "Elantra", "Sonata", "Accent", "Palisade", "Custom Model / Другая модель"],
+        "engines": ["2.2L CRDi VGT Turbo Diesel", "2.0L CRDi Diesel", "2.0L Nu MPI Gasoline", "1.6L GDI Turbo", "Custom Engine / Другой двигатель"],
     },
     "Volkswagen": {
         "brand_name": "Volkswagen Group",
         "color": "#001E50",
         "logo": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Volkswagen_logo_2019.svg",
         "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Volkswagen_Caddy_Maxi_TDI_Facelift_front.jpg/800px-Volkswagen_Caddy_Maxi_TDI_Facelift_front.jpg",
-        "models": ["Caddy / Caddy Maxi", "Golf (GTI / R)", "Passat", "Tiguan", "Touareg", "Custom Model / طراز آخر"],
-        "engines": ["2.0L TDI Common Rail Diesel", "1.6L TDI Diesel", "2.0L TSI EA888", "1.4L TSI", "Custom Engine / محرك آخر"],
+        "models": ["Caddy / Caddy Maxi", "Golf (GTI / R)", "Passat", "Tiguan", "Touareg", "Custom Model / Другая модель"],
+        "engines": ["2.0L TDI Common Rail Diesel", "1.6L TDI Diesel", "2.0L TSI EA888", "1.4L TSI", "Custom Engine / Другой двигатель"],
     },
 }
 
-# 4. الشريط الجانبي
-st.sidebar.title("⚙️ التحكم واللغة")
-lang = st.sidebar.selectbox("🌐 Choose Language / اختر اللغة", ["العربية", "English"], key="app_lang_select")
+# 4. الشريط الجانبي واختيار اللغة
+st.sidebar.title("⚙️ التحكم واللغة / Control / Управление")
+lang = st.sidebar.selectbox("🌐 Language / Язык / اللغة", ["العربية", "English", "Русский"], key="app_lang_select")
 t = I18N[lang]
 
 st.sidebar.markdown("---")
@@ -119,7 +145,7 @@ brand_key = st.session_state["selected_brand"]
 active_color = BRAND_DATABASE[brand_key]["color"] if domain_code == "cars" else ("#005F73" if domain_code == "appliances" else "#D97706")
 c_val = str(active_color)
 
-# 5. التنسيقات العامة للواجهة البصرية
+# 5. التنسيقات العامة للواجهة وتصميم نظيف بدون تداخل
 st.markdown(f"""
 <style>
     .main-header {{ font-size: 26px; font-weight: 800; color: {c_val}; border-bottom: 3px solid {c_val}; padding-bottom: 8px; margin-bottom: 4px; }}
@@ -162,11 +188,11 @@ if domain_code == "cars":
     m1, m2 = st.columns(2)
     with m1:
         selected_model = st.selectbox(t["select_car_model"], b_data["models"])
-        final_model = st.text_input(t["custom_model_label"], value="Santa Fe / Pajero") if "Custom" in selected_model or "آخر" in selected_model else selected_model
+        final_model = st.text_input(t["custom_model_label"], value="Santa Fe / Pajero") if "Custom" in selected_model or "آخر" in selected_model or "Другая" in selected_model else selected_model
         fuel_system = st.selectbox(t["fuel_type_label"], ["Turbo Diesel CRDi / TDI", "Gasoline Direct Injection GDI / TSI", "Gasoline MPI"])
     with m2:
         selected_engine = st.selectbox(t["select_engine_type"], b_data["engines"])
-        final_engine = st.text_input(t["custom_engine_label"], value="2.2L CRDi Turbo") if "Custom" in selected_engine or "آخر" in selected_engine else selected_engine
+        final_engine = st.text_input(t["custom_engine_label"], value="2.2L CRDi Turbo") if "Custom" in selected_engine or "آخر" in selected_engine or "Другой" in selected_engine else selected_engine
         cylinders_config = st.selectbox(t["cylinders_label"], ["4 Cylinders Inline", "6 Cylinders V6", "3 Cylinders"])
 
 st.markdown("---")
@@ -182,16 +208,15 @@ with r_col2:
 audio_to_process = uploaded_file if uploaded_file else recorded_audio
 
 if audio_to_process:
-    st.success("✅ تم استقبال البصمة الصوتية للمحرك بنجاح وجاهزة للتحليل الهندسي!")
+    st.success("✅ " + ("تم استقبال البصمة الصوتية للمحرك بنجاح!" if lang=="العربية" else ("Audio fingerprint successfully received!" if lang=="English" else "Аудиоотпечаток успешно получен!")))
 
 st.markdown("---")
 
-# 8. زر الفحص والتحليل الرياضي الحقيقي (FFT) مع حماية كاملة ومقاومة الأخطاء
+# 8. زر الفحص والتحليل الرياضي الحقيقي (FFT) مع إخفاء صندوق التلميح المزعج
 if st.button(t["scan_btn"], use_container_width=True):
     with st.spinner(t["laser_scanning"]):
         time.sleep(1.0)
         
-        # قيم افتراضية آمنة هندسياً
         dominant_peak, health_score, anomaly_index = 185.2, 92.4, 0.018
         fft_vals = np.sin(np.linspace(0, 20, 300)) * 50 + 100
         
@@ -228,17 +253,21 @@ if st.button(t["scan_btn"], use_container_width=True):
     c2.metric(t["fft_peak"], f"{dominant_peak:.1f} Hz")
     c3.metric(t["anomaly"], f"{anomaly_index} (Optimal)")
 
-    # عرض الرسم البياني للطيف الصوتي (FFT Spectrum)
+    # عرض الرسم البياني للطيف الصوتي (FFT Spectrum) بدون صندوق التلميح المتداخل
     st.markdown(f"#### {t['plot_title']}")
     chart_data = fft_vals[:min(300, len(fft_vals))]
-    st.line_chart(chart_data)
+    
+    # استخدام chart لتفادي مربعات المؤشر المزعجة في line_chart
+    st.bar_chart(chart_data)
 
     text_dir = "rtl" if lang == "العربية" else "ltr"
     
     if lang == "العربية":
         report_text = f"<b>تحليل طيف فوريه (FFT الهندسي):</b> تم فحص البصمة الصوتية للمركبة <b>{brand_key} {final_model}</b> بمعمارية <b>{final_engine}</b>.<br>• تردد الذروة الأساسي المحسوب: <b>{dominant_peak:.1f} Hz</b>.<br>• توافقيات احتراق وقود الديزل وحركة البلوكات ضمن الحدود التشغيلية المقبولة.<br>• مؤشر التشوه الصوتي مستقر ولا توجد انعكاسات ترددية ضارة."
-    else:
+    elif lang == "English":
         report_text = f"<b>Real FFT Acoustic Analysis:</b> Inspected audio fingerprint for <b>{brand_key} {final_model}</b> powered by <b>{final_engine}</b>.<br>• Calculated dominant peak frequency: <b>{dominant_peak:.1f} Hz</b>.<br>• Diesel combustion harmonics and valve train dynamics are within normal operational limits.<br>• Distortion index is stable with no severe mechanical anomalies detected."
+    else:
+        report_text = f"<b>Акустический анализ FFT:</b> Проверен звуковой отпечаток автомобиля <b>{brand_key} {final_model}</b> с двигателем <b>{final_engine}</b>.<br>• Рассчитанная частота пика: <b>{dominant_peak:.1f} Hz</b>.<br>• Гармоники сгорания дизельного топлива и газораспределительного механизма в пределах нормы.<br>• Индекс искажений стабилен, механических аномалий не обнаружено."
 
     st.markdown(f"""
     <div class="report-card" dir="{text_dir}">
