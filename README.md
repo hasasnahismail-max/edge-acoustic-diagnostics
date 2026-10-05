@@ -11,7 +11,6 @@
 
 ## 📸 Quick Visual Demo
 
-<!-- ضع رابط الصورة المتحركة GIF أو غلاف الفيديو هنا -->
 ![EADE Spectrogram Processing Demo](./assets/demo_preview.gif)
 
 🎬 **[Watch High-Resolution Demo Video](https://github.com/IsmailHasasna)** | 📄 **[Read Technical Overview](./docs/TECHNICAL_REPORT.pdf)**
