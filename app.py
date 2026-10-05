@@ -268,12 +268,14 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+main_title_str = t["main_title"]
+dev_credit_str = t["developer_credit"]
+
 st.markdown(
-    f'<div class="main-header">{t["main_title"]}</div>', unsafe_allow_html=True
+    f'<div class="main-header">{main_title_str}</div>', unsafe_allow_html=True
 )
 st.markdown(
-    f'<div class="dev-credit">{t["developer_credit"]}</div>',
-    unsafe_allow_html=True,
+    f'<div class="dev-credit">{dev_credit_str}</div>', unsafe_allow_html=True
 )
 
 # ==========================================
@@ -435,7 +437,7 @@ st.markdown("---")
 
 
 # ==========================================
-# 🧬 دالة التقرير الهندسي الديناميكي الموسّع
+# 🧬 دالة التقرير الهندسي الديناميكي الموسّع (معدلة ومحمية)
 # ==========================================
 def generate_expanded_car_report(
     brand, model, engine, fuel, cylinders, lang
@@ -444,6 +446,18 @@ def generate_expanded_car_report(
     is_turbo = "Turbo" in fuel or "Turbo" in engine or "TSI" in engine
 
     if lang == "العربية":
+        p1 = (
+            f"<b>1. تحليل طيف فوريه الترددي (FFT Spectrum Analysis):</b><br>تم"
+            f" تفكيك الإشارة الصوتية لسيارة <b>{brand} {model}</b> (محرك"
+            f" <b>{engine}</b>). التردد البارز يطابق زمن الاحتراق للـ"
+            f" {cylinders} بدون تشتت في الطاقة."
+        )
+        p2 = (
+            "<b>2. معاينة صمامات ومحاور الكامبشافت (Valve Train & Camshaft"
+            f" Acoustics):</b><br>خلوص الصبابات والصمامات يعمل ضمن المجال"
+            f" الهيدروليكي القياسي لشركة {brand}، ولا تظهر أي طقطقة عشوائية في"
+            " عمود الكامبشافت."
+        )
         inj_text = (
             "ترددات بخاخات الديزل ذات الضغط العالي (Common Rail) متزنة ونقية دون"
             " وجود ظاهرة التسريب الترددي."
@@ -452,6 +466,10 @@ def generate_expanded_car_report(
                 "نظام حقن البنزين المباشر/المتعدد يعمل بانتظام، والضوضاء عالية"
                 " التردد في النطاق الطبيعي."
             )
+        )
+        p3 = (
+            "<b>3. نظام حقن الوقود والضغط العالي (Injectors & Fuel Rail"
+            f" Pressure):</b><br>{inj_text}"
         )
         turbo_text = (
             "عنفة التوربو تعمل بستارة صوتية مستقرة دون أي صفير مرتفع أو احتكاك"
@@ -462,28 +480,36 @@ def generate_expanded_car_report(
                 " تسريب في المانفولد."
             )
         )
-
-        return (
-            f"<b>1. تحليل طيف فوريه الترددي (FFT Spectrum Analysis):</b><br>تم"
-            f" تفكيك الإشارة الصوتية لسيارة <b>{brand} {model}</b> (محرك"
-            f" <b>{engine}</b>). التردد البارز يطابق زمن الاحتراق للـ"
-            f" {cylinders} بدون تشتت في الطاقة.<br><br><b>2. معاينة صمامات ومحاور"
-            f" الكامبشافت (Valve Train & Camshaft Acoustics):</b><br>خلوص"
-            f" الصبابات والصمامات يعمل ضمن المجال الهيدروليكي القياسي لشركة"
-            f" {brand}، ولا تظهر أي طقطقة عشوائية في عمود الكامبشافت.<br><br><b>3."
-            f" نظام حقن الوقود والضغط العالي (Injectors & Fuel Rail"
-            f" Pressure):</b><br>{inj_text}<br><br><b>4. الشاحن التوربيني ونظام"
-            f" سحب الهواء (Turbocharger & Induction):</b><br>{turbo_text}<br><br><b>5."
-            f" محامل الدوران وعمود الكرنك والحذافة (Bearings, Crankshaft &"
-            f" DMF):</b><br>عدم وجود أي اهتزازات منخفضة التردد في محامل عمود"
-            f" الكرنك الرئيسية، وحذافة الفولام المزدوجة امتصت الصدمات الصوتية"
-            f" بالكامل.<br><br><b>6. التوصيات الهندسية وخطة الصيانة الوقائية"
-            f" (Predictive Maintenance Plan):</b><br>المحرك بحالة ممتازة جداً."
-            f" يوصى بالمحافظة على مواعيد استبدال الزيوت والفلاتر الخاصة بـ"
-            f" {brand} عند قطع 10,000 كم."
+        p4 = (
+            "<b>4. الشاحن التوربيني ونظام سحب الهواء (Turbocharger &"
+            f" Induction):</b><br>{turbo_text}"
+        )
+        p5 = (
+            "<b>5. محامل الدوران وعمود الكرنك والحذافة (Bearings, Crankshaft &"
+            " DMF):</b><br>عدم وجود أي اهتزازات منخفضة التردد في محامل عمود الكرنك"
+            " الرئيسية، وحذافة الفولام المزدوجة امتصت الصدمات الصوتية بالكامل."
+        )
+        p6 = (
+            "<b>6. التوصيات الهندسية وخطة الصيانة الوقائية (Predictive"
+            f" Maintenance Plan):</b><br>المحرك بحالة ممتازة جداً. يوصى بالمحافظة"
+            f" على مواعيد استبدال الزيوت والفلاتر الخاصة بـ {brand} عند قطع"
+            " 10,000 كم."
         )
 
+        return "<br><br>".join([p1, p2, p3, p4, p5, p6])
+
     elif lang == "English":
+        p1 = (
+            f"<b>1. FFT Acoustic Spectrum Core Analysis:</b><br>Acoustic signal"
+            f" breakdown for <b>{brand} {model}</b> ({engine}). Dominant peak"
+            f" matches the fundamental combustion frequency for {cylinders}"
+            " with zero spectral leakage."
+        )
+        p2 = (
+            "<b>2. Valve Train & Camshaft Acoustic Inspection:</b><br>Valve"
+            " lash clearances and hydraulic lifters operate strictly within"
+            f" nominal {brand} specifications. Zero camshaft chatter observed."
+        )
         inj_text = (
             "High-pressure Common Rail Diesel injector chatter is fully"
             " synchronized with zero cavitation noise."
@@ -493,24 +519,12 @@ def generate_expanded_car_report(
                 " harmonics within normal operating range."
             )
         )
+        p3 = (
+            "<b>3. Fuel Injection System & Rail Dynamics:</b><br>" + inj_text
+        )
         turbo_text = (
             "Turbocharger spool frequency exhibits smooth acoustic resonance"
             " without high-pitched turbine squeal."
             if is_turbo
             else (
-                "Naturally aspirated air intake manifold shows no pressure"
-                " leaks or turbulent acoustic anomalies."
-            )
-        )
-
-        return (
-            f"<b>1. FFT Acoustic Spectrum Core Analysis:</b><br>Acoustic signal"
-            f" breakdown for <b>{brand} {model}</b> ({engine}). Dominant peak"
-            f" matches the fundamental combustion frequency for {cylinders}"
-            f" with zero spectral leakage.<br><br><b>2. Valve Train & Camshaft"
-            f" Acoustic Inspection:</b><br>Valve lash clearances and hydraulic"
-            f" lifters operate strictly within nominal {brand}"
-            f" specifications. Zero camshaft chatter observed.<br><br><b>3. Fuel"
-            f" Injection System & Rail Dynamics:</b><br>{inj_text}<br><br><b>4."
-            f" Turbocharger & Induction Harmonics:</b><br>{turbo_text}<br><br><b>5."
-            f" Bearings, Crankshaft &
+                "
