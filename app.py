@@ -29,18 +29,14 @@ I18N = {
         "upload_file": "أو رفع ملف صوتي جاهز (WAV, MP3, OGG):",
         "scan_btn": "🚀 بدء المسح الليزري عالي الدقة وتحليل الطيف الصوتي",
         "laser_scanning": "⚡ جاري الفحص بالليزر الموجه وتحليل الترددات الطيفية...",
-        "results_title": (
-            "📊 التقرير التشخيصي الهندسي عالي الدقة (FFT Spectrum Analysis)"
-        ),
+        "results_title": "📊 التقرير التشخيصي الهندسي عالي الدقة (FFT Spectrum Analysis)",
         "health": "نسبة السلامة الصوتية",
         "fft_peak": "التردد البارز (FFT Peak)",
         "anomaly": "مؤشر التشوه الصوتي",
         "detailed_report_title": "📑 التقرير التشخيصي الفني المخصص الشامل",
     },
     "English": {
-        "main_title": (
-            "🎙️ ZINO EADE - Universal Precision Acoustic Diagnostic Workstation"
-        ),
+        "main_title": "🎙️ ZINO EADE - Universal Precision Acoustic Diagnostic Workstation",
         "developer_credit": "🛠️ Designed & Developed by Ismail Hassasneh",
         "domain_label": "🏢 Select Diagnostic Sector:",
         "d_cars": "🚗 Comprehensive Automotive Sector",
@@ -57,22 +53,15 @@ I18N = {
         "rec_mic": "Record live audio via microphone:",
         "upload_file": "Or upload audio file (WAV, MP3, OGG):",
         "scan_btn": "🚀 Run High-Precision Laser Scan & FFT Spectrum Analysis",
-        "laser_scanning": (
-            "⚡ Executing Precision Laser Scan & Spectrum Processing..."
-        ),
-        "results_title": (
-            "📊 High-Precision Diagnostic Spectrum Report (FFT Analysis)"
-        ),
+        "laser_scanning": "⚡ Executing Precision Laser Scan & Spectrum Processing...",
+        "results_title": "📊 High-Precision Diagnostic Spectrum Report (FFT Analysis)",
         "health": "Acoustic Health Score",
         "fft_peak": "Dominant FFT Peak",
         "anomaly": "Acoustic Anomaly Index",
         "detailed_report_title": "📑 Comprehensive Technical Engineering Report",
     },
     "Русский": {
-        "main_title": (
-            "🎙️ ZINO EADE - Универсальная Высокоточная Диагностическая"
-            " Станция"
-        ),
+        "main_title": "🎙️ ZINO EADE - Универсальная Высокоточная Диагностическая Станция",
         "developer_credit": "🛠️ Дизайн и разработка: Исмаил Хасасна",
         "domain_label": "🏢 Выберите сектор диагностики:",
         "d_cars": "🚗 Полный автомобильный сектор",
@@ -88,15 +77,9 @@ I18N = {
         "audio_section": "🎙️ Модуль записи и захвата звука",
         "rec_mic": "Запись звука через микрофон:",
         "upload_file": "Или загрузите аудиофайл (WAV, MP3, OGG):",
-        "scan_btn": (
-            "🚀 Запустить высокоточное лазерное сканирование и анализ FFT"
-        ),
-        "laser_scanning": (
-            "⚡ Выполнение лазерного сканирования и спектрального анализа..."
-        ),
-        "results_title": (
-            "📊 Высокоточный отчет акустической диагностики (FFT Спектр)"
-        ),
+        "scan_btn": "🚀 Запустить высокоточное лазерное сканирование и анализ FFT",
+        "laser_scanning": "⚡ Выполнение лазерного сканирования и спектрального анализа...",
+        "results_title": "📊 Высокоточный отчет акустической диагностики (FFT Спектр)",
         "health": "Индекс здоровья",
         "fft_peak": "Пиковая частота (FFT Peak)",
         "anomaly": "Индекс аномалии",
@@ -213,324 +196,208 @@ st.sidebar.info(t["developer_credit"])
 
 # 5. إدارة حالة الشركة والسيارة النشطة
 if "selected_brand" not in st.session_state:
-  st.session_state["selected_brand"] = "Hyundai"
+    st.session_state["selected_brand"] = "Hyundai"
 
-# تحديد لون الهوية النشط
 if domain == t["d_cars"]:
-  active_color = BRAND_DATABASE[st.session_state["selected_brand"]]["color"]
+    active_color = BRAND_DATABASE[st.session_state["selected_brand"]]["color"]
 elif domain == t["d_appliances"]:
-  active_color = "#005F73"
+    active_color = "#005F73"
 else:
-  active_color = "#D97706"
+    active_color = "#D97706"
 
-# بناء تنسيق CSS بأقواس أحادية مجتمعة بأمان
-css_lines = [
-    "<style>",
-    (
-        f".main-header {{ font-size: 26px; font-weight: bold; color:"
-        f" {active_color}; border-bottom: 4px solid {active_color};"
-        " padding-bottom: 8px; margin-bottom: 5px; }}"
-    ),
-    (
-        ".dev-credit { font-size: 15px; font-weight: 600; color: #888888;"
-        " margin-bottom: 25px; }"
-    ),
-    (
-        f".stButton>button {{ background-color: {active_color} !important;"
-        " color: #ffffff !important; font-weight: bold !important;"
-        " border-radius: 8px !important; }"
-    ),
-    (
-        f".laser-box {{ position: relative; border: 3px solid {active_color};"
-        f" border-radius: 12px; overflow: hidden; box-shadow: 0 0 20px"
-        f" {active_color}88; background-color: #000000; }}"
-    ),
-    (
-        f".laser-line {{ position: absolute; top: 0; left: 0; right: 0; height:"
-        f" 6px; background-color: #FF0033; box-shadow: 0 0 15px 5px #FF0033;"
-        " animation: scan 1.8s infinite ease-in-out; z-index: 10; }"
-    ),
-    "@keyframes scan { 0% { top: 0%; } 50% { top: 92%; } 100% { top: 0%; } }",
-    (
-        f".report-card {{ background-color: #f8fafc; border: 1px solid"
-        f" #e2e8f0; border-right: 6px solid {active_color}; border-radius:"
-        " 8px; padding: 20px; margin-top: 15px; color: #1e293b; font-size:"
-        " 15px; line-height: 1.8; }}"
-    ),
-    "</style>",
-]
-st.markdown("\n".join(css_lines), unsafe_allow_html=True)
+# بناء تنسيق CSS
+css_content = (
+    "<style>"
+    + ".main-header { font-size: 26px; font-weight: bold; color: " + active_color + "; border-bottom: 4px solid " + active_color + "; padding-bottom: 8px; margin-bottom: 5px; }"
+    + ".dev-credit { font-size: 15px; font-weight: 600; color: #888888; margin-bottom: 25px; }"
+    + ".stButton>button { background-color: " + active_color + " !important; color: #ffffff !important; font-weight: bold !important; border-radius: 8px !important; }"
+    + ".laser-box { position: relative; border: 3px solid " + active_color + "; border-radius: 12px; overflow: hidden; box-shadow: 0 0 20px " + active_color + "88; background-color: #000000; }"
+    + ".laser-line { position: absolute; top: 0; left: 0; right: 0; height: 6px; background-color: #FF0033; box-shadow: 0 0 15px 5px #FF0033; animation: scan 1.8s infinite ease-in-out; z-index: 10; }"
+    + "@keyframes scan { 0% { top: 0%; } 50% { top: 92%; } 100% { top: 0%; } }"
+    + ".report-card { background-color: #f8fafc; border: 1px solid #e2e8f0; border-right: 6px solid " + active_color + "; border-radius: 8px; padding: 20px; margin-top: 15px; color: #1e293b; font-size: 15px; line-height: 1.8; }"
+    + "</style>"
+)
+st.markdown(css_content, unsafe_allow_html=True)
 
 # العنوان الرئيسي وحقوق المطور
-st.markdown(
-    f'<div class="main-header">{t["main_title"]}</div>', unsafe_allow_html=True
-)
-st.markdown(
-    f'<div class="dev-credit">{t["developer_credit"]}</div>',
-    unsafe_allow_html=True,
-)
+st.markdown('<div class="main-header">' + t["main_title"] + '</div>', unsafe_allow_html=True)
+st.markdown('<div class="dev-credit">' + t["developer_credit"] + '</div>', unsafe_allow_html=True)
 
 # ==========================================
 # 🚗 1. قطاع السيارات الشامل
 # ==========================================
 if domain == t["d_cars"]:
-  st.markdown(f"### {t['select_car_brand']}")
-  c1, c2, c3 = st.columns(3)
-  with c1:
-    if st.button("🔴 ميتسوبيشي (Mitsubishi)", use_container_width=True):
-      st.session_state["selected_brand"] = "Mitsubishi"
-      st.rerun()
-  with c2:
-    if st.button("🔵 هيونداي (Hyundai)", use_container_width=True):
-      st.session_state["selected_brand"] = "Hyundai"
-      st.rerun()
-  with c3:
-    if st.button("⚪ فولكسفاغن (Volkswagen)", use_container_width=True):
-      st.session_state["selected_brand"] = "Volkswagen"
-      st.rerun()
+    st.markdown("### " + t['select_car_brand'])
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        if st.button("🔴 ميتسوبيشي (Mitsubishi)", use_container_width=True):
+            st.session_state["selected_brand"] = "Mitsubishi"
+            st.rerun()
+    with c2:
+        if st.button("🔵 هيونداي (Hyundai)", use_container_width=True):
+            st.session_state["selected_brand"] = "Hyundai"
+            st.rerun()
+    with c3:
+        if st.button("⚪ فولكسفاغن (Volkswagen)", use_container_width=True):
+            st.session_state["selected_brand"] = "Volkswagen"
+            st.rerun()
 
-  brand_key = st.session_state["selected_brand"]
-  b_data = BRAND_DATABASE[brand_key]
-  st.markdown("---")
+    brand_key = st.session_state["selected_brand"]
+    b_data = BRAND_DATABASE[brand_key]
+    st.markdown("---")
 
-  col_m1, col_m2 = st.columns(2)
-  with col_m1:
-    selected_model = st.selectbox(t["select_car_model"], b_data["models"])
-    if "Custom" in selected_model or "آخر" in selected_model:
-      final_model = st.text_input(
-          t["custom_model_label"], value="Pajero / Lancer / Golf"
-      )
-    else:
-      final_model = selected_model
+    col_m1, col_m2 = st.columns(2)
+    with col_m1:
+        selected_model = st.selectbox(t["select_car_model"], b_data["models"])
+        if "Custom" in selected_model or "آخر" in selected_model:
+            final_model = st.text_input(t["custom_model_label"], value="Pajero / Lancer / Golf")
+        else:
+            final_model = selected_model
 
-    fuel_system = st.selectbox(
-        t["fuel_type_label"],
-        [
-            "Turbo Diesel CRDi / TDI (ديزل تربو حقن مشترك)",
-            "Gasoline Direct Injection GDI / TSI (بنزين حقن مباشر)",
-            "Gasoline MPI / MIVEC (بنزين حقن متعدد النقاط)",
-            "Atmospheric Diesel (ديزل سحب عادي)",
-        ],
-    )
+        fuel_system = st.selectbox(
+            t["fuel_type_label"],
+            [
+                "Turbo Diesel CRDi / TDI (ديزل تربو حقن مشترك)",
+                "Gasoline Direct Injection GDI / TSI (بنزين حقن مباشر)",
+                "Gasoline MPI / MIVEC (بنزين حقن متعدد النقاط)",
+                "Atmospheric Diesel (ديزل سحب عادي)"
+            ]
+        )
 
-  with col_m2:
-    selected_engine = st.selectbox(t["select_engine_type"], b_data["engines"])
-    if "Custom" in selected_engine or "آخر" in selected_engine:
-      final_engine = st.text_input(
-          t["custom_engine_label"], value="2.0L Turbo 250 HP"
-      )
-    else:
-      final_engine = selected_engine
+    with col_m2:
+        selected_engine = st.selectbox(t["select_engine_type"], b_data["engines"])
+        if "Custom" in selected_engine or "آخر" in selected_engine:
+            final_engine = st.text_input(t["custom_engine_label"], value="2.0L Turbo 250 HP")
+        else:
+            final_engine = selected_engine
 
-    cylinders_config = st.selectbox(
-        t["cylinders_label"],
-        [
-            "4 Cylinders Inline (4 أسطوانات متتالية)",
-            "6 Cylinders V6 (6 أسطوانات V6)",
-            "3 Cylinders Inline (3 أسطوانات)",
-            "8 Cylinders V8 (8 أسطوانات V8)",
-        ],
-    )
+        cylinders_config = st.selectbox(
+            t["cylinders_label"],
+            [
+                "4 Cylinders Inline (4 أسطوانات متتالية)",
+                "6 Cylinders V6 (6 أسطوانات V6)",
+                "3 Cylinders Inline (3 أسطوانات)",
+                "8 Cylinders V8 (8 أسطوانات V8)"
+            ]
+        )
 
-  col_logo, col_details = st.columns([1, 3])
-  with col_logo:
-    st.image(b_data["logo"], width=120, caption=b_data["brand_name"])
-  with col_details:
-    card_html = [
-        (
-            f'<div style="background-color: #111827; padding: 16px;'
-            f' border-left: 6px solid {b_data["color"]}; border-radius: 8px;">'
-        ),
-        (
-            f'<h3 style="color: #ffffff;'
-            f' margin:0;">{brand_key} - {final_model}</h3>'
-        ),
-        (
-            f'<p style="margin:5px 0 0 0; color: #9ca3af;"><b>المحرك:</b>'
-            f" {final_engine} | <b>المنظومة:</b> {fuel_system}"
-            f" ({cylinders_config})</p>"
-        ),
-        "</div>",
-    ]
-    st.markdown("\n".join(card_html), unsafe_allow_html=True)
+    col_logo, col_details = st.columns([1, 3])
+    with col_logo:
+        st.image(b_data["logo"], width=120, caption=b_data["brand_name"])
+    with col_details:
+        card_html = (
+            '<div style="background-color: #111827; padding: 16px; border-left: 6px solid ' + b_data["color"] + '; border-radius: 8px;">'
+            + '<h3 style="color: #ffffff; margin:0;">' + brand_key + ' - ' + final_model + '</h3>'
+            + '<p style="margin:5px 0 0 0; color: #9ca3af;"><b>المحرك:</b> ' + final_engine + ' | <b>المنظومة:</b> ' + fuel_system + ' (' + cylinders_config + ')</p>'
+            + '</div>'
+        )
+        st.markdown(card_html, unsafe_allow_html=True)
 
 # ==========================================
 # 🔌 2. قطاع الأجهزة الكهربائية والمنزلية
 # ==========================================
 elif domain == t["d_appliances"]:
-  st.subheader("🔌 قطاع تشخيص الأجهزة الكهربائية والمنزلية")
-  col_a1, col_a2, col_a3 = st.columns(3)
-  with col_a1:
-    appliance_type = st.selectbox(
-        "نوع الجهاز الكهربائي:",
-        [
-            "غسالة ملابس (Washing Machine)",
-            "ثلاجة / مجمد (Refrigerator/Freezer)",
-            "مكيف هواء (Air Conditioner)",
-            "جلاية صحون (Dishwasher)",
-        ],
-    )
-  with col_a2:
-    brand = st.selectbox(
-        "الشركة المصنعة:", ["LG", "Samsung", "Bosch", "Whirlpool", "Gree"]
-    )
-  with col_a3:
-    model = st.text_input("الموديل / الرقم الفني:", "Inverter Direct Drive")
+    st.subheader("🔌 قطاع تشخيص الأجهزة الكهربائية والمنزلية")
+    col_a1, col_a2, col_a3 = st.columns(3)
+    with col_a1:
+        appliance_type = st.selectbox(
+            "نوع الجهاز الكهربائي:",
+            [
+                "غسالة ملابس (Washing Machine)",
+                "ثلاجة / مجمد (Refrigerator/Freezer)",
+                "مكيف هواء (Air Conditioner)",
+                "جلاية صحون (Dishwasher)"
+            ]
+        )
+    with col_a2:
+        brand = st.selectbox("الشركة المصنعة:", ["LG", "Samsung", "Bosch", "Whirlpool", "Gree"])
+    with col_a3:
+        model = st.text_input("الموديل / الرقم الفني:", "Inverter Direct Drive")
 
 # ==========================================
 # 🏭 3. قطاع الماكينات والمعدات الصناعية
 # ==========================================
 else:
-  st.subheader("🏭 قطاع تشخيص الماكينات والمعدات الصناعية")
-  col_i1, col_i2, col_i3 = st.columns(3)
-  with col_i1:
-    machine_type = st.selectbox(
-        "نوع المعدة الصناعية:",
-        [
-            "محرك كهربائي ثلاثي الأوجه (3-Phase Induction Motor)",
-            "مضخة مياه هيدروليكية (Hydraulic Water Pump)",
-            "ضاغط هواء حلزوني (Rotary Screw Compressor)",
-            "مولد كهربائي (Diesel Generator)",
-        ],
-    )
-  with col_i2:
-    power_rating = st.text_input("القدرة (HP / kW):", "50 HP / 37 kW")
-  with col_i3:
-    rpm_val = st.text_input("سرعة الدوران (RPM):", "1450 RPM")
+    st.subheader("🏭 قطاع تشخيص الماكينات والمعدات الصناعية")
+    col_i1, col_i2, col_i3 = st.columns(3)
+    with col_i1:
+        machine_type = st.selectbox(
+            "نوع المعدة الصناعية:",
+            [
+                "محرك كهربائي ثلاثي الأوجه (3-Phase Induction Motor)",
+                "مضخة مياه هيدروليكية (Hydraulic Water Pump)",
+                "ضاغط هواء حلزوني (Rotary Screw Compressor)",
+                "مولد كهربائي (Diesel Generator)"
+            ]
+        )
+    with col_i2:
+        power_rating = st.text_input("القدرة (HP / kW):", "50 HP / 37 kW")
+    with col_i3:
+        rpm_val = st.text_input("سرعة الدوران (RPM):", "1450 RPM")
 
 st.markdown("---")
 
 # ==========================================
 # 🎙️ قسم التسجيل والالتقاط الصوتي الحي
 # ==========================================
-st.markdown(f"### {t['audio_section']}")
+st.markdown("### " + t['audio_section'])
 col_rec1, col_rec2 = st.columns(2)
 
 with col_rec1:
-  st.write(f"<b>1. {t['rec_mic']}</b>", unsafe_allow_html=True)
-  recorded_audio = st.audio_input("اضغط للبدء بالتسجيل الصوتي المباشر 🎙")
+    st.write("<b>1. " + t['rec_mic'] + "</b>", unsafe_allow_html=True)
+    recorded_audio = st.audio_input("اضغط للبدء بالتسجيل الصوتي المباشر 🎙")
 
 with col_rec2:
-  st.write(f"<b>2. {t['upload_file']}</b>", unsafe_allow_html=True)
-  uploaded_file = st.file_uploader(
-      "ارفع ملف الصوت من جهازك:", type=["wav", "mp3", "ogg"]
-  )
+    st.write("<b>2. " + t['upload_file'] + "</b>", unsafe_allow_html=True)
+    uploaded_file = st.file_uploader("ارفع ملف الصوت من جهازك:", type=["wav", "mp3", "ogg"])
 
 audio_source = recorded_audio or uploaded_file
 if audio_source:
-  st.audio(audio_source)
-  st.success("✅ تم استقبال الإشارة الصوتية بنجاح وهي جاهزة للفحص بالليزر الطيفي!")
+    st.audio(audio_source)
+    st.success("✅ تم استقبال الإشارة الصوتية بنجاح وهي جاهزة للفحص بالليزر الطيفي!")
 
 st.markdown("---")
-
 
 # ==========================================
 # 🧬 دالة توليد التقرير الهندسي الشامل
 # ==========================================
 def generate_expanded_car_report(brand, model, engine, fuel, cylinders, lang_code):
-  is_diesel = ("Diesel" in fuel) or ("CRDi" in engine) or ("TDI" in engine)
-  is_turbo = ("Turbo" in fuel) or ("Turbo" in engine) or ("TSI" in engine)
+    is_diesel = ("Diesel" in fuel) or ("CRDi" in engine) or ("TDI" in engine)
+    is_turbo = ("Turbo" in fuel) or ("Turbo" in engine) or ("TSI" in engine)
 
-  if lang_code == "العربية":
-    p1 = (
-        f"<b>1. تحليل طيف فوريه الترددي (FFT Spectrum Analysis):</b><br>تم"
-        f" تفكيك الإشارة الصوتية لسيارة <b>{brand} {model}</b> (محرك"
-        f" <b>{engine}</b>). التردد البارز يطابق زمن الاحتراق للـ"
-        f" {cylinders} بدون تشتت في الطاقة."
-    )
-    p2 = (
-        "<b>2. معاينة صمامات ومحاور الكامبشافت (Valve Train & Camshaft"
-        f" Acoustics):</b><br>خلوص الصبابات والصمامات يعمل ضمن المجال"
-        f" الهيدروليكي القياسي لشركة {brand}، ولا تظهر أي طقطقة عشوائية في"
-        " عمود الكامبشافت."
-    )
+    if lang_code == "العربية":
+        p1 = "<b>1. تحليل طيف فوريه الترددي (FFT Spectrum Analysis):</b><br>تم تفكيك الإشارة الصوتية لسيارة <b>" + brand + " " + model + "</b> (محرك <b>" + engine + "</b>). التردد البارز يطابق زمن الاحتراق للـ " + cylinders + " بدون تشتت في الطاقة."
+        p2 = "<b>2. معاينة صمامات ومحاور الكامبشافت (Valve Train & Camshaft Acoustics):</b><br>خلوص الصبابات والصمامات يعمل ضمن المجال الهيدروليكي القياسي لشركة " + brand + "، ولا تظهر أي طقطقة عشوائية في عمود الكامبشافت."
+        
+        inj_str = "ترددات بخاخات الديزل ذات الضغط العالي (Common Rail) متزنة ونقية دون وجود ظاهرة التسريب الترددي." if is_diesel else "نظام حقن البنزين المباشر/المتعدد يعمل بانتظام، والضوضاء عالية التردد في النطاق الطبيعي."
+        p3 = "<b>3. نظام حقن الوقود والضغط العالي (Injectors & Fuel Rail Pressure):</b><br>" + inj_str
 
-    if is_diesel:
-      inj_str = (
-          "ترددات بخاخات الديزل ذات الضغط العالي (Common Rail) متزنة ونقية دون"
-          " وجود ظاهرة التسريب الترددي."
-      )
+        turbo_str = "عنفة التوربو تعمل بستارة صوتية مستقرة دون أي صفير مرتفع أو احتكاك في شفرات الشاحن." if is_turbo else "منظومة سحب الهواء وتطابق الضغط الطبيعي تعمل بكفاءة عالية بدون أي تسريب في المانفولد."
+        p4 = "<b>4. الشاحن التوربيني ونظام سحب الهواء (Turbocharger & Induction):</b><br>" + turbo_str
+
+        p5 = "<b>5. محامل الدوران وعمود الكرنك والحذافة (Bearings, Crankshaft & DMF):</b><br>عدم وجود أي اهتزازات منخفضة التردد في محامل عمود الكرنك الرئيسية، وحذافة الفولام المزدوجة امتصت الصدمات الصوتية بالكامل."
+        p6 = "<b>6. التوصيات الهندسية وخطة الصيانة الوقائية (Predictive Maintenance Plan):</b><br>المحرك بحالة ممتازة جداً. يوصى بالمحافظة على مواعيد استبدال الزيوت والفلاتر الخاصة بـ " + brand + " عند قطع 10,000 كم."
+        
+        return p1 + "<br><br>" + p2 + "<br><br>" + p3 + "<br><br>" + p4 + "<br><br>" + p5 + "<br><br>" + p6
+
+    elif lang_code == "English":
+        p1 = "<b>1. FFT Acoustic Spectrum Core Analysis:</b><br>Acoustic signal breakdown for <b>" + brand + " " + model + "</b> (" + engine + "). Dominant peak matches the fundamental combustion frequency for " + cylinders + " with zero spectral leakage."
+        p2 = "<b>2. Valve Train & Camshaft Acoustic Inspection:</b><br>Valve lash clearances and hydraulic lifters operate strictly within nominal " + brand + " specifications. Zero camshaft chatter observed."
+
+        inj_str = "High-pressure Common Rail Diesel injector chatter is fully synchronized with zero cavitation noise." if is_diesel else "Gasoline injection pulses show crisp, clean high-frequency harmonics within normal operating range."
+        p3 = "<b>3. Fuel Injection System & Rail Dynamics:</b><br>" + inj_str
+
+        turbo_str = "Turbocharger spool frequency exhibits smooth acoustic resonance without high-pitched turbine squeal." if is_turbo else "Naturally aspirated air intake manifold shows no pressure leaks or turbulent acoustic anomalies."
+        p4 = "<b>4. Turbocharger & Induction Harmonics:</b><br>" + turbo_str
+
+        p5 = "<b>5. Bearings, Crankshaft & DMF Flywheel Dynamics:</b><br>Main crankshaft bearings show zero low-frequency rumble. Dual-Mass Flywheel effectively dampens rotational vibration peaks."
+        p6 = "<b>6. Predictive Maintenance & Engineering Plan:</b><br>Overall powertrain acoustic health is optimal. Maintain regular " + brand + " oil and filter replacement cycles every 10,000 km."
+
+        return p1 + "<br><br>" + p2 + "<br><br>" + p3 + "<br><br>" + p4 + "<br><br>" + p5 + "<br><br>" + p6
+
     else:
-      inj_str = (
-          "نظام حقن البنزين المباشر/المتعدد يعمل بانتظام، والضوضاء عالية"
-          " التردد في النطاق الطبيعي."
-      )
-    p3 = (
-        "<b>3. نظام حقن الوقود والضغط العالي (Injectors & Fuel Rail"
-        f" Pressure):</b><br>{inj_str}"
-    )
+        p1 = "<b>1. Спектральный анализ FFT:</b><br>Акустический сигнал для <b>" + brand + " " + model + "</b> (" + engine + ") разобран. Доминирующий пик соответствует частоте сгорания " + cylinders + " без спектральных утечек."
+        p2 = "<b>2. Акустическая проверка клапанного механизма:</b><br>Зазоры клапанов и гидрокомпенсаторы работают строго в пределах допусков " + brand + ". Шум распредвала отсутствует."
 
-    if is_turbo:
-      turbo_str = (
-          "عنفة التوربو تعمل بستارة صوتية مستقرة دون أي صفير مرتفع أو احتكاك"
-          " في شفرات الشاحن."
-      )
-    else:
-      turbo_str = (
-          "منظومة سحب الهواء وتطابق الضغط الطبيعي تعمل بكفاءة عالية بدون أي"
-          " تسريب في المانفولد."
-      )
-    p4 = (
-        "<b>4. الشاحن التوربيني ونظام سحب الهواء (Turbocharger &"
-        f" Induction):</b><br>{turbo_str}"
-    )
-
-    p5 = (
-        "<b>5. محامل الدوران وعمود الكرنك والحذافة (Bearings, Crankshaft &"
-        " DMF):</b><br>عدم وجود أي اهتزازات منخفضة التردد في محامل عمود الكرنك"
-        " الرئيسية، وحذافة الفولام المزدوجة امتصت الصدمات الصوتية بالكامل."
-    )
-    p6 = (
-        "<b>6. التوصيات الهندسية وخطة الصيانة الوقائية (Predictive"
-        f" Maintenance Plan):</b><br>المحرك بحالة ممتازة جداً. يوصى بالمحافظة"
-        f" على مواعيد استبدال الزيوت والفلاتر الخاصة بـ {brand} عند قطع"
-        " 10,000 كم."
-    )
-
-    return "<br><br>".join([p1, p2, p3, p4, p5, p6])
-
-  elif lang_code == "English":
-    p1 = (
-        f"<b>1. FFT Acoustic Spectrum Core Analysis:</b><br>Acoustic signal"
-        f" breakdown for <b>{brand} {model}</b> ({engine}). Dominant peak"
-        f" matches the fundamental combustion frequency for {cylinders} with"
-        " zero spectral leakage."
-    )
-    p2 = (
-        "<b>2. Valve Train & Camshaft Acoustic Inspection:</b><br>Valve lash"
-        " clearances and hydraulic lifters operate strictly within nominal"
-        f" {brand} specifications. Zero camshaft chatter observed."
-    )
-
-    if is_diesel:
-      inj_str = (
-          "High-pressure Common Rail Diesel injector chatter is fully"
-          " synchronized with zero cavitation noise."
-      )
-    else:
-      inj_str = (
-          "Gasoline injection pulses show crisp, clean high-frequency harmonics"
-          " within normal operating range."
-      )
-    p3 = f"<b>3. Fuel Injection System & Rail Dynamics:</b><br>{inj_str}"
-
-    if is_turbo:
-      turbo_str = (
-          "Turbocharger spool frequency exhibits smooth acoustic resonance"
-          " without high-pitched turbine squeal."
-      )
-    else:
-      turbo_str = (
-          "Naturally aspirated air intake manifold shows no pressure leaks or"
-          " turbulent acoustic anomalies."
-      )
-    p4 = f"<b>4. Turbocharger & Induction Harmonics:</b><br>{turbo_str}"
-
-    p5 = (
-        "<b>5. Bearings, Crankshaft & DMF Flywheel Dynamics:</b><br>Main"
-        " crankshaft bearings show zero low-frequency rumble. Dual-Mass"
-        " Flywheel effectively dampens rotational vibration peaks."
-    )
-    p6 = (
-        "<b>6. Predictive Maintenance & Engineering Plan:</b><br>Overall"
-        f" powertrain acoustic health is opt
+        inj_str = "Импульсы дизельных форсунок высокого давления синхронизированы без шума кавитации." if is_diesel else "Импульсы впрыска бензина демонстрируют чистые высокочастотные гармоники."
+        p3 = "<b>3. Топливная систем
