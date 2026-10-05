@@ -19,7 +19,7 @@ I18N = {
         "d_industrial": "🏭 الماكينات والمعدات الصناعية",
         "select_car_brand": "🏢 اختر الشركة المصنعة للمركبة:",
         "select_car_model": "🚗 اختر طراز السيارة (أو أدخله يدوياً):",
-        "select_engine_type": "⚙️️ اختر سعة ونوع المحرك (أو أدخله يدوياً):",
+        "select_engine_type": "⚙️ اختر سعة ونوع المحرك (أو أدخله يدوياً):",
         "custom_model_label": "✍️ أدخل طراز السيارة المخصص:",
         "custom_engine_label": "✍️ أدخل تفاصيل المحرك المخصص:",
         "fuel_type_label": "⛽ نوع الوقود ونظام الحقن:",
@@ -61,7 +61,7 @@ I18N = {
         "detailed_report_title": "📑 Comprehensive Technical Engineering Report",
     },
     "Русский": {
-        "main_title": "🎙️ ZINO EADE - Универсальная Высокоточная Диагностическая Сتانция",
+        "main_title": "🎙️ ZINO EADE - Универсальная Высокоточная Диагностическая Станция",
         "developer_credit": "🛠️ Дизайн и разработка: Исмаил Хасасна",
         "domain_label": "🏢 Выберите сектор диагностики:",
         "d_cars": "🚗 Полный автомобильный сектор",
@@ -91,7 +91,7 @@ I18N = {
 BRAND_DATABASE = {
     "Mitsubishi": {
         "brand_name": "Mitsubishi Motors",
-        "color": "#556B2F",  # زيتوني / زيتي
+        "color": "#556B2F",
         "logo": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Mitsubishi_logo.svg",
         "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Mitsubishi_Pajero_V20_front.jpg/800px-Mitsubishi_Pajero_V20_front.jpg",
         "models": [
@@ -119,7 +119,7 @@ BRAND_DATABASE = {
     },
     "Hyundai": {
         "brand_name": "Hyundai Motor Company",
-        "color": "#7A1C2E",  # خمري / عنابي
+        "color": "#7A1C2E",
         "logo": "https://upload.wikimedia.org/wikipedia/commons/4/44/Hyundai_Motor_Company_logo.svg",
         "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Hyundai_Santa_Fe_DM_IMG_0392.jpg/800px-Hyundai_Santa_Fe_DM_IMG_0392.jpg",
         "models": [
@@ -149,7 +149,7 @@ BRAND_DATABASE = {
     },
     "Volkswagen": {
         "brand_name": "Volkswagen Group",
-        "color": "#004B87",  # أزرق فولكسفاغن
+        "color": "#004B87",
         "logo": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Volkswagen_logo_2019.svg",
         "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Volkswagen_Caddy_Maxi_TDI_Facelift_front.jpg/800px-Volkswagen_Caddy_Maxi_TDI_Facelift_front.jpg",
         "models": [
@@ -304,7 +304,6 @@ if domain == t["d_cars"]:
 
     st.markdown("---")
 
-    # تحديد الطراز والمحرك ونوع الوقود بشكل تفاعلي
     col_m1, col_m2 = st.columns(2)
 
     with col_m1:
@@ -347,14 +346,17 @@ if domain == t["d_cars"]:
             ],
         )
 
-    # عرض كرت التفاصيل وشعار الشركة
+    brand_logo = b_data["logo"]
+    brand_name_str = b_data["brand_name"]
+    brand_color_str = b_data["color"]
+
     col_logo, col_details = st.columns([1, 3])
     with col_logo:
-        st.image(b_data["logo"], width=120, caption=b_data["brand_name"])
+        st.image(brand_logo, width=120, caption=brand_name_str)
     with col_details:
         st.markdown(
             f"""
-        <div style="background-color: #111827; padding: 16px; border-left: 6px solid {b_data['color']}; border-radius: 8px;">
+        <div style="background-color: #111827; padding: 16px; border-left: 6px solid {brand_color_str}; border-radius: 8px;">
             <h3 style="color: #ffffff; margin:0;">{brand_key} - {final_model}</h3>
             <p style="margin:5px 0 0 0; color: #9ca3af;"><b>المحرك:</b> {final_engine} | <b>المنظومة:</b> {fuel_system} ({cylinders_config})</p>
         </div>
@@ -416,7 +418,7 @@ col_rec1, col_rec2 = st.columns(2)
 
 with col_rec1:
     st.write(f"<b>1. {t['rec_mic']}</b>", unsafe_allow_html=True)
-    recorded_audio = st.audio_input("اضغط للبدء بالتسجيل الصوتي المباشر 🎙️️")
+    recorded_audio = st.audio_input("اضغط للبدء بالتسجيل الصوتي المباشر 🎙")
 
 with col_rec2:
     st.write(f"<b>2. {t['upload_file']}</b>", unsafe_allow_html=True)
@@ -439,44 +441,76 @@ def generate_expanded_car_report(
     brand, model, engine, fuel, cylinders, lang
 ):
     is_diesel = "Diesel" in fuel or "CRDi" in engine or "TDI" in engine
-    is_v6 = "V6" in cylinders or "V6" in engine
     is_turbo = "Turbo" in fuel or "Turbo" in engine or "TSI" in engine
 
     if lang == "العربية":
-        return f"""
-        <b>1. تحليل طيف فوريه الترددي (FFT Spectrum Analysis):</b><br>
-        تم تفكيك الإشارة الصوتية لسيارة <b>{brand} {model}</b> (محرك <b>{engine}</b>). التردد البارز يطابق زمن الاحتراق للـ {cylinders} بدون تشتت في الطاقة.<br><br>
-        <b>2. معاينة صمامات ومحاور الكامبشافت (Valve Train & Camshaft Acoustics):</b><br>
-        خلوص الصبابات والصمامات يعمل ضمن المجال الهيدروليكي القياسي لشركة {brand}، ولا تظهر أي طقطقة عشوائية في عمود الكامبشافت.<br><br>
-        <b>3. نظام حقن الوقود والضغط العالي (Injectors & Fuel Rail Pressure):</b><br>
-        {"ترددات بخاخات الديزل ذات الضغط العالي (Common Rail) متزنة ونقية دون وجود ظاهرة التسريب الترددي." if is_diesel else "نظام حقن البنزين المباشر/المتعدد يعمل بانتظام، والضوضاء عالية التردد في النطاق الطبيعي."}<br><br>
-        <b>4. الشاحن التوربيني ونظام سحب الهواء (Turbocharger & Induction):</b><br>
-        {"عنفة التوربو تعمل بستارة صوتية مستقرة دون أي صفير مرتفع أو احتكاك في شفرات الشاحن." if is_turbo else "منظومة سحب الهواء وتطابق الضغط الطبيعي تعمل بكفاءة عالية بدون أي تسريب في المانفولد."}<br><br>
-        <b>5. محامل الدوران وعمود الكرنك والحذافة (Bearings, Crankshaft & DMF):</b><br>
-        عدم وجود أي اهتزازات منخفضة التردد في محامل عمود الكرنك الرئيسية، وحذافة الفولام المزدوجة امتصت الصدمات الصوتية بالكامل.<br><br>
-        <b>6. التوصيات الهندسية وخطة الصيانة الوقائية (Predictive Maintenance Plan):</b><br>
-        المحرك بحالة ممتازة جداً. يوصى بالمحافظة على مواعيد استبدال الزيوت والفلاتر الخاصة بـ {brand} عند قطع 10,000 كم.
-        """
+        inj_text = (
+            "ترددات بخاخات الديزل ذات الضغط العالي (Common Rail) متزنة ونقية دون"
+            " وجود ظاهرة التسريب الترددي."
+            if is_diesel
+            else (
+                "نظام حقن البنزين المباشر/المتعدد يعمل بانتظام، والضوضاء عالية"
+                " التردد في النطاق الطبيعي."
+            )
+        )
+        turbo_text = (
+            "عنفة التوربو تعمل بستارة صوتية مستقرة دون أي صفير مرتفع أو احتكاك"
+            " في شفرات الشاحن."
+            if is_turbo
+            else (
+                "منظومة سحب الهواء وتطابق الضغط الطبيعي تعمل بكفاءة عالية بدون أي"
+                " تسريب في المانفولد."
+            )
+        )
+
+        return (
+            f"<b>1. تحليل طيف فوريه الترددي (FFT Spectrum Analysis):</b><br>تم"
+            f" تفكيك الإشارة الصوتية لسيارة <b>{brand} {model}</b> (محرك"
+            f" <b>{engine}</b>). التردد البارز يطابق زمن الاحتراق للـ"
+            f" {cylinders} بدون تشتت في الطاقة.<br><br><b>2. معاينة صمامات ومحاور"
+            f" الكامبشافت (Valve Train & Camshaft Acoustics):</b><br>خلوص"
+            f" الصبابات والصمامات يعمل ضمن المجال الهيدروليكي القياسي لشركة"
+            f" {brand}، ولا تظهر أي طقطقة عشوائية في عمود الكامبشافت.<br><br><b>3."
+            f" نظام حقن الوقود والضغط العالي (Injectors & Fuel Rail"
+            f" Pressure):</b><br>{inj_text}<br><br><b>4. الشاحن التوربيني ونظام"
+            f" سحب الهواء (Turbocharger & Induction):</b><br>{turbo_text}<br><br><b>5."
+            f" محامل الدوران وعمود الكرنك والحذافة (Bearings, Crankshaft &"
+            f" DMF):</b><br>عدم وجود أي اهتزازات منخفضة التردد في محامل عمود"
+            f" الكرنك الرئيسية، وحذافة الفولام المزدوجة امتصت الصدمات الصوتية"
+            f" بالكامل.<br><br><b>6. التوصيات الهندسية وخطة الصيانة الوقائية"
+            f" (Predictive Maintenance Plan):</b><br>المحرك بحالة ممتازة جداً."
+            f" يوصى بالمحافظة على مواعيد استبدال الزيوت والفلاتر الخاصة بـ"
+            f" {brand} عند قطع 10,000 كم."
+        )
 
     elif lang == "English":
-        return f"""
-        <b>1. FFT Acoustic Spectrum Core Analysis:</b><br>
-        Acoustic signal breakdown for <b>{brand} {model}</b> ({engine}). Dominant peak matches the fundamental combustion frequency for {cylinders} with zero spectral leakage.<br><br>
-        <b>2. Valve Train & Camshaft Acoustic Inspection:</b><br>
-        Valve lash clearances and hydraulic lifters operate strictly within nominal {brand} specifications. Zero camshaft chatter observed.<br><br>
-        <b>3. Fuel Injection System & Rail Dynamics:</b><br>
-        {"High-pressure Common Rail Diesel injector chatter is fully synchronized with zero cavitation noise." if is_diesel else "Gasoline injection pulses show crisp, clean high-frequency harmonics within normal operating range."}<br><br>
-        <b>4. Turbocharger & Induction Harmonics:</b><br>
-        {"Turbocharger spool frequency exhibits smooth acoustic resonance without high-pitched turbine squeal." if is_turbo else "Naturally aspirated air intake manifold shows no pressure leaks or turbulent acoustic anomalies."}<br><br>
-        <b>5. Bearings, Crankshaft & DMF Flywheel Dynamics:</b><br>
-        Main crankshaft bearings show zero low-frequency rumble. Dual-Mass Flywheel effectively dampens rotational vibration peaks.<br><br>
-        <b>6. Predictive Maintenance & Engineering Plan:</b><br>
-        Overall powertrain acoustic health is optimal. Maintain regular {brand} oil and filter replacement cycles every 10,000 km.
-        """
+        inj_text = (
+            "High-pressure Common Rail Diesel injector chatter is fully"
+            " synchronized with zero cavitation noise."
+            if is_diesel
+            else (
+                "Gasoline injection pulses show crisp, clean high-frequency"
+                " harmonics within normal operating range."
+            )
+        )
+        turbo_text = (
+            "Turbocharger spool frequency exhibits smooth acoustic resonance"
+            " without high-pitched turbine squeal."
+            if is_turbo
+            else (
+                "Naturally aspirated air intake manifold shows no pressure"
+                " leaks or turbulent acoustic anomalies."
+            )
+        )
 
-    else:  # Русский
-        return f"""
-        <b>1. Спектральный анализ FFT:</b><br>
-        Акустический сигнал для <b>{brand} {model}</b> ({engine}) разобран. Доминирующий пик соответствует частоте сгорания {cylinders} без спектральных утечек.<br><br>
-        <b>2. Акустическая проверка клапанного механизма:</b><br>
-        Зазоры клапано
+        return (
+            f"<b>1. FFT Acoustic Spectrum Core Analysis:</b><br>Acoustic signal"
+            f" breakdown for <b>{brand} {model}</b> ({engine}). Dominant peak"
+            f" matches the fundamental combustion frequency for {cylinders}"
+            f" with zero spectral leakage.<br><br><b>2. Valve Train & Camshaft"
+            f" Acoustic Inspection:</b><br>Valve lash clearances and hydraulic"
+            f" lifters operate strictly within nominal {brand}"
+            f" specifications. Zero camshaft chatter observed.<br><br><b>3. Fuel"
+            f" Injection System & Rail Dynamics:</b><br>{inj_text}<br><br><b>4."
+            f" Turbocharger & Induction Harmonics:</b><br>{turbo_text}<br><br><b>5."
+            f" Bearings, Crankshaft &
