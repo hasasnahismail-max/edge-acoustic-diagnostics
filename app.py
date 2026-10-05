@@ -9,7 +9,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. القاموس متعدد اللغات
+# 2. القاموس متعدد اللغات (شامل الروسية)
 I18N = {
     "العربية": {
         "main_title": "🎙️ محطة التشخيص الصوتي الهندسي الشاملة - ZINO EADE",
@@ -449,40 +449,36 @@ if audio_source:
 
 st.markdown("---")
 
-# 11. دالة التقرير الآمنة البرمجياً
+# 11. دالة توليد التقرير المعزولة (تمنع أخطاء السطور والروسية)
 def generate_expanded_car_report(brand, model, engine, fuel, cylinders, lang_code):
     b, m, e, f, c = str(brand), str(model), str(engine), str(fuel), str(cylinders)
     is_diesel = ("Diesel" in f) or ("CRDi" in e) or ("TDI" in e)
     is_turbo = ("Turbo" in f) or ("Turbo" in e) or ("TSI" in e)
 
     if lang_code == "العربية":
-        inj_str = "ترددات بخاخات الديزل ذات الضغط العالي متزنة ونقية." if is_diesel else "نظام حقن البنزين يعمل بانتظام وبضوضاء ضمن الحدود الطبيعية."
-        turbo_str = "عنفة التوربو تعمل بستارة صوتية مستقرة دون صفير." if is_turbo else "منظومة سحب الهواء وتطابق الضغط تعمل بكفاءة عالية."
-        
-        paragraphs = [
+        inj = "ترددات بخاخات الديزل ذات الضغط العالي متزنة ونقية." if is_diesel else "نظام حقن البنزين يعمل بانتظام وبضوضاء ضمن الحدود الطبيعية."
+        trb = "عنفة التوربو تعمل بستارة صوتية مستقرة دون صفير." if is_turbo else "منظومة سحب الهواء وتطابق الضغط تعمل بكفاءة عالية."
+        lines = [
             f"<b>1. تحليل طيف فوريه الترددي (FFT):</b><br>تم تفكيك الإشارة الصوتية لسيارة <b>{b} {m}</b> (محرك <b>{e}</b>). التردد يطابق زمن الاحتراق للـ {c}.",
             f"<b>2. معاينة صمامات ومحاور الكامبشافت:</b><br>خلوص الصبابات والصمامات يعمل ضمن المجال القياسي لشركة {b}.",
-            f"<b>3. نظام حقن الوقود والضغط العالي:</b><br>{inj_str}",
-            f"<b>4. الشاحن التوربيني وسحب الهواء:</b><br>{turbo_str}",
+            f"<b>3. نظام حقن الوقود والضغط العالي:</b><br>{inj}",
+            f"<b>4. الشاحن التوربيني وسحب الهواء:</b><br>{trb}",
             "<b>5. محامل الدوران وعمود الكرنك والحذافة:</b><br>لا توجد اهتزازات منخفضة التردد، والحذافة امتصت الصدمات بكفاءة.",
             f"<b>6. التوصيات الهندسية وخطة الصيانة:</b><br>المحرك بحالة ممتازة. يوصى بصيانة زيت {b} الأصلي عند 10,000 كم."
         ]
-        return "<br><br>".join(paragraphs)
-
     elif lang_code == "English":
-        inj_str = "High-pressure Common Rail Diesel injectors are synchronized." if is_diesel else "Gasoline injection pulses show clean harmonics."
-        turbo_str = "Turbocharger spool frequency exhibits smooth resonance." if is_turbo else "Naturally aspirated air intake shows no pressure leaks."
-        
-        paragraphs = [
+        inj = "High-pressure Common Rail Diesel injectors are synchronized." if is_diesel else "Gasoline injection pulses show clean harmonics."
+        trb = "Turbocharger spool frequency exhibits smooth resonance." if is_turbo else "Naturally aspirated air intake shows no pressure leaks."
+        lines = [
             f"<b>1. FFT Acoustic Spectrum Core Analysis:</b><br>Acoustic signal breakdown for <b>{b} {m}</b> ({e}). Dominant peak matches {c}.",
             f"<b>2. Valve Train & Camshaft Inspection:</b><br>Valve clearances operate strictly within {b} specs.",
-            f"<b>3. Fuel Injection System:</b><br>{inj_str}",
-            f"<b>4. Turbocharger & Induction Harmonics:</b><br>{turbo_str}",
+            f"<b>3. Fuel Injection System:</b><br>{inj}",
+            f"<b>4. Turbocharger & Induction Harmonics:</b><br>{trb}",
             "<b>5. Bearings & Flywheel Dynamics:</b><br>Crankshaft bearings show zero low-frequency rumble.",
             f"<b>6. Maintenance & Engineering Plan:</b><br>Overall powertrain acoustic health is optimal. Service {b} regularly."
         ]
-        return "<br><br>".join(paragraphs)
-
-    else:
-        inj_str = "Импульсы форсунок высокого давления синхронизированы." if is_diesel else "Импульсы впрыска бензина демонстрируют чистые гармоники."
-        turbo_str = "Частота турбоком
+    else:  # Русский
+        inj = "Импульсы форсунок высокого давления синхронизированы." if is_diesel else "Импульсы впрыска бензина демонстрируют чистые гармоники."
+        trb = "Частота турбины показывает плавный резонанс." if is_turbo else "Впускной коллектор работает без утечек."
+        lines = [
+      
