@@ -43,7 +43,7 @@ I18N = {
         "machine_rpm": "سرعة الدوران (RPM):",
     },
     "English": {
-        "main_title": "🎙️ ZINO EADE - Precision Acoustic Diagnostic Workstation",
+        "main_title": "🎙️️ ZINO EADE - Precision Acoustic Diagnostic Workstation",
         "developer_credit": "🛠️ Designed & Developed by Ismail Hassasneh",
         "domain_label": "🏢 Select Diagnostic Sector:",
         "d_cars": "🚗 Automotive Sector",
@@ -82,7 +82,7 @@ I18N = {
         "d_industrial": "🏭 Промышленное оборудование",
         "select_car_brand": "🏢 Выберите производителя автомобиля:",
         "select_car_model": "🚗 Выберите модель авто:",
-        "select_engine_type": "⚙️ Выберите двигатель:",
+        "select_engine_type": "⚙️️ Выберите двигатель:",
         "custom_model_label": "✍️ Введите модель автомобиля:",
         "custom_engine_label": "✍️ Введите характеристики двигателя:",
         "fuel_type_label": "⛽ Тип топлива и впрыска:",
@@ -106,7 +106,7 @@ I18N = {
     },
 }
 
-# 3. قاعدة البيانات
+# 3. قاعدة بيانات السيارات (مع الشعارات والألوان والصور الأصلية)
 BRAND_DATABASE = {
     "Mitsubishi": {
         "brand_name": "Mitsubishi Motors",
@@ -170,25 +170,37 @@ st.markdown(f"""
 st.markdown(f'<div class="main-header">{t["main_title"]}</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="dev-credit">{t["developer_credit"]}</div>', unsafe_allow_html=True)
 
-# 6. واجهة السيارات
+# 6. واجهة السيارات مع الشعارات والألوان والصور
 if domain_code == "cars":
     st.markdown(f"### {t['select_car_brand']}")
     b1, b2, b3 = st.columns(3)
+    
     with b1:
+        mitsubishi_selected = st.session_state["selected_brand"] == "Mitsubishi"
         if st.button("🔴 Mitsubishi", use_container_width=True):
             st.session_state["selected_brand"] = "Mitsubishi"
             st.rerun()
     with b2:
+        hyundai_selected = st.session_state["selected_brand"] == "Hyundai"
         if st.button("🔵 Hyundai", use_container_width=True):
             st.session_state["selected_brand"] = "Hyundai"
             st.rerun()
     with b3:
+        vw_selected = st.session_state["selected_brand"] == "Volkswagen"
         if st.button("⚪ Volkswagen", use_container_width=True):
             st.session_state["selected_brand"] = "Volkswagen"
             st.rerun()
 
     brand_key = st.session_state["selected_brand"]
     b_data = BRAND_DATABASE[brand_key]
+    
+    # عرض شعار الشركة وصورتها الأنيقة
+    col_logo, col_img = st.columns([1, 3])
+    with col_logo:
+        st.image(b_data["logo"], width=110)
+    with col_img:
+        st.image(b_data["image"], use_container_width=True)
+
     st.markdown("---")
 
     m1, m2 = st.columns(2)
@@ -242,7 +254,6 @@ if st.button(t["scan_btn"], use_container_width=True):
 
     text_dir = "rtl" if lang == "العربية" else "ltr"
     
-    # نصوص التقارير بشكل نَصّي مباشر وآمن تماماً بدون أقواس مصفوفات قد تنكسر
     if lang == "العربية":
         report_text = f"<b>تحليل طيف فوريه (FFT):</b> تم فحص مركبة <b>{brand_key} {final_model}</b> بدقة.<br>• الاحتراق وصمامات المحرك تعمل ضمن النطاق القياسي.<br>• نظام الحقن والتوربو مستقر ولا توجد شذوذات صوتية.<br>• التوصية: يوصى بالصيانة الدورية في موعدها."
     elif lang == "English":
