@@ -1,15 +1,15 @@
 import time
 import streamlit as st
 
-# 1. إعدادات الصفحة الأساسية
+# 1. إعدادات الصفحة
 st.set_page_config(
-    page_title="ZINO EADE - Precision Diagnostic Workstation",
+    page_title="ZINO EADE - Precision Workstation",
     page_icon="🎙️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# 2. القاموس متعدد اللغات الشامل
+# 2. القاموس متعدد اللغات
 I18N = {
     "العربية": {
         "main_title": "🎙️ محطة التشخيص الصوتي الهندسي الشاملة - ZINO EADE",
@@ -106,7 +106,7 @@ I18N = {
     },
 }
 
-# 3. قاعدة البيانات الشاملة
+# 3. قاعدة البيانات
 BRAND_DATABASE = {
     "Mitsubishi": {
         "brand_name": "Mitsubishi Motors",
@@ -114,7 +114,7 @@ BRAND_DATABASE = {
         "logo": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Mitsubishi_logo.svg",
         "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Mitsubishi_Pajero_V20_front.jpg/800px-Mitsubishi_Pajero_V20_front.jpg",
         "models": [
-            "Pajero (V20 / V60 / V80 / 2027)",
+            "Pajero (V20 / V60 / V80)",
             "Lancer (EX / Evolution)",
             "Outlander / Outlander PHEV",
             "L200 / Triton Pickup",
@@ -198,7 +198,7 @@ BRAND_DATABASE = {
     },
 }
 
-# 4. الشريط الجانبي الأنيق
+# 4. الشريط الجانبي
 st.sidebar.title("⚙️ التحكم واللغة")
 
 lang = st.sidebar.selectbox(
@@ -224,7 +224,7 @@ domain_code = st.sidebar.radio(
 st.sidebar.markdown("---")
 st.sidebar.info(t["developer_credit"])
 
-# 5. إدارة حالة الشركة واللون الناشط
+# 5. إدارة الحالة
 if "selected_brand" not in st.session_state:
     st.session_state["selected_brand"] = "Hyundai"
 
@@ -239,10 +239,9 @@ else:
 
 c_val = str(active_color)
 
-# 6. قواعد CSS الفخمة والمستجيبة للهاتف المحمول (Responsive CSS)
+# 6. قواعد CSS
 css_code = f"""
 <style>
-    /* العنوان والتنسيق الرئيسي */
     .main-header {{
         font-size: 26px;
         font-weight: 800;
@@ -257,8 +256,6 @@ css_code = f"""
         color: #64748b;
         margin-bottom: 20px;
     }}
-    
-    /* تصميم الأزرار الفخم */
     .stButton>button {{
         background-color: {c_val} !important;
         color: #ffffff !important;
@@ -272,8 +269,6 @@ css_code = f"""
         opacity: 0.9 !important;
         transform: translateY(-1px);
     }}
-
-    /* أنيميشن الليزر الفائق */
     .laser-box {{
         position: relative;
         border: 3px solid {c_val};
@@ -297,8 +292,6 @@ css_code = f"""
         50% {{ top: 92%; }}
         100% {{ top: 0%; }}
     }}
-
-    /* بطاقة التقرير الهندسية */
     .report-card {{
         background-color: #f8fafc;
         border: 1px solid #e2e8f0;
@@ -311,8 +304,6 @@ css_code = f"""
         line-height: 1.8;
         box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
     }}
-
-    /* تعديلات استجابة الشاشة للجوال (Responsive Tweaks) */
     @media (max-width: 768px) {{
         .main-header {{ font-size: 20px !important; }}
         .dev-credit {{ font-size: 12px !important; margin-bottom: 15px !important; }}
@@ -323,7 +314,6 @@ css_code = f"""
 """
 st.markdown(css_code, unsafe_allow_html=True)
 
-# الترويسة الرئيسية
 st.markdown(f'<div class="main-header">{t["main_title"]}</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="dev-credit">{t["developer_credit"]}</div>', unsafe_allow_html=True)
 
@@ -331,7 +321,6 @@ st.markdown(f'<div class="dev-credit">{t["developer_credit"]}</div>', unsafe_all
 if domain_code == "cars":
     st.markdown(f"### {t['select_car_brand']}")
     
-    # اختيار الشركة عبر أزرار تفاعلية مع تفادي التكديس المفرط
     b_col1, b_col2, b_col3 = st.columns(3)
     with b_col1:
         if st.button("🔴 ميتسوبيشي (Mitsubishi)", use_container_width=True, key="btn_mitsu"):
@@ -395,7 +384,6 @@ if domain_code == "cars":
             key=f"cyl_select_{lang}"
         )
 
-    # كارت شعار وتفاصيل المركبة
     col_logo, col_details = st.columns([1, 3])
     with col_logo:
         st.image(b_data["logo"], width=110, caption=b_data["brand_name"])
@@ -442,7 +430,7 @@ else:
 
 st.markdown("---")
 
-# 10. وحدة التقاط الصوت
+# 10. التقاط الصوت
 st.markdown(f"### {t['audio_section']}")
 col_rec1, col_rec2 = st.columns(2)
 
@@ -461,28 +449,40 @@ if audio_source:
 
 st.markdown("---")
 
-# 11. توليد التقرير الفني الشامل
+# 11. دالة التقرير الآمنة البرمجياً
 def generate_expanded_car_report(brand, model, engine, fuel, cylinders, lang_code):
     b, m, e, f, c = str(brand), str(model), str(engine), str(fuel), str(cylinders)
     is_diesel = ("Diesel" in f) or ("CRDi" in e) or ("TDI" in e)
     is_turbo = ("Turbo" in f) or ("Turbo" in e) or ("TSI" in e)
 
     if lang_code == "العربية":
-        p1 = f"<b>1. تحليل طيف فوريه الترددي (FFT):</b><br>تم تفكيك الإشارة الصوتية لسيارة <b>{b} {m}</b> (محرك <b>{e}</b>). التردد يطابق زمن الاحتراق للـ {c}."
-        p2 = f"<b>2. معاينة صمامات ومحاور الكامبشافت:</b><br>خلوص الصبابات والصمامات يعمل ضمن المجال القياسي لشركة {b}."
         inj_str = "ترددات بخاخات الديزل ذات الضغط العالي متزنة ونقية." if is_diesel else "نظام حقن البنزين يعمل بانتظام وبضوضاء ضمن الحدود الطبيعية."
-        p3 = f"<b>3. نظام حقن الوقود والضغط العالي:</b><br>{inj_str}"
         turbo_str = "عنفة التوربو تعمل بستارة صوتية مستقرة دون صفير." if is_turbo else "منظومة سحب الهواء وتطابق الضغط تعمل بكفاءة عالية."
-        p4 = f"<b>4. الشاحن التوربيني وسحب الهواء:</b><br>{turbo_str}"
-        p5 = "<b>5. محامل الدوران وعمود الكرنك والحذافة:</b><br>لا توجد اهتزازات منخفضة التردد، والحذافة امتصت الصدمات بكفاءة."
-        p6 = f"<b>6. التوصيات الهندسية وخطة الصيانة:</b><br>المحرك بحالة ممتاز. يوصى بصيانة زيت {b} الأصلي عند 10,000 كم."
-        return f"{p1}<br><br>{p2}<br><br>{p3}<br><br>{p4}<br><br>{p5}<br><br>{p6}"
+        
+        paragraphs = [
+            f"<b>1. تحليل طيف فوريه الترددي (FFT):</b><br>تم تفكيك الإشارة الصوتية لسيارة <b>{b} {m}</b> (محرك <b>{e}</b>). التردد يطابق زمن الاحتراق للـ {c}.",
+            f"<b>2. معاينة صمامات ومحاور الكامبشافت:</b><br>خلوص الصبابات والصمامات يعمل ضمن المجال القياسي لشركة {b}.",
+            f"<b>3. نظام حقن الوقود والضغط العالي:</b><br>{inj_str}",
+            f"<b>4. الشاحن التوربيني وسحب الهواء:</b><br>{turbo_str}",
+            "<b>5. محامل الدوران وعمود الكرنك والحذافة:</b><br>لا توجد اهتزازات منخفضة التردد، والحذافة امتصت الصدمات بكفاءة.",
+            f"<b>6. التوصيات الهندسية وخطة الصيانة:</b><br>المحرك بحالة ممتازة. يوصى بصيانة زيت {b} الأصلي عند 10,000 كم."
+        ]
+        return "<br><br>".join(paragraphs)
 
     elif lang_code == "English":
-        p1 = f"<b>1. FFT Acoustic Spectrum Core Analysis:</b><br>Acoustic signal breakdown for <b>{b} {m}</b> ({e}). Dominant peak matches {c}."
-        p2 = f"<b>2. Valve Train & Camshaft Inspection:</b><br>Valve clearances operate strictly within {b} specs."
         inj_str = "High-pressure Common Rail Diesel injectors are synchronized." if is_diesel else "Gasoline injection pulses show clean harmonics."
-        p3 = f"<b>3. Fuel Injection System:</b><br>{inj_str}"
         turbo_str = "Turbocharger spool frequency exhibits smooth resonance." if is_turbo else "Naturally aspirated air intake shows no pressure leaks."
-        p4 = f"<b>4. Turbocharger & Induction Harmonics:</b><br>{turbo_str}"
-        p5 = "<b>5. Bearings & Flywheel Dynamics:</b><br>Main crankshaft bearings show zero lo
+        
+        paragraphs = [
+            f"<b>1. FFT Acoustic Spectrum Core Analysis:</b><br>Acoustic signal breakdown for <b>{b} {m}</b> ({e}). Dominant peak matches {c}.",
+            f"<b>2. Valve Train & Camshaft Inspection:</b><br>Valve clearances operate strictly within {b} specs.",
+            f"<b>3. Fuel Injection System:</b><br>{inj_str}",
+            f"<b>4. Turbocharger & Induction Harmonics:</b><br>{turbo_str}",
+            "<b>5. Bearings & Flywheel Dynamics:</b><br>Crankshaft bearings show zero low-frequency rumble.",
+            f"<b>6. Maintenance & Engineering Plan:</b><br>Overall powertrain acoustic health is optimal. Service {b} regularly."
+        ]
+        return "<br><br>".join(paragraphs)
+
+    else:
+        inj_str = "Импульсы форсунок высокого давления синхронизированы." if is_diesel else "Импульсы впрыска бензина демонстрируют чистые гармоники."
+        turbo_str = "Частота турбоком
