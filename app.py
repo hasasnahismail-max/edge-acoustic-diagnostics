@@ -40,7 +40,7 @@ I18N = {
     },
     "English": {
         "main_title": "🎙️ ZINO EADE - Precision Acoustic Workstation",
-        "developer_credit": "🛠️ Designed & Developed by Ismail Hassasneh",
+        "developer_credit": "🛠️ Designed & Developed by Ismail Hasasna",
         "domain_label": "🏢 Select Diagnostic Sector:",
         "d_cars": "🚗 Automotive Sector",
         "d_appliances": "🔌 Home & Electrical Appliances",
@@ -64,7 +64,7 @@ I18N = {
     },
     "Русский": {
         "main_title": "🎙️ ZINO EADE - Станция акустической диагностики",
-        "developer_credit": "🛠️ Разработчик: Исмаил Хасасне",
+        "developer_credit": "🛠️ Разработчик: Исмаил Хасасна",
         "domain_label": "🏢 Выберите сектор диагностики:",
         "d_cars": "🚗 Автомобильный сектор",
         "d_appliances": "🔌 Бытовая техника",
